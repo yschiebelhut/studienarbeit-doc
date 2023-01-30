@@ -1,7 +1,76 @@
 \chapter{Konzeptionierung}
 \section{Beschreibung der Projekt-Basis}
+\begin{itemize}
+    \item Roboter aus 3D gedruckten Teilen
+    \item 4 Beine mit 2 Teilen, d.h. 2 Gelenken pro Bein, eins im Bein und eins am Körper
+    \item Gelenke sind Servos mit 120° Aktionsradius
+    \item Neutralstellung ist Mitte des Servos, also 60°
+    \item Steuerung über ESP8266 und Servo Breakout Board
+    \item Stromversorgung über Batterie
+    \item keine weitere Sensorik
+    
+    \item Simulation dieses Roboters in Unity
+    \item dazu direkter Import des 3D Modells
+    \item Software-Simulation der Servos und deren Charakteristika (Bewegungsgeschwindigkeit)
+    \item ungefähres Gewicht der einzelnen Teile hinterlegen für Physiksimulation
+\end{itemize}
+
+Training:
+\begin{itemize}
+    \item Aufbauen von Wänden neben dem Roboter und Kollisionserkennung
+    \item Entwerfen von Belohnungsfunktion für Fortschritt des Roboters
+    \item Wenn umdrehen (auf Rücken wo Elektronik), bestrafen, sonst umso höher belohnen, umso weiter der Roboter in einer bestimmten Zeit kommt
+    \item Klonen von mehreren Agenten in einer Umgebung
+    \item Training
+\end{itemize}
+
+Übertragung:
+\begin{itemize}
+    \item Simulationsumgebung in Unity soll direkt Steuersignale an Roboter senden
+    \item Roboter knickt unter Gewicht sofort ein und kann die gelernte Laufmethodik nicht anwenden
+\end{itemize}
 
 \section{Einschränkungen (und Übertragungsprobleme)}
+\begin{itemize}
+    \item bislang sollte der Roboter nur geradeaus laufen
+    \item Roboter verfügt über keinerlei Sensorik
+    \item kennt nur den aktuellen Winkel der Beine/Servomotoren
+    \item Training erfolgte rein in der Simulation
+    \item die Simulationsumgebung kennt den Zustand (z.B. Neigung) des Roboters und kann anhand dessen den Wert der Belohnungsfunktion berechnen und an den Roboter zurückmelden
+    \item Roboter kennt seinen eigenen Zustand nicht
+    \item bisheriges Modell wird lediglich in der Praxis angewandt, unter der Annahme, dass bei korrekt gelerntem Modell keinerlei Zusatzinformationen notwendig sind, um den Roboter seine Aufgabe erfüllen zu lassen: geradeaus zu laufen
+\end{itemize}
+
+Probleme in der erweiterten Aufgabenstellung:
+\begin{itemize}
+    \item der Roboter soll nun einem vorgegebenen Pfad folgen
+    \item dabei soll der Pfad für jeden Durchlauf dem Roboter individuell vorgegeben werden können
+    \item der Roboter soll NICHT einen vorgegebenen Pfad lernen und danach immer von diesem Pfad ausgehen
+    \item dem Roboter muss also ein Pfad mitgegeben werden können
+    
+    \item Positionierungsinformationen benötigt?
+    \item einerseits nein, theoretisch kann der Roboter seine aktuelle Position anhand seiner vergangenen Bewegungen vom Ausgangspunkt bestimmen
+    \item andererseits ja, da der Roboter auf dem Boden rutschen kann (zumindest in der Realität), das Berechnen von Entfernungen den gesamten Algorithmus stark verkompliziert und unter Umständen durch kleinere Abweichungen sehr ungenau ausfallen kann
+    \item mögliche Lösung in der Simulation: Positionierungsinformationen innerhalb der Simulationsumgebung für Roboter freigeben
+    \item diese Informationen könnten dem Roboter später durch andere Sensoren geliefert werden
+    \item wenn das Informationsformat des neuen Sensors umgewandelt wird in das bisherige Format (zum Beispiel durch ein externes Modul), könnte ein anderer Sensor Plug-And-Play in das trainierte Modell integriert werden
+    
+    \item außerdem soll der Roboter Hindernisse auf seinem Weg erkennen und gezielt umgehen können
+    \item danach soll auf den Pfad zurückgekehrt werden
+    \item dafür wird eine Hindernis-/Kollisionserkennung benötigt
+    \item aktuell hat der Roboter keinerlei solche Sensorik
+    \item vereinfacht soll für die Hinderniserkennung in der Simulation die Kollisionserkennung für die Beine verwendet werden
+    \item dadurch muss der Roboter mit seinem Hindernis zusammenstoßen, um es wahrzunehmen
+    \item in der Realität wäre natürlich eine Hinderniserkennung sinnvoll, mit der Hindernisse bereits vor einer Kollision erkannt werden können (z.B. LiDAR, Kameras oder ähnliche), die Integration solcher Systeme würde jedoch den Umfang dieser Arbeit erheblich übersteigen
+    \item hier soll eher ein Proof-of-Concept für die selbstständige Umsteuerung von Hindernissen erarbeitet werden
+    
+    \item Genauigkeitsprobleme beim Übertragen der Springbewegung: daher genauere Einschränkungen für den Algorithmus
+    \item bisher bewegt sich der Roboter nach Training in einer springenden Bewegung fort
+    \item diese Bewegungsform ist sehr kraftaufwändig und instabil, der Roboter schwankt dabei stark um die horizontale Achse und kann seine exakte Landeposition nur bedingt steuern
+    \item vor allem relevant, falls dem Roboter keine Positionierungsinformationen zur Verfügung gestellt würden, da dann jeder Millimeter zählt
+    \item aber auch zur Erhöhung der allgemeinen Genauigkeit und Reduzierung der Fehler, wäre es sinnvoll, die Fortbewegung des Roboters zu stabilisieren
+    \item mögliche Maßnahme zur Einschränkung der Bewegung: restriktive Anpassung der Belohnungsfunktion, wenn sich die Höhe des Mittelteils des Roboters zu stark verändert oder dieser spürbar die Neigung zum Horizont verändert, wird der Agent bestraft
+\end{itemize}
 
 \section{Wahl der Simulationsumgebung}
 
