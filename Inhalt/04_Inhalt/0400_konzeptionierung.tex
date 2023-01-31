@@ -70,8 +70,29 @@ Probleme in der erweiterten Aufgabenstellung:
     \item vor allem relevant, falls dem Roboter keine Positionierungsinformationen zur Verfügung gestellt würden, da dann jeder Millimeter zählt
     \item aber auch zur Erhöhung der allgemeinen Genauigkeit und Reduzierung der Fehler, wäre es sinnvoll, die Fortbewegung des Roboters zu stabilisieren
     \item mögliche Maßnahme zur Einschränkung der Bewegung: restriktive Anpassung der Belohnungsfunktion, wenn sich die Höhe des Mittelteils des Roboters zu stark verändert oder dieser spürbar die Neigung zum Horizont verändert, wird der Agent bestraft
+    
+    \item Insgesamt soll keine Übertragung des implementierten Modells auf den realen Roboter stattfinden
+    \item wie oben beschrieben wäre eine Implementierung von diversen Sensoren vonnöten, was den Umfang dieser Arbeit deutlich übersteigt
 \end{itemize}
 
 \section{Wahl der Simulationsumgebung}
+\begin{itemize}
+    \item in der Vorgängerarbeit wurde bereits über verschiedene mögliche Simulationsumgebungen geschrieben
+    \item die Bedingungen haben sich leicht geändert
+    \item eine mögliche Software (MuJoCo) ist mittlerweile nicht mehr kostenpflichtig, was damals einer der Gründe war, die gegen diese Software gesprochen haben
+    \item andererseits soll diese Arbeit an die vorangegangene anknüpfen
+    \item wenn die Simulationsumgebung gewechselt würde, würde man im Grunde genommen kaum Ergebnisse der Vorgängerarbeit aufgreifen sondern in vielen Gesichtpunkten von 0 beginnen
+    \item deshalb soll weiterhin Unity verwendet werden
+    \item Unity bietet jedoch die Möglichkeit, die standardmäßige Physics-Engine gegen andere nach dem Plugin-Prinzip auszutauschen
+    \item insofern könnte realistisch und mit geringem Aufwand in Betracht gezogen werden, MuJoCo als Physics-Engine in Unity einzubinden, um somit das Ergebnis des Trainings durch eine andere/verbesserte Physiksimulation zu verbessern
+    \item auch wäre es möglich, die Ergebnisse der verschiedenen Umgebungen zu vergleichen
+    \item da jedoch keine Übertragung auf einen realen Roboter erfolgt, dürfte in diesem Kontext kein spürbarer Unterschied zu beobachten sein / ein beobachteter Unterschied könnte nicht hinsichtlich seiner Aussagekraft eingeordnet werden
+\end{itemize}
 
 \section{Geplante Realisierung}
+\begin{enumerate}
+    \item alte Umgebug und Lernergebnisse des Roboters rekonstruieren; bringt Probleme mit sich, da einige der verwendeten Komponenten einer starken Entwicklung unterliegen/unterlagen, weshalb potenziell Anpassungen vorzunehmen sind, um die alte Umgebung weiterhin verwenden zu können oder die Umgebung auf einen aktuellen Stand der Technik migriert werden sollte, um von Verbesserungen im verwendeten Tooling zu profitieren und eine zukunftssichere Basis zu bieten
+    \item Format entwerfen, wie dem Roboter ein Pfad mitgeteilt werden kann, dem dieser folgen soll; ein Pfad wird hierbei voraussichtlich aus mehreren Punkten bestehen, die sich entlang seines Verlaufs befinden
+    \item Belohnungsfunktion anpassen; oben erwähnt Anpassungen hinsichtlich Laufstabilität; außerdem muss ein Abweichen vom direktesten möglichen Weg bestraft werden / zu einer ausbleibenden oder sehr geringen Belohnung führen
+    \item Hindernisse ergänzen; hierfür sollte die Kollisionserkennung der Unity-Engine verwendet werden können; mithilfe des Hinzufügens von Kollisionsmodellen für in der Simulationsumgebung platzierten Objekte, sollte der Roboter automatisch nicht mehr durch Hindernisse hindurch gehen können; größte Herausforderung sollte hier die Adaption der Belohnungsfunktion werden, damit diese den Roboter nicht daran hindert, den Pfad zu verlassen, das Hindernis zu umgehen und anschließend auf den Pfad zurückzukehren und eine deutlich gesteigerte Belohnung zu erhalten; gleichzeitig darf der Roboter sich nicht zu frei im Raum bewegen, sondern sollte so dicht wie möglich am vorgegebenen Pfad bleiben
+\end{enumerate}
