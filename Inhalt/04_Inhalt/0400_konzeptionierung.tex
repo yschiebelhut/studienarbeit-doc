@@ -1,34 +1,76 @@
 \chapter{Konzeptionierung}
 \section{Beschreibung der Projekt-Basis}
-\begin{itemize}
-    \item Roboter aus 3D gedruckten Teilen
-    \item 4 Beine mit 2 Teilen, d.h. 2 Gelenken pro Bein, eins im Bein und eins am Körper
-    \item Gelenke sind Servos mit 120° Aktionsradius
-    \item Neutralstellung ist Mitte des Servos, also 60°
-    \item Steuerung über ESP8266 und Servo Breakout Board
-    \item Stromversorgung über Batterie
-    \item keine weitere Sensorik
+Die Zielsetzung dieser Arbeit soll aufbauend auf einer Vorgängerarbeit realisiert werden, welche vor einigen Jahren ebenfalls im Rahmen einer Studienarbeit durchgeführt wurde.
+Hier soll nun zunächst die Vorgehensweise der Vorgängerarbeit in ihren Grundzügen erläutert werden.
+
+\subsection{Aufbau und Simulation des Roboters}
+Kernelement der Arbeit ist ein vierbeiniger, 3D-gedruckter Roboter, der in seiner Anatomie einer Spinne gleicht.
+Der Roboter besteht aus einer rechteckigen Zentralplatte.
+An jeder Ecke dieser Platte ist ein Bein angebracht.
+Die Beine des Roboters bestehen jeweils aus 3 separaten Teilen.
+Folglich hat jedes Bein zwei Gelenke. \cite[52]{waidner.2020}
+Jedes dieser Gelenke wird mit einem Servomotor des Typs SG90 XY realisiert, welche sich in einem Aktionsradius von 180° bewegen können.
+Die Neutralstellung der Beine ist die jeweilige Mittelposition des Servomotors.
+Angegeben wird der Aktionsradius des Servos als Wert im Bereich 0° - 180°, die Mittelstellung befindet sich also bei 90°. \cite[38]{waidner.2020}
+Die verwendeten Servomotoren bewegen sich nur auf einer Achse.
+An der Stelle, an der die Beine mit dem Körper verbunden sind, befindet sich ein weiterer Servomotor.
+Mithilfe der verbauten Servomotoren ist es möglich, jedes Bein anzuziehen oder auszustrecken und es nach vorne beziehungsweise hinten zu bewegen.
+
+Angesteuert werden die Servomotoren mit einem ESP8266 Mikrocontroller, welcher mittels I²C Steuersignale an ein Servo-Breakout-Board sendet, an welchem wiederum die Servomotoren angeschlossen sind.
+Die Stromversorgung erfolgt über eine Batterie, damit sich der Roboter autark von einer Stromquelle im Raum bewegen kann. \cite[54]{waidner.2020}
+Die aufgelisteten Bauteile werden so mit Kabelbindern an der Zentralplatte befestigt, dass sie nicht mit der Bewegungsfreiheit der Beine interferieren.
+Am Roboter ist keinerlei Sensorik verbaut. \cite[36]{waidner.2020}
+
+Da das Training des Roboters in der Realität zu lange dauern würde und dabei außerdem die Gefahr drohen würde, den Roboter zu beschädigen, wurde eine Simulationsumgebung aufgebaut, in der das Training des Roboters erfolgt.
+Diese ist in Unity\todo{irgendwo mehr zu Unity schreiben} realisiert.
+In Unity ist es möglich, dasselbe 3D-Modell zu importieren, das auch für den Druck der Teile des Roboters verwendet wird, was eine akkurate Umsetzung der Dimensionen sicherstellt.
+Die größte Schwierigkeit einer Simulation des Roboters besteht darin, die Servomotoren abzubilden.
+Im Gegensatz zu einem Computerprogramm ist es Bauteilen in der realen Welt nicht möglich, instantan einen gezielten Zustand anzunehmen.
+Das heißt, wird für einen Servomotor ein neuer Winkel vorgegeben, so braucht dieser eine bestimmte Zeit, bis er diesen erreicht hat.
+Diese Zeit ist einerseits von der normalen Bewegungsgeschwindigkeit des Servomotors abhängig, andererseits stellt die Last, die der Motor bewegt, einen weiteren Einflussfaktor dar.
+Die Vorgängerarbeit implementiert eine Software-Simulation der Servomotoren, bei denen zumindest der Aspekt der normalen Bewegungsgeschwindigkeit berücksichtigt wird, sowie verwandte, allgemeine Charakteristika der Bewegung. \cite[37]{waidner.2020}
+Zusätzlich werden in Unity die ungefähren Gewichte der einzelnen Teile eingetragen, um eine akkurate Simulation der physikalischen Kräfte zu ermöglichen, die auf den Roboter einwirken.
+Die Simulation dieser allgemeinen Physik wird bereits als Grundfunktion der Unity-Engine bereitgestellt und muss nicht separat implementiert werden.
+
+% \begin{itemize}
+%     \item Roboter aus 3D gedruckten Teilen
+%     \item 4 Beine mit 2 Teilen, d.h. 2 Gelenken pro Bein, eins im Bein und eins am Körper
+%     \item Gelenke sind Servos mit 120° Aktionsradius
+%     \item Neutralstellung ist Mitte des Servos, also 60°
+%     \item Steuerung über ESP8266 und Servo Breakout Board
+%     \item Stromversorgung über Batterie
+%     \item keine weitere Sensorik
     
-    \item Simulation dieses Roboters in Unity
-    \item dazu direkter Import des 3D Modells
-    \item Software-Simulation der Servos und deren Charakteristika (Bewegungsgeschwindigkeit)
-    \item ungefähres Gewicht der einzelnen Teile hinterlegen für Physiksimulation
-\end{itemize}
+%     \item Simulation dieses Roboters in Unity
+%     \item dazu direkter Import des 3D Modells
+%     \item Software-Simulation der Servos und deren Charakteristika (Bewegungsgeschwindigkeit)
+%     \item ungefähres Gewicht der einzelnen Teile hinterlegen für Physiksimulation
+% \end{itemize}
 
-Training:
-\begin{itemize}
-    \item Aufbauen von Wänden neben dem Roboter und Kollisionserkennung
-    \item Entwerfen von Belohnungsfunktion für Fortschritt des Roboters
-    \item Wenn umdrehen (auf Rücken wo Elektronik), bestrafen, sonst umso höher belohnen, umso weiter der Roboter in einer bestimmten Zeit kommt
-    \item Klonen von mehreren Agenten in einer Umgebung
-    \item Training
-\end{itemize}
+\subsection{Training des Roboters}
+Mit der fertig aufgebauten Simulation kann nun der Roboter für alle erdenklichen Szenarien trainiert werden.
+Dazu müssen Rahmenbedingungen des Trainings definiert werden.
+Primär sind dies die Beobachtungen, die der Trainingsalgorithmus macht, die Aktionen, die er ausführen kann und die Belohnung, die er als Feedback für seine Handlungen erhält.
+Die Zielsetzung der Vorgängerarbeit bestand aus einer reinen Vorwärtsbewegung.
+Da der reale Roboter über keine Sensorik verfügt und lediglich die Ansteuerwinkel seiner Servomotoren kennt, waren dies auch die einzigen Beobachtungen, die dem Algorithmus zugänglich gemacht wurden.
+Als Aktionen kann der Algorithmus beliebige Zielwinkel für die Servomotoren setzen.
+Die Belohnung für den Roboter bestand in der Vorgängerarbeit aus der Streckendifferenz, die er nach vorne zurückgelegt hat.
+Bestraft wurde der Roboter für ein Umkippen, um zu verhindern, dass bei der späteren Übertragung auf den realen Roboter die Steuerelektronik beschädigt wird.
+Um das Training zu beschleunigen, sind in der Vorgängerarbeit mehrere Agenten nebeneinander in derselben Umgebung instanziiert.
+Nach einer Einstellung der Hyperparameter wurden Modelle mit den Reinforcement-Learning-Algorithmen SAC und PPO trainiert.
+Dabei wurde festgestellt, dass in diesem Anwendungsfall die Ergebnisse des PPO-Algorithmus denen des SAC-Algorithmus deutlich überlegen sind.
 
-Übertragung:
-\begin{itemize}
-    \item Simulationsumgebung in Unity soll direkt Steuersignale an Roboter senden
-    \item Roboter knickt unter Gewicht sofort ein und kann die gelernte Laufmethodik nicht anwenden
-\end{itemize}
+Die Bewegungsart, die der Roboter sich bei diesen Trainingsbedingungen antrainiert, ist keine klassische Form des natürlichen Laufens.
+Stattdessen führen die Ergebnisse des Trainings dazu, dass der Algorithmus den Roboter mit einem der Hinterbeine einknicken lässt und ihn dann sprungartig nach vorne katapultiert.
+
+\subsection{Übertragung in die Realität}
+Die Implementierung der Vorgängerarbeit sieht auch eine Übertragung der Ergebnisse auf den realen Roboter vor.
+Zu diesem Zwecke können die Steuersignale, die der Roboter in der Simulation erhält, über eine serielle Verbindung übertragen werden und direkt auf dem realen Roboter angewandt werden.
+
+Die unternommenen Versuche waren jedoch leider nicht erfolgreich.
+Als Ursache fällt die Vermutung auf Hardwarefehler, da der Roboter -- in der Luft gehalten -- die Bewegungen korrekt spiegelt.
+Wird der Roboter jedoch auf den Boden gestellt, knickt er unter seinem Gewicht sofort ein und kann die gelernte Laufmethodik nicht anwenden.
+
 
 \section{Einschränkungen (und Übertragungsprobleme)}
 \begin{itemize}
