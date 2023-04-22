@@ -58,10 +58,10 @@ Die Belohnung für den Roboter bestand in der Vorgängerarbeit aus der Streckend
 Bestraft wurde der Roboter für ein Umkippen, um zu verhindern, dass bei der späteren Übertragung auf den realen Roboter die Steuerelektronik beschädigt wird.
 Um das Training zu beschleunigen, sind in der Vorgängerarbeit mehrere Agenten nebeneinander in derselben Umgebung instanziiert.
 Nach einer Einstellung der Hyperparameter wurden Modelle mit den Reinforcement-Learning-Algorithmen SAC und PPO trainiert.
-Dabei wurde festgestellt, dass in diesem Anwendungsfall die Ergebnisse des PPO-Algorithmus denen des SAC-Algorithmus deutlich überlegen sind.
+Dabei wurde festgestellt, dass in diesem Anwendungsfall die Ergebnisse des PPO-Algorithmus denen des SAC-Algorithmus deutlich überlegen sind. \cite[48]{waidner.2020}
 
 Die Bewegungsart, die der Roboter sich bei diesen Trainingsbedingungen antrainiert, ist keine klassische Form des natürlichen Laufens.
-Stattdessen führen die Ergebnisse des Trainings dazu, dass der Algorithmus den Roboter mit einem der Hinterbeine einknicken lässt und ihn dann sprungartig nach vorne katapultiert.
+Stattdessen führen die Ergebnisse des Trainings dazu, dass der Algorithmus den Roboter mit einem der Hinterbeine einknicken lässt und ihn dann sprungartig nach vorne katapultiert. \cite[51]{waidner.2020}
 
 \subsection{Übertragung in die Realität}
 Die Implementierung der Vorgängerarbeit sieht auch eine Übertragung der Ergebnisse auf den realen Roboter vor.
@@ -69,7 +69,7 @@ Zu diesem Zwecke können die Steuersignale, die der Roboter in der Simulation er
 
 Die unternommenen Versuche waren jedoch leider nicht erfolgreich.
 Als Ursache fällt die Vermutung auf Hardwarefehler, da der Roboter -- in der Luft gehalten -- die Bewegungen korrekt spiegelt.
-Wird der Roboter jedoch auf den Boden gestellt, knickt er unter seinem Gewicht sofort ein und kann die gelernte Laufmethodik nicht anwenden.
+Wird der Roboter jedoch auf den Boden gestellt, knickt er unter seinem Gewicht sofort ein und kann die gelernte Laufmethodik nicht anwenden. \cite[58]{waidner.2020}
 
 
 \section{Einschränkungen und Übertragungsprobleme}
