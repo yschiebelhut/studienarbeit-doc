@@ -72,69 +72,191 @@ Als Ursache fällt die Vermutung auf Hardwarefehler, da der Roboter -- in der Lu
 Wird der Roboter jedoch auf den Boden gestellt, knickt er unter seinem Gewicht sofort ein und kann die gelernte Laufmethodik nicht anwenden.
 
 
-\section{Einschränkungen (und Übertragungsprobleme)}
-\begin{itemize}
-    \item bislang sollte der Roboter nur geradeaus laufen
-    \item Roboter verfügt über keinerlei Sensorik
-    \item kennt nur den aktuellen Winkel der Beine/Servomotoren
-    \item Training erfolgte rein in der Simulation
-    \item die Simulationsumgebung kennt den Zustand (z.B. Neigung) des Roboters und kann anhand dessen den Wert der Belohnungsfunktion berechnen und an den Roboter zurückmelden
-    \item Roboter kennt seinen eigenen Zustand nicht
-    \item bisheriges Modell wird lediglich in der Praxis angewandt, unter der Annahme, dass bei korrekt gelerntem Modell keinerlei Zusatzinformationen notwendig sind, um den Roboter seine Aufgabe erfüllen zu lassen: geradeaus zu laufen
-\end{itemize}
+\section{Einschränkungen und Übertragungsprobleme}
+\label{sec:probleme}
+Bislang sollte der Roboter nur geradeaus laufen.
+Dabei verfügt der verwendete Roboter über keinerlei Sensorik.
+Einzig die aktuellen Zielwinkel der Servomotoren, welche die Bewegung der Beine ermöglichen, sind dem Lernalgorithmus zugänglich.
+Das Training des Roboters erfolgte jedoch rein in der Simulation.
+Da die Simulationsumgebung nicht nur den Roboter, sondern dessen komplettes Umfeld abbilden muss, sind alle Informationen, die ein beliebiger Sensor liefern könnte theoretisch in der Simulation vorhanden, wurden dem Algorithmus jedoch nicht zugänglich gemacht.
+Der Roboter kennt seinen eigenen Zustand nicht, beziehungsweise nur bedingt.
+Das trainierte Modell wird lediglich in der Praxis angewandt, unter der Annahme, dass bei einem korrekt gelernten Modell keinerlei Zusatzinformationen notwendig sind, um den Roboter seine Aufgabe erfüllen zu lassen: geradeaus zu laufen.
 
-Probleme in der erweiterten Aufgabenstellung:
-\begin{itemize}
-    \item der Roboter soll nun einem vorgegebenen Pfad folgen
-    \item dabei soll der Pfad für jeden Durchlauf dem Roboter individuell vorgegeben werden können
-    \item der Roboter soll NICHT einen vorgegebenen Pfad lernen und danach immer von diesem Pfad ausgehen
-    \item dem Roboter muss also ein Pfad mitgegeben werden können
+Die Zielsetzung dieser Studienarbeit erweitert nun jedoch diese Aufgabe des Roboters, was Probleme aufwirft.
+Der Roboter soll lernen, einem vorgegebenen Pfad zu folgen.
+Dabei soll der Pfad für jeden Durchlauf dem Roboter individuell vorgegeben werden können.
+Besonders wichtig ist hierbei zu beachten, dass der Roboter unter keinen Umständen einen bestimmten Pfad auswendig lernen soll, denn dann müsste für jeden Pfad, den der Roboter laufen soll, ein eigenständiges Modell trainiert werden, was einen praktischen Nutzen unmöglich machen würde -- schließlich kann nicht für eine Bewegungsanweisung an einen Roboter jedes Mal mehrere Stunden Rechenzeit aufgebracht werden.
+Dem Roboter muss also ein Pfad mitgegeben werden.
+Außerdem muss für das Training des Roboters mehrfach dieser übergebene Pfad neu generiert werden, um ein Auswendiglernen zu verhindern.
+
+Dass der Roboter einem frei angegebenen Pfad folgen können soll, wirft die Frage auf, ob er dazu Informationen über seine Position im Raum benötigt.
+Rein theoretisch betrachtet könnte diese Frage einfach mit \enquote{Nein} beantwortet werden.
+Prinzipiell gesehen kann der Roboter seine aktuelle Position anhand seiner vergangenen Bewegungen vom Ausgangspunkt her berechnen.
+Andererseits würde dies eine enorm hohe Präzision der Bewegungen voraussetzen.
+Außerdem könnte der Roboter in der Realität auf dem Boden rutschen.
+Auch läuft das bisherige Modell -- nicht einmal in der Simulation -- verlässlich geradeaus, sondern hat dabei immer einen leichten Drall zur Seite.
+Aus diesen Gründen wird der Schluss gezogen, dass durch minimale, nicht vermeidbare Abweichungen die Ausführung der Aufgabe nur sehr ungenau möglich wäre, wenn keine Positionierungsinformationen zur Verfügung gestellt werden.
+
+In der Simulation gestaltet sich eine mögliche Lösung des Problems sehr einfach: Der Roboter ist ein Game-Objekt innerhalt der Unity-Engine.
+Als solches besitzt er automatisch Koordinaten innerhalb der Simulation, welche einfach für den Roboter freigegeben werden können.
+Bei einer späteren Übertragung in die Realität können diese Informationen durch andere, konkrete Ortungssysteme geliefert werden.
+Es wäre lediglich ein Mapping erforderlich, um das Informationsformat eines konkreten Sensors in das Koordinatenformat von Unity umzuwandeln.
+Diese Informationen können dann dem Modell für die Inferenz zur Verfügung gestellt werden.
+Somit ist es möglich, ein Modell zu trainieren, welches unabhängig von der später eingesetzten Ortungstechnologie ist.
+
+Weiterhin umfasst die Aufgabenstellung, dass der Roboter Hindernisse auf seinem Weg erkennen und gezielt umgehen können soll.
+Anschließend soll er auf den vorgegebenen Pfad zurückkehren, wobei die Abweichung möglichst gering ausfallen sollte.
+Hierfür wird eine Hindernis- beziehungsweise Kollisionserkennung benötigt.
+Mit der aktuellen technischen Ausstattung des Roboters ist auch diese Aufgabe nicht umsetzbar.
+In der Simulation soll vereinfacht für die Hinderniserkennung die Kollisionserkennung der Beine verwendet werden.
+(Diese Kollisionserkennung kann Unity für sämtliche Game-Objekte durchführen.)
+Dadurch muss der Roboter mit seinem Hindernis zusammenstoßen, um es wahrzunehmen.
+In der Realität wäre natürlich eine Hinderniserkennung sinnvoll, mit der Hindernisse bereits vor einer Kollision erkannt werden können (zum Beispiel LiDAR, Kameras oder ähnliche Systeme).
+
+Sowohl für die Ortung, als auch für die Hinderniserkennung wäre in der Realität der Einsatz komplexer Systeme nötigt.
+Die Integration solcher würde jedoch den Umfang dieser Arbeit erheblich übersteigen.
+Hier soll eher ein Proof-of-Concept für die selbstständige Umsteuerung von Hindernissen erarbeitet werden.
+Es soll keine Übertragung der in der Simulation trainierten Modelle auf den realen Roboter stattfinden.
+
+Die Springbewegung, die der Roboter sich bislang antrainiert hat, führt zu weiteren potenziellen Problemen.
+Zwar wurde, wie oben beschrieben, der Einsatz eines Ortungssystems festgelegt, jedoch bringt diese Bewegungsform trotzdem massive Genauigkeitsprobleme mit sich. 
+Sie ist sehr kraftaufwändig und instabil, der Roboter schwankt dabei stark um seine horizontale Achse und kann seine exakte Landeposition nur bedingt steuern.
+Da der Roboter Hindernisse über eine Kollision mit diesen erkennen soll, würde außerdem das Problem bestehen, dass der Roboter im Sprung gegen diese knallen könnte.
+Aus den genannten Gründen ist es sinnvoll, Maßnahmen zur Einschränkung der Bewegung des Roboters vorzunehmen.
+Möglich wäre zum Beispiel eine Anpassung der Belohnungsfunktion, wonach starke Höhenänderungen oder Neigungen der Zentralplatte des Roboters bestraft werden.
+
+% \begin{itemize}
+%     \item bislang sollte der Roboter nur geradeaus laufen
+%     \item Roboter verfügt über keinerlei Sensorik
+%     \item kennt nur den aktuellen Winkel der Beine/Servomotoren
+%     \item Training erfolgte rein in der Simulation
+%     \item die Simulationsumgebung kennt den Zustand (z.B. Neigung) des Roboters und kann anhand dessen den Wert der Belohnungsfunktion berechnen und an den Roboter zurückmelden
+%     \item Roboter kennt seinen eigenen Zustand nicht
+%     \item bisheriges Modell wird lediglich in der Praxis angewandt, unter der Annahme, dass bei korrekt gelerntem Modell keinerlei Zusatzinformationen notwendig sind, um den Roboter seine Aufgabe erfüllen zu lassen: geradeaus zu laufen
+% \end{itemize}
+
+% Probleme in der erweiterten Aufgabenstellung:
+% \begin{itemize}
+%     \item der Roboter soll nun einem vorgegebenen Pfad folgen
+%     \item dabei soll der Pfad für jeden Durchlauf dem Roboter individuell vorgegeben werden können
+%     \item der Roboter soll NICHT einen vorgegebenen Pfad lernen und danach immer von diesem Pfad ausgehen
+%     \item dem Roboter muss also ein Pfad mitgegeben werden können
     
-    \item Positionierungsinformationen benötigt?
-    \item einerseits nein, theoretisch kann der Roboter seine aktuelle Position anhand seiner vergangenen Bewegungen vom Ausgangspunkt bestimmen
-    \item andererseits ja, da der Roboter auf dem Boden rutschen kann (zumindest in der Realität), das Berechnen von Entfernungen den gesamten Algorithmus stark verkompliziert und unter Umständen durch kleinere Abweichungen sehr ungenau ausfallen kann
-    \item mögliche Lösung in der Simulation: Positionierungsinformationen innerhalb der Simulationsumgebung für Roboter freigeben
-    \item diese Informationen könnten dem Roboter später durch andere Sensoren geliefert werden
-    \item wenn das Informationsformat des neuen Sensors umgewandelt wird in das bisherige Format (zum Beispiel durch ein externes Modul), könnte ein anderer Sensor Plug-And-Play in das trainierte Modell integriert werden
+%     \item Positionierungsinformationen benötigt?
+%     \item einerseits nein, theoretisch kann der Roboter seine aktuelle Position anhand seiner vergangenen Bewegungen vom Ausgangspunkt bestimmen
+%     \item andererseits ja, da der Roboter auf dem Boden rutschen kann (zumindest in der Realität), das Berechnen von Entfernungen den gesamten Algorithmus stark verkompliziert und unter Umständen durch kleinere Abweichungen sehr ungenau ausfallen kann
+%     \item mögliche Lösung in der Simulation: Positionierungsinformationen innerhalb der Simulationsumgebung für Roboter freigeben
+%     \item diese Informationen könnten dem Roboter später durch andere Sensoren geliefert werden
+%     \item wenn das Informationsformat des neuen Sensors umgewandelt wird in das bisherige Format (zum Beispiel durch ein externes Modul), könnte ein anderer Sensor Plug-And-Play in das trainierte Modell integriert werden
     
-    \item außerdem soll der Roboter Hindernisse auf seinem Weg erkennen und gezielt umgehen können
-    \item danach soll auf den Pfad zurückgekehrt werden
-    \item dafür wird eine Hindernis-/Kollisionserkennung benötigt
-    \item aktuell hat der Roboter keinerlei solche Sensorik
-    \item vereinfacht soll für die Hinderniserkennung in der Simulation die Kollisionserkennung für die Beine verwendet werden
-    \item dadurch muss der Roboter mit seinem Hindernis zusammenstoßen, um es wahrzunehmen
-    \item in der Realität wäre natürlich eine Hinderniserkennung sinnvoll, mit der Hindernisse bereits vor einer Kollision erkannt werden können (z.B. LiDAR, Kameras oder ähnliche), die Integration solcher Systeme würde jedoch den Umfang dieser Arbeit erheblich übersteigen
-    \item hier soll eher ein Proof-of-Concept für die selbstständige Umsteuerung von Hindernissen erarbeitet werden
+%     \item außerdem soll der Roboter Hindernisse auf seinem Weg erkennen und gezielt umgehen können
+%     \item danach soll auf den Pfad zurückgekehrt werden
+%     \item dafür wird eine Hindernis-/Kollisionserkennung benötigt
+%     \item aktuell hat der Roboter keinerlei solche Sensorik
+%     \item vereinfacht soll für die Hinderniserkennung in der Simulation die Kollisionserkennung für die Beine verwendet werden
+%     \item dadurch muss der Roboter mit seinem Hindernis zusammenstoßen, um es wahrzunehmen
+%     \item in der Realität wäre natürlich eine Hinderniserkennung sinnvoll, mit der Hindernisse bereits vor einer Kollision erkannt werden können (z.B. LiDAR, Kameras oder ähnliche), die Integration solcher Systeme würde jedoch den Umfang dieser Arbeit erheblich übersteigen
+%     \item hier soll eher ein Proof-of-Concept für die selbstständige Umsteuerung von Hindernissen erarbeitet werden
     
-    \item Genauigkeitsprobleme beim Übertragen der Springbewegung: daher genauere Einschränkungen für den Algorithmus
-    \item bisher bewegt sich der Roboter nach Training in einer springenden Bewegung fort
-    \item diese Bewegungsform ist sehr kraftaufwändig und instabil, der Roboter schwankt dabei stark um die horizontale Achse und kann seine exakte Landeposition nur bedingt steuern
-    \item vor allem relevant, falls dem Roboter keine Positionierungsinformationen zur Verfügung gestellt würden, da dann jeder Millimeter zählt
-    \item aber auch zur Erhöhung der allgemeinen Genauigkeit und Reduzierung der Fehler, wäre es sinnvoll, die Fortbewegung des Roboters zu stabilisieren
-    \item mögliche Maßnahme zur Einschränkung der Bewegung: restriktive Anpassung der Belohnungsfunktion, wenn sich die Höhe des Mittelteils des Roboters zu stark verändert oder dieser spürbar die Neigung zum Horizont verändert, wird der Agent bestraft
+%     \item Genauigkeitsprobleme beim Übertragen der Springbewegung: daher genauere Einschränkungen für den Algorithmus
+%     \item bisher bewegt sich der Roboter nach Training in einer springenden Bewegung fort
+%     \item diese Bewegungsform ist sehr kraftaufwändig und instabil, der Roboter schwankt dabei stark um die horizontale Achse und kann seine exakte Landeposition nur bedingt steuern
+%     \item vor allem relevant, falls dem Roboter keine Positionierungsinformationen zur Verfügung gestellt würden, da dann jeder Millimeter zählt
+%     \item aber auch zur Erhöhung der allgemeinen Genauigkeit und Reduzierung der Fehler, wäre es sinnvoll, die Fortbewegung des Roboters zu stabilisieren
+%     \item mögliche Maßnahme zur Einschränkung der Bewegung: restriktive Anpassung der Belohnungsfunktion, wenn sich die Höhe des Mittelteils des Roboters zu stark verändert oder dieser spürbar die Neigung zum Horizont verändert, wird der Agent bestraft
     
-    \item Insgesamt soll keine Übertragung des implementierten Modells auf den realen Roboter stattfinden
-    \item wie oben beschrieben wäre eine Implementierung von diversen Sensoren vonnöten, was den Umfang dieser Arbeit deutlich übersteigt
-\end{itemize}
+%     \item Insgesamt soll keine Übertragung des implementierten Modells auf den realen Roboter stattfinden
+%     \item wie oben beschrieben wäre eine Implementierung von diversen Sensoren vonnöten, was den Umfang dieser Arbeit deutlich übersteigt
+% \end{itemize}
 
 \section{Wahl der Simulationsumgebung}
-\begin{itemize}
-    \item in der Vorgängerarbeit wurde bereits über verschiedene mögliche Simulationsumgebungen geschrieben
-    \item die Bedingungen haben sich leicht geändert
-    \item eine mögliche Software (MuJoCo) ist mittlerweile nicht mehr kostenpflichtig, was damals einer der Gründe war, die gegen diese Software gesprochen haben
-    \item andererseits soll diese Arbeit an die vorangegangene anknüpfen
-    \item wenn die Simulationsumgebung gewechselt würde, würde man im Grunde genommen kaum Ergebnisse der Vorgängerarbeit aufgreifen sondern in vielen Gesichtpunkten von 0 beginnen
-    \item deshalb soll weiterhin Unity verwendet werden
-    \item Unity bietet jedoch die Möglichkeit, die standardmäßige Physics-Engine gegen andere nach dem Plugin-Prinzip auszutauschen
-    \item insofern könnte realistisch und mit geringem Aufwand in Betracht gezogen werden, MuJoCo als Physics-Engine in Unity einzubinden, um somit das Ergebnis des Trainings durch eine andere/verbesserte Physiksimulation zu verbessern
-    \item auch wäre es möglich, die Ergebnisse der verschiedenen Umgebungen zu vergleichen
-    \item da jedoch keine Übertragung auf einen realen Roboter erfolgt, dürfte in diesem Kontext kein spürbarer Unterschied zu beobachten sein / ein beobachteter Unterschied könnte nicht hinsichtlich seiner Aussagekraft eingeordnet werden
-\end{itemize}
+In der Vorgängerarbeit wurden bereits drei mögliche Simulationsumgebungen ausführlich gegenübergestellt. \cite[27]{waidner.2020}
+Die beschriebenen Bedingungen haben sich dabei leicht verändert.
+Aus dem Vergleich ging hervor, dass MuJoCo aufgrund seiner äußert realistischen Simulation der Physik und einem Fokus auf Gelenksimulation eine gute Wahl für eine Trainingsumgebung wäre.
+Jedoch war der Einsatz von MuJoCo damals mit erheblichen Lizenzgebühren verbunden, was einer der Gründe war, diese Software nicht zu verwenden.
+Mittlerweile ist MuJoCo allerdings frei und quelloffen verfügbar \cite{mujoco.org,github.mujoco}, was dafür sprechen würde, die Programmwahl neu zu überdenken.
+
+Andererseits soll diese Arbeit an die vorangegangene anknüpfen.
+Wenn die Simulationsumgebung gewechselt würde, müsste im Grunde genommen von vorne begonnen werden, da die meisten Aspekte der Vorarbeit, wenn nicht sogar alle, nicht einfach außerhalb der Unity-Umgebung genutzt werden können.
+Deshalb wird die Wahl getroffen, weiterhin Unity zu verwenden.
+Unity bietet jedoch die Möglichkeit, die standardmäßig verwendete Physics-Engine gegen andere, über Plugins bereitgestellte, auszutauschen.
+MuJoCo ist ebenfalls als ein solches Plugin verfügbar. \cite{mujocoUnityPlugin}
+Insofern könnte bei Bedarf theoretisch mit geringem Aufwand in Betracht gezogen werden, MuJoCo als Physics-Engine in Unity einzubinden, um somit das Gesamtergebnis des Trainings durch eine bessere Physiksimulation zu verbessern.
+Auch wäre es denkbar, die Ergebnisse der verschiedenen Umgebungen zu vergleichen.
+Da jedoch keine Übertragung auf einen realen Roboter erfolgt, dürfte in diesem Kontext vermutlich kein spürbarer Unterschied zwischen den Physics-Engines zu beobachten sein.
+Selbst falls ein messbarer Unterschied bestehen sollte, könnte dieser nicht hinsichtlich seiner Aussagekraft eingeordnet werden.
+
+
+% \begin{itemize}
+%     \item in der Vorgängerarbeit wurde bereits über verschiedene mögliche Simulationsumgebungen geschrieben
+%     \item die Bedingungen haben sich leicht geändert
+%     \item eine mögliche Software (MuJoCo) ist mittlerweile nicht mehr kostenpflichtig, was damals einer der Gründe war, die gegen diese Software gesprochen haben
+%     \item andererseits soll diese Arbeit an die vorangegangene anknüpfen
+%     \item wenn die Simulationsumgebung gewechselt würde, würde man im Grunde genommen kaum Ergebnisse der Vorgängerarbeit aufgreifen sondern in vielen Gesichtpunkten von 0 beginnen
+%     \item deshalb soll weiterhin Unity verwendet werden
+%     \item Unity bietet jedoch die Möglichkeit, die standardmäßige Physics-Engine gegen andere nach dem Plugin-Prinzip auszutauschen
+%     \item insofern könnte realistisch und mit geringem Aufwand in Betracht gezogen werden, MuJoCo als Physics-Engine in Unity einzubinden, um somit das Ergebnis des Trainings durch eine andere/verbesserte Physiksimulation zu verbessern
+%     \item auch wäre es möglich, die Ergebnisse der verschiedenen Umgebungen zu vergleichen
+%     \item da jedoch keine Übertragung auf einen realen Roboter erfolgt, dürfte in diesem Kontext kein spürbarer Unterschied zu beobachten sein / ein beobachteter Unterschied könnte nicht hinsichtlich seiner Aussagekraft eingeordnet werden
+% \end{itemize}
 
 \section{Geplante Realisierung}
-\begin{enumerate}
-    \item alte Umgebug und Lernergebnisse des Roboters rekonstruieren; bringt Probleme mit sich, da einige der verwendeten Komponenten einer starken Entwicklung unterliegen/unterlagen, weshalb potenziell Anpassungen vorzunehmen sind, um die alte Umgebung weiterhin verwenden zu können oder die Umgebung auf einen aktuellen Stand der Technik migriert werden sollte, um von Verbesserungen im verwendeten Tooling zu profitieren und eine zukunftssichere Basis zu bieten
-    \item Format entwerfen, wie dem Roboter ein Pfad mitgeteilt werden kann, dem dieser folgen soll; ein Pfad wird hierbei voraussichtlich aus mehreren Punkten bestehen, die sich entlang seines Verlaufs befinden
-    \item Belohnungsfunktion anpassen; oben erwähnt Anpassungen hinsichtlich Laufstabilität; außerdem muss ein Abweichen vom direktesten möglichen Weg bestraft werden / zu einer ausbleibenden oder sehr geringen Belohnung führen
-    \item Hindernisse ergänzen; hierfür sollte die Kollisionserkennung der Unity-Engine verwendet werden können; mithilfe des Hinzufügens von Kollisionsmodellen für in der Simulationsumgebung platzierten Objekte, sollte der Roboter automatisch nicht mehr durch Hindernisse hindurch gehen können; größte Herausforderung sollte hier die Adaption der Belohnungsfunktion werden, damit diese den Roboter nicht daran hindert, den Pfad zu verlassen, das Hindernis zu umgehen und anschließend auf den Pfad zurückzukehren und eine deutlich gesteigerte Belohnung zu erhalten; gleichzeitig darf der Roboter sich nicht zu frei im Raum bewegen, sondern sollte so dicht wie möglich am vorgegebenen Pfad bleiben
-\end{enumerate}
+Die Umsetzung der Arbeit lässt sich in mehrere Aufgabenpakete gliedern.
+Diese sollen folgend beschrieben werden.
+
+\subsection{Rekonstruktion}
+Der erste Schritt besteht darin, die Simulationsumgebung und Lernergebnisse der vorherigen Arbeit zu rekonstruieren.
+Diese Rekonstruktion bringt Probleme mit sich.
+Einige der verwendeten Komponenten sind einer starken Entwicklung unterlegen -- insbesondere das erst 2017 vorgestellte ML-Agents Toolkit, welches sich zum Zeitpunkt der Bearbeitung des Basisprojekts noch in der Pre-Release-Phase befand. \cite{mlagentsHistory}
+Deshalb sind auf jeden Fall Änderungen nötig, um die bestehenden Ergebnisse überhaupt sichten zu können.
+Außerdem empfiehlt es sich, die Umgebung auf den aktuellen Stand der Technik zu migrieren, um von potenziellen Verbesserungen im verwendeten Tooling profitieren zu können.
+Auch wird damit eine zukunftssicherere Basis geboten, auf der die Ergebnisse dieser Arbeit weitergenutzt werden können.
+
+\subsection{Entwurf der Pfadplanung}
+Im Anschluss an die Konstruktion einer verwendbaren Simulationsumgebung muss ein Format entworfen werden, wie dem Roboter ein Pfad mitgeteilt werden kann, dem dieser folgen soll.
+Ein Pfad besteht aus mathematischer Sicht aus einer geordneten Aufreihung an Punkten.
+Der Roboter muss diese der Reihe nach ansteuern.
+Wie in \autoref{sec:probleme} bereits ausgeführt, muss verhindert werden, dass der Roboter einen vorgegebenen Pfad auswendig lernt.
+Als logische Folgerung muss bei jeder Trainingsepisode ein zufälliger Pfad vorgegeben werden.
+Beim Verflogen eines Pfades ist zu jeder Zeit nur der als nächstes anzusteuernde Punkt von Relevanz.
+Für das Training ergibt dies Parallelen zu einem Beispielszenario des ML-Agents-Toolkits.
+Beim Crawler-Example muss eine Kreatur lernen, ein zufällig spawnendes Ziel (sogenannte \emph{Dynamic Targets}) zu erreichen.
+Kommt der Crawler mit einem Dynamic Target in Berührung, teleportiert es sich an einen zufälligen Ort. \cite{crawlerExample}
+Dabei tauch die Dynamic Targets als kleine Würfel in der Umgebung des Crawlers auf.
+Die Dynamic Targets könnte auch für die Pfadplanung des Roboters verwendet werden.
+Die für das Training notwendigen, zufälligen Pfade bilden sie bereits automatisch ab.
+Um später einen festen Pfad vorgeben zu können, müsste lediglich eine kleine Modifikation der Dynamic Targets vorgenommen werden, um diese in einer festgelegten Reihenfolge anstatt zufällig erscheinen zu lassen.
+
+\subsection{Anpassung der Belohnungsfunktion}
+Bislang wird der Roboter nur für eine zurückgelegte Distanz entlang der x-Achse belohnt und erhält eine Bestrafung, wenn er sich auf den Rücken dreht.
+Im ersten Schritt soll das Laufverhalten des Roboters stabilisiert werden, damit sich dieser nicht mehr springend fortbewegt.
+Dazu könnte etwa in der Belohnungsfunktion ein Faktor eingebracht werden, der den Roboter mit einem, an der Neigung der Zentralplatte skalierten, Wert bestraft.
+
+Um den Roboter dazu zu bringen, zum nächsten Zielpunkt zu laufen, muss die bisherige Belohnung für die Distanz ersetzt werden.
+Denkbar sind hierfür mehrere Ansätze.
+Eine Möglichkeit besteht darin, die Distanz zwischen Roboter und Zielpunkt zu bestimmen und mit der Distanz vor der letzten Aktion zu vergleichen.
+Die andere Möglichkeit wäre, die konkrete Bewegungsrichtung des Roboters zu bestimmen und ein Produkt mit der Geschwindigkeit zu bilden.
+Diese Möglichkeit würde eventuell eine feinere Gewichtung ermöglichen.
+Der erste Berechnungsansatz stellt hingegen eine wesentlich kleinere Veränderung zur Ausgangssituation dar, weshalb hierbei die möglichen Fehlerquellen besser eingegrenzt werden können.
+Es sollen beide Ansätze ausprobiert und miteinander verglichen werden.
+
+\subsection{Ergänzen von Hindernissen}
+Als letzter Schritt sollen noch Hindernisse ergänzt werden.
+Hierfür können einfache Kisten in Unity verwendet werden.
+Auch die Position dieser Hindernisse darf natürlich nicht von Trainingsalgorithmus auswendig gelernt werden, weshalb die Kisten in jeder Trainingsepisode zufällig platziert werden müssen.
+Wenn diesen Kisten nun Kollisionsmodelle hinzugefügt werden, kann der Roboter automatisch nicht mehr durch diese Hindernisse hindurchgehen.
+Die größte Herausforderung sollte auch hier die Adaption der Belohnungsfunktion werden, damit diese den Roboter nicht daran hindert, den Pfad zu verlassen.
+Gleichzeitig soll der Roboter auch nicht dazu animiert werden, den vorgegebenen Pfad großräumig zu verlassen.
+Die Anpassungsmöglichkeiten sind hier jedoch relativ eingeschränkt.
+Möglich wäre, bei jedem Simulationsschritt eine kleine Strafe zu vergeben.
+Diese könnte den Roboter animieren, nicht vor einem Hindernis stehenzubleiben, weil dies auf lange Sicht eine sehr schlechte Belohnung für ihn bedeutet.
+Andererseits ist es auch wichtig, eine hohe Entropie für den Roboter zu haben, damit dieser nach Wegen um das Hindernis sucht, anstatt dort im lokalen Maximum steckenzubleiben.
+
+% \begin{enumerate}
+%     \item alte Umgebug und Lernergebnisse des Roboters rekonstruieren; bringt Probleme mit sich, da einige der verwendeten Komponenten einer starken Entwicklung unterliegen/unterlagen, weshalb potenziell Anpassungen vorzunehmen sind, um die alte Umgebung weiterhin verwenden zu können oder die Umgebung auf einen aktuellen Stand der Technik migriert werden sollte, um von Verbesserungen im verwendeten Tooling zu profitieren und eine zukunftssichere Basis zu bieten
+%     \item Format entwerfen, wie dem Roboter ein Pfad mitgeteilt werden kann, dem dieser folgen soll; ein Pfad wird hierbei voraussichtlich aus mehreren Punkten bestehen, die sich entlang seines Verlaufs befinden
+%     \item Belohnungsfunktion anpassen; oben erwähnt Anpassungen hinsichtlich Laufstabilität; außerdem muss ein Abweichen vom direktesten möglichen Weg bestraft werden / zu einer ausbleibenden oder sehr geringen Belohnung führen
+    
+%     Bestrafung pro Schritt als mögliche Lösung; dies sollte dem Roboter ein inhärentes Interesse verleihen, möglichst schnell wieder auf den richtigen Pfad zurückzukehren und seine Aufgabe zu erledigen
+%     \item Hindernisse ergänzen; hierfür sollte die Kollisionserkennung der Unity-Engine verwendet werden können; mithilfe des Hinzufügens von Kollisionsmodellen für in der Simulationsumgebung platzierten Objekte, sollte der Roboter automatisch nicht mehr durch Hindernisse hindurch gehen können; größte Herausforderung sollte hier die Adaption der Belohnungsfunktion werden, damit diese den Roboter nicht daran hindert, den Pfad zu verlassen, das Hindernis zu umgehen und anschließend auf den Pfad zurückzukehren und eine deutlich gesteigerte Belohnung zu erhalten; gleichzeitig darf der Roboter sich nicht zu frei im Raum bewegen, sondern sollte so dicht wie möglich am vorgegebenen Pfad bleiben
+% \end{enumerate}
