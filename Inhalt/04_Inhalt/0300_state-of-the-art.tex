@@ -1,1 +1,66 @@
 \chapter{State of the Art}
+
+
+\enquote{Decentralized Deep Reinforcement Learning for a Distributed and
+Adaptive Locomotion Controller of a Hexapod Robot}
+Machine Learning in letzten Jahren erfolgreich auf viele Aufgaben angewandt
+DRL scheint noch Probleme zu haben bei der Anwendung für reale Roboter in \enquote{continuous control tasks}
+vor allem im Umgang mit unvorhergesehenen Situationen gibt es Probleme
+
+ursprünglich aus Bereich Computerspiele, deshalb viel in simulierten Umgebungen
+Transfer auf reale Probleme kann schwierig sein (\enquote{nature of such problems is fundamentally different from those in playing computer games})
+häufig wird zunächst die Simulation genutzt, um Grundsteine zu legen, die dann manuell feingeschliffen werden für eine bestimmte Aufgabe
+zwei fundamentale Probleme: soll den Reward ausnutzen, neigt deshalb zu Overfitting; reale Anwendungen deutlich mehr (Signal-)Rauschen, führt zu Hinterfragen von festem Markov Decision Process
+DRL tendiert dazu, Nischenlösungen zu finden, die meist nicht dazu in der Lage sind, adaptiv auf neue Situationen zu reagieren
+
+Tendenz geht dahin, hierarchische oder dezentralisierte Ansätze zu verfolgen
+hierarchisch erlaubt flexibles wechseln zwischen verschiedenen Unteraufgaben und Verhaltensweisen und somit auch Agieren in verschiedenen Kontexten möglich, bislang allerdings nur mit geringen Freiheitsgraden umgesetzt
+Fokus diesen Papers eher auf Störungen und Varietät in einem spezifischen Kontext mit einem spezifischen Verhalten
+
+PPO funktioniert allgemein gut mit kontinuierlichen Problemen ohne viel Hyperparameter-Tuning
+Median-Geschwindigkeit einer Episode ist der Reward
+\cite{schilling2020decentralized}
+
+
+
+\enquote{Adaptation of a Decentralized Controller to Curve Walking in a Hexapod Robot}
+bei Robotern mit mehreren Beinen aktuell drei vorherrschende Ansätze
+- Central Pattern Generators (CPGs)
+    - Oszilatorsysteme oder neurale Netze, die rhythmische Ausgabe erzeugen, ohne bestimmte Eingabe vorauszusetzen
+- lernende Ansätze
+- Sensorenbasierte Ansätze
+    - sind besser erklärbar verglichen mit lernenden Ansätzen
+    - normalerweise relativ anpassbar an sich verändernde Umgebungen
+
+sehen Potenzial in Verbindung mehrerer Ansätze
+\cite{simmering2023walknet}
+
+
+
+\enquote{DeepGait: Planning and Control of Quadrupedal Gaits using Deep Reinforcement Learning}
+Kombination von state-of-the-art modellbasierten Methoden der Bewegungsplanung und Reinforcement Learning
+Evaluieren die physikalische Machbarkeit anstatt physisch zu simulieren
+trennen Schrittplanung und Ausführung
+es können ganze Schritte evaluiert werden und nicht nur einzelne Frames einer Simulation
+Hauptproblem in Schrittplanung ist Kombinatorik, wegen der vielen möglichen Kombinationsmöglichkeiten für Kontaktpunkte mit dem Untergrund
+aber: Training auf späterem Terrain, allerdings relativ gute Verallgemeinerung
+Entropie ist extrem wichtig
+Weit bessere Resultate als andere Ansätze, gerade was das Überbrücken von Klüften angeht
+\cite{tsounis2020deepgait}
+
+
+
+\enquote{Learning and Adapting Agile Locomotion Skills by Transferring Experience}
+selbst einfache Aufgaben können sehr komplexe modulierte Reward-Funktionen benötigen, um die gezielten Bewegungen zu erhalten
+Wenn eine Bewegungsform sehr gut koordinierte Bewegungen voraussetzt, kann sehr schwer sein, wenn man von Null beginnt (-> nur sehr konkretes Verhalten kann Reward nach sich ziehen)
+Für ein spezifisches Zielproblem zu trainieren mag schwer sein, doch häufig ist es möglich, mit einfacheren Trainingsumgebungen zumindest relevante Daten zu erhalten, welche für einen Lernprozess von Interesse sind
+(Aus auf Hinterbeinen stehen wird Laufen)
+Häufig ist es schwierig, das in agileres Verhalten zu erweitern; insbesondere mit stark angepassten Reward-Funktionen, um das Verhalten überhaupt erst zu erzeugen
+=> Training Agiler Roboter Fähigkeiten erleichtern durch Transfer mit existierenden suboptimalen Fähigkeiten
+\cite{smith2023learning}
+
+\begin{figure}
+    \centering
+    \includegraphics[width = \textwidth]{Bilder/transfer-learning.pdf}
+    \caption{\cite{smith2023learning}}
+\end{figure}

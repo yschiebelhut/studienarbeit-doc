@@ -1,1 +1,41 @@
 \chapter{Einleitung}
+Die Robotik ist ein breites Forschungsfeld mit praktisch grenzenlosen Möglichkeiten.
+Die Fähigkeit, sich zu bewegen, ist dabei besonders spannend, da sie die Flexibilität der Einsatzmöglichkeiten für Roboter stark erhöht.
+Roboter mit Beinen stellen sich besonders heraus.
+Mit Inspirationen aus Mensch- und Tierreich bieten diese das Potenzial, sich in jedem denkbaren Terrain fortzubewegen, das auch für Menschen zugänglich ist.
+Im Vergleich zu anderen Fortbewegungsarten stellt die stabile Koordination von mehreren Beinen, die jeweils aus mehreren Gelenken bestehen, allerdings eine große Herausforderung für die technische Umsetzung dar.
+In der Regel sind für die Programmierung solcher Roboter eine sehr genaue Kenntnis der Maschine und deren Dynamik vonnöten.
+
+In den vergangenen Jahren wird deshalb verstärkt erforscht, wie Roboter sich diese Fähigkeiten selbstständig mittels Reinforcement Learning beibringen können.
+In einer vorangegangenen Studienarbeit wurden am Beispiel eines eigens dafür gebauten, vierbeinigen Roboters Möglichkeiten erforscht, um diesen mittels selbst gelernter Bewegungsabläufe möglichst effizient und schnell geradlinig nach vorne zu bewegen.
+Um den Trainingsprozess zu beschleunigen wurde dabei der Roboter in der Simulationsumgebung \enquote{Unity} nachgebaut und trainiert.
+
+Für das Erfüllen eines praktischen Nutzens ist es jedoch in der Regel nicht ausreichend, wenn sich ein Roboter nur in eine feste Richtung bewegen kann.
+Im Rahmen dieser Arbeit wird deshalb untersucht, wie dem Roboter beigebracht werden kann, einem gezielt übergebenen Pfad zu folgen.
+Weiterhin soll der Roboter dabei Hindernisse, die sich auf diesem Pfad befinden, automatisch umsteuern und anschließend wieder auf den vorgebenen Pfad zurückkehren. % ggf Absatz hier
+Dazu werden zunächst die Arbeitsumgebung und Ergebnisse der vorherigen Arbeit rekonstruiert.
+Anschließend wird diskutiert, welche Änderungen am Roboter und dessen Simulationsumgebung vorgenommen werden müssen, um die erweiterten Anforderungen grundsätzlich erfüllen zu können.
+Außerdem wird erläutert, wie die Aufgabe in sinnvolle Teilaufgaben gegliedert werden kann.
+Zur Bearbeitung dieser Teilaufgaben wird dann ein Konzept erarbeitet, welches im Anschluss in der Simulationsumgebung, unter Zuhilfenahme des ML-Agents-Toolkits, mittels des \acl{ppo}-Algorithmus ein Proof-of-Concept trainiert.
+
+% \begin{itemize}
+%     \item Roboter sind ein breites Forschungsfeld mit grenzenlosen Möglichkeiten
+%     \item Fähigkeit, sich zu bewegen ist besonders spannend für die Robotik, da es die Einsatzmöglichkeiten für Roboter stark erweitert
+%     \item dabei insbesondere mehrbeinige Roboter interessant
+%     \item mit Inspiration aus Menschen- und Tierreich sind diese fähig, sich in praktisch jedem denkbaren Terrain fortzubewegen
+%     \item im Vergleich zu anderen Fortbewegungsarten stellt stabile Koordination von Beinen jedoch eine große Herausforderung für die technische Umsetzung voraus
+%     \item in der Regel sehr genaue Kenntnis des Roboters und dessen Dynamik vonnöten
+    
+%     \item in den vergangenen Jahren wird deshalb verstärkt erforscht, wie Roboter sich diese Fähigkeit gegebenenfalls selbstständig mittels Reinforcement Learning beibringen können
+%     \item in einer vorangegangenen Studienarbeit wurden am Beispiel eines eigens dafür gebauten, vierbeinigen Roboters Möglichkeiten erforscht, um diesen möglichst effizient und schnell geradlinig nach vorne zu bewegen
+%     \item dabei wurde der Roboter in der Simulationsumgebung \enquote{Unity} trainiert
+%     \item für das Erfüllen eines praktischen Nutzens ist es jedoch in der Regel nicht ausreichend, wenn sich ein Roboter nur in eine Richtung bewegen kann
+%     \item im Rahmen dieser Arbeit wird deshalb untersucht, wie dem Roboter beigebracht werden kann, einem gezielt übergebenen Pfad zu folgen
+%     \item weiterhin soll der Roboter Hindernisse, die sich auf diesem Pfad befinden, automatisch umsteuern und anschließend wieder auf den vorgegebenen Pfad zurückkehren
+    
+%     \item dazu werden zunächst die Ergebnisse und Arbeitsumgebung der vorherigen Arbeit rekonstruiert
+%     \item anschließend wird diskutiert, welche Änderungen am Roboter und dessen Simulationsumgebung vorgenommen werden müssen, um die erweiterten Anforderungen grundsätzlich erfüllen zu können
+%     \item außerdem wird erläutert, wie die Aufgabe in sinnvolle Teilaufgaben gegliedert werden kann
+%     \item zur Bearbeitung dieser Teilaufgaben wird dann ein Konzept erarbeitet, welches im Anschluss in der Simulationsumgebung unter Zuhilfenahme des ML-Agents-Toolkits als Proof-of-Concept trainiert wird
+%     \item Proximal-Policy-Optimization
+% \end{itemize}
