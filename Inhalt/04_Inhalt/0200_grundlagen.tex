@@ -1,11 +1,185 @@
 \chapter{Grundlagen}
-\subsection{Machine Learning}
-Besonderer Fokus auf Reinforcement Learning und Begriffsdefinitionen
-Markov Decision Process
+\section{Machine Learning}
+Machine Learning ist eine Unterkategorie der künstlichen Intelligenz und bezeichnet einen automatisierten Prozess, der es Computern ermöglicht, eigenständig aus Trainingsdaten zu lernen und sich mit der Zeit zu verbessern, ohne explizit zur Lösung einer Aufgabe programmiert zu werden.
+Machine Learning Algorithmen können Muster in Daten entdecken und aus ihnen Lernen, um eigene Prognosen und Entscheidungen zu treffen.
 
-\subsection{Unity}
+In der Regel wird Machine Learning in folgende Teilbereiche untergliedert \cite{monkeylearnIntroductionMachine}:
+\begin{itemize}
+    \item \textbf{Supervised Learning:}
+    Ein Modell wird anhand von gelabelten Trainingsdaten trainiert.
+    Ein Datentupel besteht dabei aus einer Eingabe und der dazu gewollten Ausgabe.
+    Der Algorithmus sucht beim Training nach Zusammenhängen und Abhängigkeiten um anschließend Ausgaben für unbekannte Eingaben generieren zu können.
+    Üblicherweise wird Supervised Learning für Regressions- und Klassifikations-Probleme eingesetzt.
+
+    \item \textbf{Unsupervised Learning:}
+    Wird in der Regel für Clusterbildung von unbeschrifteten Trainingsdaten verwendet.
+    Der Algorithmus muss dabei selbstständig nach Mustern in den Daten suchen.
+    Unsupervised Learning kann dabei helfen, Einblicke in große Datensätzen zu erhalten, um etwa versteckte Trends zu entdecken.
+
+    \item \textbf{Semi-Supervised Learning:}
+    Für das Training werden beim Semi-Supervised Learning sowohl ein kleiner gelabelter, als auch ein großer ungelabelter Datensatz verwendet.
+    Dabei werden die Vorzüge von Supervised und Unsupervised Learning miteinander verbunden.
+    Interessant ist dies vor allem bei sehr großen Datensätzen (zum Beispiel bei Bild-Klassifizierung), da die Labelung der Daten in der Regel manuell erfolgen muss.
+
+    \item \textbf{Reinforcement Learning:}
+    Beim Reinforcement Learning kann ein Agent Aktionen tätigen, für die er entweder belohnt oder bestraft wird.
+    Es ist sein Ziel, selbstständig ein bestmögliches Verhalten zu lernen, um seine Belohnung zu maximieren.
+    Dabei werden keine Trainingsdaten verwendet.
+    Der Agent lernt ausschließlich aus seinen eigenen Erfahrungen und Fehlern.
+    Reinforcement Learning findet vor allem in den Bereichen Robotik und Videospiele Einsatz und wird auch in dieser Arbeit verwendet werden.
+\end{itemize}
+
+% \begin{itemize}
+%     \item Unterkategorie der künstlichen Intelligenz
+%     \item ML ist ein automatisierter Prozess, der ...
+%     \item ermöglicht Computern, eigenständig aus Trainingsdaten zu lernen und sich mit der Zeit zu verbessern, ohne explizit programmiert zu werden
+%     \item ML Algorithmen können Muster in Daten entdecken und aus ihnen lernen, um eigene Voraussagen und Entscheidungen zu treffen
+    
+%     \item verschiedene Teilbereiche
+%     \item Supervised Learning
+    
+%     Vorhersagen von gelabelten Trainingsdaten
+%     Datensatz: Input mit gewolltem Output
+%     \item Unsupervised Learning
+    
+%     Einblicke und Beziehungen in unbeschrifteten Daten
+%     Modelle müssen selbstständig Muster finden
+%     Clustering
+%     kann helfen, versteckte Muster oder Trends zu entdecken
+%     \item Semi-Supervised Learning
+    
+%     kleiner Teil gelabelter Daten, viele ungelabelte
+%     besonders für große Datensätze interessant, Bild-Klassifizierung
+%     \item Reinforcement Learning
+    
+%     vor allem im Bereich Robotik und Videospiele vertreten
+%     Agent kann Aktionen tätigen, für die er belohnt oder bestraft wird
+%     es ist sein Ziel, ein bestmögliches Verhalten zu lernen, um seine Belohnung zu maximieren
+%     keine Trainingsdaten, Lernen aus eigenen Fehlern
+%     in diesem Kontext besonders interessant wird verwendet
+
+%     \item \cite{monkeylearnIntroductionMachine}
+% \end{itemize}
+
+\subsection{Reinforcement Learning}
+Reinforcement Learning ist ein rechnerischer Ansatz, um zielorientierte Lern- und Entscheidungsprozesse zu verstehen und nachzubilden.
+Wie oben schon beschrieben, steht dabei ein \emph{Agent} im Zentrum, der aus der direkten Interaktion mit seiner \emph{Umgebung (engl. Environment)} lernt, ohne dabei eine beispielhafte Anleitung oder vollständige Modelle der Umgebung zu benötigen.
+Das formale Framework des \emph{\ac{mdp}} wird genutzt, um die Interaktion zwischen dem lernenden Agenten und seiner Umgebung zu definieren.
+\acp{mdp} sind eine mathematisch idealisierte Form eines Reinforcement Learning Problems, für die präzise, theoretische Aussagen getroffen werden können \cite[13]{sutton2018rlintro}.
+\autoref{fig:mdp} stellt die grundlegende Struktur eines Reinforcement Learning Problems dar.
+Die einzelnen Bestandteile der Abbildung werden nachfolgend erläutert.
+
+\begin{figure}
+    \centering
+    \includegraphics[width = 0.7\textwidth]{Bilder/MDP.pdf}
+    \caption{Die Interaktion von Agent und Umgebung als \ac{mdp} \cite[48]{sutton2018rlintro}}
+    \label{fig:mdp}
+\end{figure}
+
+Agenten haben explizite Ziele, können Aspekte ihrer Umgebung wahrnehmen und \emph{Aktionen} $A$ auswählen, um mit ihrer Umgebung zu interagieren und diese zu beeinflussen.
+Es wird davon ausgegangen, dass Reinforcement Learning diejenige Strategie des Machine Learning ist, die dem natürlichen Lernen von Menschen und Tieren am nächsten kommt.
+Viele zentrale Algorithmen des Reinforcement Learnings sind ursprünglich durch biologische Systeme inspiriert \cite[4]{sutton2018rlintro}.
+
+Besonders wichtig für Reinforcement Learning ist das Konzept von \emph{Zuständen} $S$.
+Ein Zustand kann dabei als eine Art Signal verstanden werden, das dem Agent Informationen über den Zustand der Umgebung liefert.
+Weiterhin definieren folgende Elemente ein Reinforcement Learning Problem:
+\begin{itemize}
+    \item \textbf{Policy} $\mathbf{\pi}$\textbf{:}
+    Die Policy definiert, wie sich der Agent zu einer gegebenen Zeit verhält.
+    Sie stellt ein Mapping zwischen den wahrgenommenen Zuständen der Umgebung und den durchzuführenden Aktionen dar.
+    Die Policy ist hinreichend, um das Verhalten des Agent zu bestimmen \cite[6]{sutton2018rlintro}.
+
+    \item \textbf{Reward-Signal} $\mathbf{R}$\textbf{:}
+    Das Reward-Signal definiert das Ziel eines Reinforcement Learning Problems.
+    Bei jedem \emph{Zeitschritt} $t$ sendet die Umgebung ein Skalar an den Agent.
+    Das einzige Ziel des Agent ist die Maximierung des kumulativen Rewards.
+    Der Reward ist die primäre Basis für Änderungen an der Policy \cite[6]{sutton2018rlintro}.
+
+    \item \textbf{Value-Funktion} $\mathbf{V}$\textbf{:}
+    Die Value-Funktion legt fest, was auf lange Sicht gut ist.
+    Der Value eines Zustands ist der kumulierte Reward, den ein Agent, ausgehend von diesem Zustand, in der Zukunft erwarten kann.
+    Values geben die langfristige Attraktivität von Zuständen an.
+    Die Wahl einer Aktion wird auf Basis der Value-Einschätzung des aktuellen Zustands getroffen.
+    Im Vergleich zum Reward-Signal sind Values allerdings deutlich schwerer zu bestimmen, da diese anhand einer Sequenz von Observationen des Agenten geschätzt werden müssen \cite[6]{sutton2018rlintro}.
+
+    \item \textbf{Modell der Umgebung (optional):}
+    Manche Reinforcement Learning Systeme nutzen ein Modell der Umgebung.
+    Dieses Modell erlaubt das Ziehen von Schlussfolgerungen über das Verhalten der Umgebung.
+    So kann etwa eine Voraussage des nächsten Resultierenden Zustands und Rewards, ausgehend von einem gegebenen Zustand und einer Aktion getroffen werden.
+    Genutzt werden diese Modelle zur Planung.
+    Es werden also Entscheidungen für eine Folge von Aktionen auf Basis möglicher zukünftiger Situationen getroffen, bevor diese tatsächlich erlebt werden.
+    Reinforcement Learning Methoden, die Modelle und Planung verwenden, werden als \emph{modell-basiert} bezeichnet.
+Im Gegensatz dazu stehen \emph{modell-freie} Methoden, welche explizit auf Basis von Trial-And-Error lernen \cite[7]{sutton2018rlintro}.
+\end{itemize}
+
+Beim Reinforcement Learning versucht der Agent, mit seinen ausgeführten Aktionen ein Reward-Signal zu maximieren.
+Dabei muss ein Kompromiss zwischen Nutzen des Gelerntem und Entdecken von Neuem gefunden werden.
+Es besteht das Dilemma, dass weder das eine, noch das andere uneingeschränkt verfolgt werden kann, ohne bei der Ausführung der Aufgabe zu scheitern, denn beim Entdecken muss der Agent auch schlechte Aktionen ausführen, für die er keinen Reward erhält.
+Entdeckt er jedoch nichts, weiß er auch nicht, welche Aktionen einen hohen Reward erzeugen \cite[3]{sutton2018rlintro}.
+
+% \begin{itemize}
+%     \item Markov Decision Processes sind eine mathematisch idealisierte Form eines Reinforcement Learning Problems für die präzise theoretische Aussagen getroffen werden können
+    
+%     \item rechnerischer Ansatz, um zielorientierte Lern- und Entscheidungsprozesse zu verstehen
+%     \item im Zentrum steht dabei ein Agent, der aus der direkten Interaktion mit seiner Umgebung lernt, ohne dabei eine beispielhafte Anleitung oder vollständige Modelle der Umgebung zu benötigen
+%     \item nutzt das formale Framework des Markov Decision Processes um die Interaktion zwischen dem lernenden Agenten und seiner Umgebung zu definieren
+%     \item Versuch, ein Reward-Signal zu maximieren
+%     \item Kompromiss zwischen Nutzen und Entdecken
+%     \item Dilemma: weder das eine, noch das andere kann uneingeschränkt verfolgt werden, ohne zu scheitern
+%     \item Agenten haben explizite Ziele, können Aspekte ihrer Umgebung wahrnehmen und Aktionen auswählen, um ihre Umgebung zu beeinflussen
+%     \item viele zentrale Algorithmen des Reinforcement Learning sind ursprünglich durch biologische Systeme beeinflusst
+    
+%     \item Konzept von Zuständen; ein Zustand ist eine Art Signal, das dem Agent Informationen über den Zustand der Umgebung liefert
+    
+%     Elemente:
+%     \item Policy
+    
+%     definiert, wie sich der Agent zu einer gegebenen Zeit verhält
+%     Mapping zwischen wahrgenommenen Zuständen der Umgebung und durchzuführenden Aktionen
+%     hinreichend um das Verhalten zu bestimmen
+%     \item Reward-Signal
+    
+%     definiert das Ziel eines Reinforcement Learning Problems
+%     bei jedem Zeitschritt sendet die Umgebung eine einzelne Nummer an den Agent
+%     das einzige Ziel des Agents ist die Maximierung des kommulativen Rewards
+%     primäre Basis für Änderungen an der Policy
+%     \item Value-Funktion
+    
+%     legt fest, was auf lange Sicht gut ist
+%     Value eines Zustands ist der kommulierte Reward, den ein Agent, ausgehend von diesem Zustand, in der Zukunft erwarten kann
+%     Values geben die langfristige Attraktivität eines Zustands an
+%     die Wahl einer Aktion wird auf Basis der Value-Einschätzung getroffen
+%     aber, Values sind deutlich schwerer zu bestimmen als Rewards
+%     \item optional Modell der Umgebung
+    
+%     manche Reinforcement Learning Systeme nutzen ein Modell der Umgebung
+%     erlaubt das Ziehen von Schlussfolgerungen über das Verhalten der Umgebung
+%     etwa: Voraussagen des nächsten resultierenden Zustands und Rewards ausgehend von einem Zustand und einer Aktion
+%     werden zur Planung genutzt, also Entscheiden für eine Folge von Aktionen auf Basis möglicher zukünftiger Situationen bevor diese tatsächlich erlebt werden
+%     Reinforcement Learning Methoden, die Modelle und Planung verwenden, werden als modell-basiert bezeichnet
+%     im Gegensatz dazu stehen modell-freie Methoden, also explizites Lernen auf Basis von trial-and-error 
+% \end{itemize}
+% Begriffsdefinitionen
+% Markov Decision Process
+
+
+\subsection{Deep Reinforcement Learning}
+\begin{itemize}
+    \item RL Algorithmen, wie andere Algorithmen auch haben Problem mit Komplexität: Speicherkomplexität, Rechenkomplexität und Probenkomplexität (letztere ML spezifisch)
+    \item Deep Learning, basierend auf den mächtigen Funktionsapproximationen und repräsentativen Lerneigenschaften von Deep Neural Networks, bietet neue Tools, um gegen diese Probleme anzukommen
+    \item wichtigste Eigenschaft von Deep Learning: Deep Neural Networks können automatisch kompakte, niedrig-dimensionale Repräsentationen von hoch-dimensionalen Daten finden
+    \item grundsätzlich eigentlich nur Deep Learning Algorithmen im Kontext von RL
+    \item macht Skalierung auf bislang unlösbare Entscheidungsprobleme möglich (z.B. hoch-dimensionale Zustands- und Aktionsräume)
+    \item 
+\end{itemize}
+
+\section{Unity}
 kurze Einführung zur Unity-Engine allgemein
-ML-Agents, Historie und Funktionsweise
 
-\subsection{Vektorgeometrie}
+\subsection{ML-Agents}
+Historie und Funktionsweise
+
+\section{Beschreibung der Projektbasis}
+
+\section{Vektorgeometrie}
 Abstandsbestimmung und Winkel zwischen Vektoren
