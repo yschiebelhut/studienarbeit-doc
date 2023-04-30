@@ -164,20 +164,84 @@ Entdeckt er jedoch nichts, weiß er auch nicht, welche Aktionen einen hohen Rewa
 
 
 \subsection{Deep Reinforcement Learning}
+Wie auch andere Algorithmen haben Reinforcement Learning Algorithmen Skalierungsprobleme hinsichtlich ihrer Komplexität.
+So kommt es beispielsweise zu Schwierigkeiten, die Value- oder die Policy-Funktion abzubilden, wenn die Dimension des Reinforcement Learning Problems zu groß wird.
+Insbesondere bei hoch-dimensionalen, kontinuierlichen Zustands- und Aktionsräumen ist dies der Fall.
+
+Die wichtigste Eigenschaft von Deep Learning sind Deep Neural Networks.
+Diese Netzwerke können automatisch kompakte, niedrig-dimensionale Repräsentationen von hoch-dimensionalen Daten finden.
+Beim Deep Reinforcement Learning werden Algorithmen und Technologien des Deep Learning in Reinforcement Learning eingebracht.
+Dabei werden Deep Neural Networks als Funktionsapproximatoren für die Value-Funktion oder die Policy verwendet.
+Diese neue Kombination macht eine Skalierung auf bislang unlösbare Entscheidungsprobleme möglich \cite{Arulkumaran2017}.
+
+% \begin{itemize}
+%     \item RL Algorithmen, wie andere Algorithmen auch haben Problem mit Komplexität: Speicherkomplexität, Rechenkomplexität und Probenkomplexität (letztere ML spezifisch)
+%     \item Deep Learning, basierend auf den mächtigen Funktionsapproximationen und repräsentativen Lerneigenschaften von Deep Neural Networks, bietet neue Tools, um gegen diese Probleme anzukommen
+%     \item wichtigste Eigenschaft von Deep Learning: Deep Neural Networks können automatisch kompakte, niedrig-dimensionale Repräsentationen von hoch-dimensionalen Daten finden
+%     \item grundsätzlich eigentlich nur Deep Learning Algorithmen im Kontext von RL
+%     \item macht Skalierung auf bislang unlösbare Entscheidungsprobleme möglich (z.B. hoch-dimensionale Zustands- und Aktionsräume)
+%     \item 
+% \end{itemize}
+
+\section{Unity3D}
+Unity3D ist eine plattformübergreifende Game Engine, die erstmal 2005 angekündigt wurde.
+Primärer Zweck der Unity Engine ist die Entwicklung von Videospielen für Computer, Konsolen und Mobilgeräte.
+Dabei ist Unterstützung für zwei- und dreidimensionale Grafik enthalten.
+VR Entwicklung ist ebenso möglich.\todo{Abkürzungen}
+Das Skripting innerhalb der Engine erfolgt primär in C\# \cite{freecodecamp.unityIntroduction}.
+Neben dem Einsatz in der Spieleentwicklung ist Unity jedoch auch für den Einsatz in anderen Branchen geeignet, so zum Beispiel in der Architektur oder der Forschung \cite[30]{waidner.2020}, wo mit Unity Simulationen der realen Welt erstellt werden können.
+Als Grafik-APIs werden unter anderem Direct3D (Windows), OpenGL (Linux, macOS, Windows) und WebGL unterstützt.
+Unity enthält einen Asset Store für die Entwickler-Community, über den Dritten das Hoch- und Herunterladen kommerzieller und freier Ressourcen (zum Beispiel Texturen, Modelle und Plugins) ermöglicht wird \cite{freecodecamp.unityIntroduction}.
+Der Einsatz von Unity für Projekte mit weniger als 100.000 \$ jährlichem Gewinn ist kostenlos \cite{unityPersonal}.
+
+% cross-plattform Game Engine
+% 2005 angekündigt
+% primär für die Entwicklung von Videospielen und Simulationen für Computer, Konsolen und Mobilgeräten
+% unterstützt 2D und 3D Grafik und C\# Skripting
+% auch für VR Entwicklung geeignet
+% Grafik APIs: unter anderem Direct3D (Windows), OpenGL (Linux, macOS, Windows), WebGL
+% Asset Store für Entwickler Community, Upload \& Download für kommerzielle und freie Ressourcen Dritter (Texturen, Modelle, Plugins)
+% \cite{freecodecamp.unityIntroduction}
+% wird auch außerhalb des Spielebereichs verwendet, so auch für Architektur und Forschung \cite[30]{waidner.2020}
+% für nicht wirtschaftliche Projekte kostenlos (Quelle Unity Projektseite)
+
+\subsection{Unity Machine Learning Agents Toolkit\todo{Abkürzung?}}
+Historie und Funktionsweise
+Lern-Algorithmen, die zur Verfügung stehen und welcher warum genutzt wird
+
+- quelloffenes Projekt, 2017 veröffentlicht
+- ermöglicht Spielen und Simulationen, als Trainingsumgebung für intelligente Agents zu dienen
+- bietet state-of-the-art, PyTorch-basierte Implementierungen gängiger Machine Learning Algorithmen, um ein einfaches Training mit möglichst geringer Einstiegshürde zu ermöglichen
+- es können auch eigene Algorithmen zum Training verwendet werden
+- unterstützt werden auch hier 2D, 3D und VR/AR
+- als Methoden für das Training werden unter anderem Reinforcement Learning, Imitation Learning und Neuroevolution unterstützt
+
+ML-Agents besteht aus folgenden high-level Komponenten:
 \begin{itemize}
-    \item RL Algorithmen, wie andere Algorithmen auch haben Problem mit Komplexität: Speicherkomplexität, Rechenkomplexität und Probenkomplexität (letztere ML spezifisch)
-    \item Deep Learning, basierend auf den mächtigen Funktionsapproximationen und repräsentativen Lerneigenschaften von Deep Neural Networks, bietet neue Tools, um gegen diese Probleme anzukommen
-    \item wichtigste Eigenschaft von Deep Learning: Deep Neural Networks können automatisch kompakte, niedrig-dimensionale Repräsentationen von hoch-dimensionalen Daten finden
-    \item grundsätzlich eigentlich nur Deep Learning Algorithmen im Kontext von RL
-    \item macht Skalierung auf bislang unlösbare Entscheidungsprobleme möglich (z.B. hoch-dimensionale Zustands- und Aktionsräume)
-    \item 
+    \item \textbf{Trainingsumgebung:}
+    Die Trainingsumgebung enthält eine Unity Szene und sämtliche Game Charaktere.
+    Die Unity Szene stellt dabei die Umgebung bereit, in der Agenten ihre Beobachtungen machen, handeln und lernen.
+    Mithilfe des ML-Agents Unity SDK kann jede Unity Szene in eine Trainingsumgebung transformiert werden, indem Game Objects als Agenten definiert werden.
+
+    \item \textbf{Python Low-Level API:}
+    Die Python API enthält ein low-level Python Interface, welches die Aufgabe besitzt, mit der Trainingsumgebung zu interagieren und diese zu manipulieren.
+    Diese Python API ist im Gegensatz zur Trainingsumgebung kein Teil von Unity, sondern kommuniziert mit Unity durch den Communicator.
+
+    \item \textbf{Externer Communicator:}
+    Der Communicator erfüllt die Aufgabe, die Python API mit der Trainingsumgebung zu verbinden.
+
+    \item \textbf{Python Trainer:}
+    In den Python Trainern sind alle Machine Learning Algorithmen enthalten, die ein Training der Agenten ermöglicht.
+    Dieses Paket stellt die zum Training genutzte CLI\todo{Abkürzung} (\code{mlagents-learn}) bereit.
 \end{itemize}
 
-\section{Unity}
-kurze Einführung zur Unity-Engine allgemein
 
-\subsection{ML-Agents}
-Historie und Funktionsweise
+- kam in der Vorgängerarbeit zum Einsatz
+
+\subsection{Bewertungskriterien?}
+Value Loss
+stetiges Training
+\cite{aurelian2018,untiyMetrics}
 
 \section{Beschreibung der Projektbasis}
 
