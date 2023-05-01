@@ -238,7 +238,7 @@ ML-Agents besteht aus folgenden high-level Komponenten \cite{mlagentsOverview} (
 
     \item \textbf{Python Trainer:}
     In den Python Trainern sind alle Machine Learning Algorithmen enthalten, die ein Training der Agenten ermöglicht.
-    Dieses Paket stellt die zum Training genutzte CLI\todo{Abkürzung} (\code{mlagents-learn}) bereit.
+    Dieses Paket stellt die zum Training genutzte \ac{cli} (\code{mlagents-learn}) bereit.
 \end{itemize}
 
 \begin{figure}
@@ -279,13 +279,67 @@ On-policy Algorithmen haben in der Regel einen deutlich stabileren Lernfortschri
 Andererseits brauchen on-policy Algorithmen in der Regel deutlich mehr Trainingsschritte, um nennenswerte Ergebnisse zu erzielen \cite{mlagentsOverview}.
 Im Zuge der Vorgängerarbeit wurde mit beiden Algorithmen gearbeitet, mit dem Ergebnis, dass der \ac{ppo}-Algorithmus auch für das konkrete Problem im Rahmen dieser Studienarbeit deutlich bessere Resultate liefert \cite[48]{waidner.2020}.
 
-\subsection{Hyperparameter}
+\subsection{Training und Hyperparameter}
+\label{sec:training}
+Wenn die Trainingsumgebung erstellt ist, kann mit dem Training der Agenten begonnen werden.
+Der Einstiegspunkt hierzu ist immer die \ac{cli} \code{mlagents-learn}, welche Teil der Python-Umgebung von ML-Agents ist.
+Das Training kann dann entweder direkt im Unity-Editor oder mittels einer kompilierten Umgebung erfolgen.
+Falls letztere verwendet werden soll, kann sie mittels des Parameters \code{--env=<env\_name>} spezifiziert werden.
+Einem Training sollte in der Regel auch ein Run-Identifier gegeben werden (\code{--run-id=<run-identifier>}).
+Über diesen können die Ergebnisse besser zugeordnet werden und es ist beispielsweise auch möglich, ein unterbrochenes Training wiederaufzunehmen \cite{mlagentsTraining}.
 
+Optional kann das Training mithilfe einer YAML-Datei konfiguriert werden.
+In dieser können sowohl allgemeine Aspekte des Trainingsvorgangs festgelegt werden (etwa wie viele Trainingsschritte durchgeführt werden sollen), als auch Hyperparameter eingestellt werden, die spezifisch für das jeweils durchzuführende Training sind.
+Für ein Training mit dem \ac{ppo}-Algorithmus sind vor allem die folgenden Hyperparameter von Bedeutung \cite{mlagentsHyperparameter}:
+\begin{itemize}
+    \item \textbf{batch\_size:} Anzahl der Erfahrungen in jeder Iteration des Gradientenabstiegs.
+    \item \textbf{buffer\_size:} Anzahl der Erfahrungen, die gesammelt werden, bevor das Policy Modell aktualisiert wird, also wie viele Erfahrungen gesammelt werden, bevor gelernt wird.
+    \item \textbf{learning\_rate:} Initiale Lernrate für den Gradientenabstieg.
+    Damit kann gesteuert werden, wie schnell das Modell am Anfang lernt.
+    Sollte so groß wie möglich gewählt werden, um ein schnelles Training durchzuführen.
+    Wenn das Training jedoch instabil verläuft, sollte dieser Wert verringert werden.
+    \item \textbf{learning\_rate\_schedule:} Gibt an, wie die Lernrate über die Zeit verändert wird.
+    Für \ac{ppo} wird diese in der Regel linear verringert, damit das Training möglichst stabil konvergiert.
+    \item \textbf{beta:} Faktor um die Entropie des Trainingsprozesses zu regulieren.
+    Die Entropie sollte gegenläufig zum Reward langsam im Laufe des Trainingsprozesses fallen.
+    Mit einer Erhöhung des beta-Werts wird die Entropie länger auf einem höheren Level gehalten und umgekehrt.
+    \item \textbf{epsilon:} Begrenzt die Veränderung der Policy während des Trainingsprozesses.
+    Wird epsilon klein gewählt, so werden Änderungen an der Policy kleinschrittiger vorgenommen, was das Training stabilisiert, aber auch mehr Trainingsschritte benötigt.
+    \item \textbf{lambd:} Parameter zur Regularisierung während der Berechnung des \enquote{Generalized Advantage Estimate}.
+    Prinzipiell gibt der Parameter an, wie stark der Agent auf seine aktuelle Schätzung des Values aufbaut, während die Schätzung des Values aktualisiert wird.
+    Bei einem niedrigen Wert von lambd liegt das Gewicht beim aktuell geschätzten Value (der einen hohen Bias haben kann) und bei einem hohen Wert werden die eigentlichen Rewards höher gewichtet (welche jedoch einer hohen Varianz unterliegen können).
+    \item \textbf{num\_epoch:} Wie viele Durchläufe durch die gesammelten Erfahrungen gemacht werden können, wenn ein Gradientenabstieg durchgeführt wird.
+    Ein kleiner Wert führt zu stabilerem, aber auch langsamerem Training.
+    \item \textbf{gamma:} Diskontinuierungsfaktor für zukünftige Rewards.
+    Gibt an, wie weit der Agent bei Spekulation auf mögliche Rewards in die Zukunft \enquote{denken} soll.
+    \item \textbf{hidden\_units:} Anzahl der Neuronen in den Hidden Layers des zu trainierenden Neural Network.
+    Sollte mit der Komplexität des Problems nach oben skaliert werden.
+    \item \textbf{num\_layers:} Anzahl der Hidden Layers des Neural Networks.
+    Analog zur Anzahl der Neuronen sollte dieser Wert mit der Komplexität des Problems skaliert werden.
+    Weniger Layer trainieren in der Regel schneller, können aber unter Umständen zur Abbildung komplexer Probleme nicht ausreichen.
+    \item \textbf{normalize:} Gibt an, ob die eingegebenen Observation Vektoren normalisiert werden.
+    Bei Problemen mit komplexen, kontinuierlichen Beobachtungs- und Aktionsräumen kann dies hilfreich sein.
+\end{itemize}
 
-\subsection{Bewertungskriterien?}
-Value Loss
-stetiges Training
-\cite{aurelian2018,untiyMetrics}
+Die in der Regel verwendeten Befehle zur Initiierung des Trainings folgen grundlegend folgendem Aufbau \cite{mlagentsTraining}: \\
+\code{mlagents-learn <yaml-config> --env=<env\_name>  --run-id=<run-id>}
+
+\subsection{Bewertungskriterien}
+Der Verlauf des Trainings kann mittels des Tools \emph{Tensorboard} überwacht werden.
+Tensorboard startet dabei einen lokalen Webserver, der Auswertungen der Trainingsdaten im Browser darstellt.
+Um das Ergebnis eines Trainings objektiv zu bewerten, muss natürlich das eigentliche, resultierende Modell betrachtet werden, jedoch geben auch einige der in Tensorboard dargestellten Metriken frühzeitig Aufschluss über den potenziellen Erfolg des Trainings.
+Allen voran steht der \emph{Kumulierte Reward}.
+Dieser Wert gibt den mittleren kumulierten Reward innerhalb einer Episode von allen Agenten an.
+Natürlich hängt der Verlauf dieser Kurve stark davon ab, wie die individuelle Reward-Funktion gewählt wird, allerdings sollte sich dieser Wert bei einem erfolgreichen Training stetig erhöhen.
+Die \emph{Episodenlänge} zeigt an, wie lange die Episoden im Mittel gedauert haben.
+Wird die Umgebung etwa beim unwiderruflichen Scheitern eines Agenten zurückgesetzt, so kann hier abgelesen werden, wie lange es im Mittel dauert, bis es zu einem fatalen Scheitern kommt.
+\emph{Policy Loss} hängt davon ab, wie stark die Policy sich verändert.
+Der Betrag dieser Funktion sollte im Laufe des Trainings abnehmen, wenn die Policy zu einer stabilen Funktion konvergiert.
+Schließlich gibt \emph{Value Loss} an, wie stark die vorhergesagten Values von den tatsächlich erhaltenen Rewards abweichen.
+Bei einem erfolgreichen Training sollte dieser Wert zu Beginn ansteigen und dann im Anschluss gegen einen niedrigen Wert konvergieren \cite{aurelian2018,untiyMetrics}.
+
+Weiterhin werden in Tensorboard die Hyperparameter im Laufe der Zeit dargestellt.
+Entsprechend den Beschreibungen in \autoref{sec:training} können auch diese Werte live mitverfolgt und gegebenenfalls korrigiert werden.
 
 \section{Beschreibung der Projektbasis}
 
