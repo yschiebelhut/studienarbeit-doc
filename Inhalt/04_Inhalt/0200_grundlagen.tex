@@ -205,20 +205,26 @@ Der Einsatz von Unity für Projekte mit weniger als 100.000 \$ jährlichem Gewin
 % wird auch außerhalb des Spielebereichs verwendet, so auch für Architektur und Forschung \cite[30]{waidner.2020}
 % für nicht wirtschaftliche Projekte kostenlos (Quelle Unity Projektseite)
 
-\subsection{Unity Machine Learning Agents Toolkit\todo{Abkürzung?}}
-Historie und Funktionsweise
-Lern-Algorithmen, die zur Verfügung stehen und welcher warum genutzt wird
+\subsection{Unity Machine Learning Agents Toolkit}
+Das Unity Machine Learning Agents Toolkit (kurz \emph{ML-Agents}) ist ein von Unity Technologies entwickeltes, quelloffenes Projekt, welches 2017 erstmals als Testversion veröffentlicht wurde, seitdem sehr aktiv weiterentwickelt wird und inzwischen die Produktreife erreicht hat.
+ML-Agents ermöglicht es Spiele und Simulationen, als Trainingsumgebung für intelligente Agenten zu dienen.
+Dabei werden State-of-the-Art, PyTorch-basierte Implementierungen gängiger Machine Learning Algorithmen angeboten, um ein einfaches Training mit möglichst geringer Einstiegshürde zu ermöglichen.
+Alternativ können auch eigene Algorithmen zum Training verwendet werden.
+Wie Unity selbst auch ist ML-Agents für den Einsatz in 2D-, 3D- und VR/AR-Umgebungen geeignet.
+Als Trainingsmethoden werden unter anderem Reinforcement Learning, Imitation Learning und Neuroevolution unterstützt \cite{mlagentsDocHome}.
 
-- quelloffenes Projekt, 2017 veröffentlicht
-- ermöglicht Spielen und Simulationen, als Trainingsumgebung für intelligente Agents zu dienen
-- bietet state-of-the-art, PyTorch-basierte Implementierungen gängiger Machine Learning Algorithmen, um ein einfaches Training mit möglichst geringer Einstiegshürde zu ermöglichen
-- es können auch eigene Algorithmen zum Training verwendet werden
-- unterstützt werden auch hier 2D, 3D und VR/AR
-- als Methoden für das Training werden unter anderem Reinforcement Learning, Imitation Learning und Neuroevolution unterstützt
+% - quelloffenes Projekt, 2017 veröffentlicht
+% - ermöglicht Spielen und Simulationen, als Trainingsumgebung für intelligente Agents zu dienen
+% - bietet state-of-the-art, PyTorch-basierte Implementierungen gängiger Machine Learning Algorithmen, um ein einfaches Training mit möglichst geringer Einstiegshürde zu ermöglichen
+% - es können auch eigene Algorithmen zum Training verwendet werden
+% - unterstützt werden auch hier 2D, 3D und VR/AR
+% - als Methoden für das Training werden unter anderem Reinforcement Learning, Imitation Learning und Neuroevolution unterstützt
+% \todo{ausformulieren}
+% \cite{mlagentsDocHome}
 
-ML-Agents besteht aus folgenden high-level Komponenten:
+ML-Agents besteht aus folgenden high-level Komponenten \cite{mlagentsOverview} (siehe \autoref{fig:learning-environment-basic}):
 \begin{itemize}
-    \item \textbf{Trainingsumgebung:}
+    \item \textbf{Trainingsumgebung (Learning Environment):}
     Die Trainingsumgebung enthält eine Unity Szene und sämtliche Game Charaktere.
     Die Unity Szene stellt dabei die Umgebung bereit, in der Agenten ihre Beobachtungen machen, handeln und lernen.
     Mithilfe des ML-Agents Unity SDK kann jede Unity Szene in eine Trainingsumgebung transformiert werden, indem Game Objects als Agenten definiert werden.
@@ -235,8 +241,46 @@ ML-Agents besteht aus folgenden high-level Komponenten:
     Dieses Paket stellt die zum Training genutzte CLI\todo{Abkürzung} (\code{mlagents-learn}) bereit.
 \end{itemize}
 
+\begin{figure}
+    \centering
+    \includegraphics[width = 0.5\textwidth]{Bilder/ml-agents/learning_environment_basic.png}
+    \caption{Vereinfachtes Block-Diagramm des ML-Agents-Toolkits \cite{mlagentsOverview}}
+    \label{fig:learning-environment-basic}
+\end{figure}
 
-- kam in der Vorgängerarbeit zum Einsatz
+Die Trainingsumgebung wird durch zwei enthaltene Unity-Komponenten organisiert \cite{mlagentsOverview}.
+\begin{itemize}
+    \item \textbf{Agents} sind an ein Unity GameObject geknüpft (beliebiger Charakter innerhalb einer Szene).
+    Sie sind gleichzusetzen mit dem Agent eines Reinforcement Learning Problems.
+    Agents generieren die Observations (Beobachtungen) des GameObjects, welche dem Reinforcement Learning Algorithmus zugeführt werden, führen die vom Algorithmus empfangenen Aktionen aus und weisen den Reward zu.
+    Jeder Agent ist mit einem Behavior verknüpft.
+
+    \item \textbf{Behaviors} (Verhalten) definieren Attribute des Agenten, so auch die Anzahl der Aktionen, die der Agent entgegennehmen kann.
+    Ein Behavior kann als Funktion verstanden werden, welche Observations und Reward des Agents als Eingabeparameter enthält und auszuführende Aktionen zurückliefert.
+    Behaviors werden in drei Typen unterschieden: \emph{Learning}, \emph{Heuristic} und \emph{Inference}.
+    Learning Behaviors sind noch nicht definiert, können aber trainiert werden.
+    Heurisitc Behaviors werden mittels manuell implementierter Regeln im Quellcode definiert.
+    Inference Behavior werden von trainierten Neural-Network-Dateien (entsprechen der finalen, trainierten Policy) repräsentiert.
+    Nachdem ein Learning Behavior trainiert wurde, wird es zum Inference Behavior.
+\end{itemize}
+Herausstellenswert hierbei ist, dass ML-Agents die Möglichkeit bietet, mehrere Agents in einer Trainingsumgebung zu platzieren, die jedoch mit demselben Behavior verknüpft sein können.
+Dies kann dafür genutzt werden, das Training zu parallelisieren und damit zu beschleunigen.
+
+\subsection{Reinforcement Learning Algorithmen}
+Von ML-Agents werden zwei Trainingsalgorithmen bereitgestellt, die sich dem (Deep) Reinforcement Learning zuordnen lassen.
+Dies sind \acf{ppo} und \acf{sac} \cite{mlagentsOverview}.
+In \cite{waidner.2020} wurden diese Algorithmen bereits verglichen.
+\ac{ppo} ist der Standardalgorithmus von ML-Agents, da er sich, verglichen mit vielen anderen Reinforcement Learning Algorithmen, als für den allgemeinen Einsatz besser geeignet gezeigt hat \cite{schulman2017proximal,openaiPPO}.
+\ac{ppo} ist ein on-policy Algorithmus.
+Das bedeutet, dass in jeder Iteration des Lernvorgangs nur aus Erfahrungen gelernt wird, die mit der aktuellen Version der Policy gesammelt wurden.
+\ac{sac} hingegen ist ein off-policy Algorithmus und lernt somit aus allen Erfahrungen, die er jemals während des gesamten Trainingsvorgangs gesammelt hat \cite{suran2020,sagar2020}.
+Daraus ergeben sich für beide Algorithmen unterschiedliche Vor- und Nachteile.
+On-policy Algorithmen haben in der Regel einen deutlich stabileren Lernfortschritt, als off-policy Algorithmen.
+Andererseits brauchen on-policy Algorithmen in der Regel deutlich mehr Trainingsschritte, um nennenswerte Ergebnisse zu erzielen \cite{mlagentsOverview}.
+Im Zuge der Vorgängerarbeit wurde mit beiden Algorithmen gearbeitet, mit dem Ergebnis, dass der \ac{ppo}-Algorithmus auch für das konkrete Problem im Rahmen dieser Studienarbeit deutlich bessere Resultate liefert \cite[48]{waidner.2020}.
+
+\subsection{Hyperparameter}
+
 
 \subsection{Bewertungskriterien?}
 Value Loss
