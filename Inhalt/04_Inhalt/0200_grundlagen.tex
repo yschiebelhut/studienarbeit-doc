@@ -415,4 +415,85 @@ Als Ursache fällt die Vermutung auf Hardwarefehler, da der Roboter -- in der Lu
 Wird der Roboter jedoch auf den Boden gestellt, knickt er unter seinem Gewicht sofort ein und kann die gelernte Laufmethodik nicht anwenden \cite[58]{waidner.2020}.
 
 \section{Vektorgeometrie}
-Abstandsbestimmung und Winkel zwischen Vektoren
+Da Vektoren im dreidimensionalen Raum ein essenzieller Bestandteil der Arbeit mit Unity sind, sollen die dafür wichtigen Konzepte hier kurz vorgestellt werden.
+
+Grundsätzlich gesehen ist ein Vektor ein mathematisches Konstrukt und hat eine Länge und eine Richtung.
+Im Gegensatz zu Punkten geben Vektoren keinen festen Ort an, sondern beschreiben den Weg von einem Punkt zu einem anderen \cite[6]{kohn2012}.
+Dabei besitzt ein Vektor für jede Dimension eine Komponente.
+Trotzdem ist eine Ortsangabe mit einem Vektor möglich (und wird in Unity für die Game Objekte verwendet).
+Dieses Konstrukt besteht aus einem Vektor, der an einem bestimmten Punkt beginnt und nennt sich Ortsvektor \cite[21]{kohn2012}.
+Im Weiteren Verlauf wird davon ausgegangen, dass Ortsvektoren dem Koordinatenursprung entstammen.
+
+\autoref{fig:weg} stellt die Ortsvektoren $\overrightarrow{a}$ und $\overrightarrow{b}$ dar, welche vom Koordinatenursprung auf die Punkte $A$ und $B$ zeigen.
+Der Vektor $\overrightarrow{AB}$ stellt den Vektor dar, der von $A$ zu $B$ führt.
+Addiert man mehrere Vektoren, so erhält man den daraus resultierenden Vektor \cite[11]{kohn2012}.
+Wie in \autoref{eqn:weg} ersichtlich ist, kann durch Addition von $\overrightarrow{a}$ und $\overrightarrow{AB}$ wiederum $\overrightarrow{b}$ bestimmt werden.
+Mittels eines Umstellens der Gleichung kann aber auch aus den beiden Ortsvektoren der Verbindungsvektor $\overrightarrow{AB}$ bestimmt werden \cite[12]{kohn2012}.
+
+\begin{figure}
+    \centering
+    \begin{tikzpicture}
+        \coordinate[label=right:$A$] (A) at (3,2.5);
+        \coordinate[label=left:$B$] (B) at (2,5);
+
+        \draw[-latex] (0,0) -- node[below] {$\overrightarrow{a}$} (A);
+        \draw[-latex] (0,0) -- node[left] {$\overrightarrow{b}$} (B);
+        \draw[-latex, dashed] (A) -- node[right] {$\overrightarrow{AB}$} (B);
+    \end{tikzpicture}
+    \caption{Vektor von Punkt $A$ zu Punkt $B$}
+    \label{fig:weg}
+\end{figure}
+
+Für die Länge eines Vektors (auch Norm genannt), gibt es verschiedene Definitionen.
+Die hier relevante und erklärte ist die sogenannte \emph{euklidische Norm}.
+Zur Bestimmung dieser wird die Summe aus den Quadraten der Komponenten gebildet und aus dieser Summe im Anschluss die Quadratwurzel gezogen \cite[30]{kohn2012} (\autoref{eqn:laenge3d}).
+Der Hintergrund liegt hierbei im Satz des Pythagoras, was ersichtlich wird, wenn man sich die Zerlegung eines zweidimensionalen Vektors in seine einzelnen Komponenten anschaut (\autoref{fig:zerlegung}, \autoref{eqn:laenge2d}).
+
+
+\begin{equation}
+    \label{eqn:weg}
+    \overrightarrow{a} + \overrightarrow{AB} = \overrightarrow{b}
+    \quad \Rightarrow \quad
+    \overrightarrow{AB} = \overrightarrow{b} - \overrightarrow{a}
+\end{equation}
+
+\begin{figure}
+    \centering
+    \begin{tikzpicture}
+        \draw[-latex, dashed] (0,0) -- node[below] {$\overrightarrow{x}$} (5,0);
+        \draw[-latex, dashed] (5,0) -- node[right] {$\overrightarrow{y}$} (5,5);
+        \draw[-latex] (0,0) -- node[left] {$\overrightarrow{v}$} (5,5);
+    \end{tikzpicture}
+    \caption{Zerlegung des zweidimensionalen Vektors $\overrightarrow{v}$}
+    \label{fig:zerlegung}
+\end{figure}
+
+\begin{equation}
+    \label{eqn:laenge2d}
+    \overrightarrow{v} = \begin{pmatrix}x \\ y\end{pmatrix}
+    \quad \Rightarrow \quad
+    |\overrightarrow{v}| = \sqrt{x^2 + y^2}
+\end{equation}
+
+\begin{equation}
+    \label{eqn:laenge3d}
+    \overrightarrow{v} = \begin{pmatrix}x \\ y \\ z\end{pmatrix}
+    \quad \Rightarrow \quad
+    |\overrightarrow{v}| = \sqrt{x^2 + y^2 + z^2}
+\end{equation}
+
+Dadurch, dass Vektoren eine Richtung darstellen, ist es ebenfalls möglich, den Winkel $\beta$ zu bestimmen, der zwischen diesen Vektoren liegt, wenn man sie aufeinander stellt.
+Dafür wird zunächst das sogenannte Skalarprodukt der beiden Vektoren gebildet \cite[45]{kohn2012} (\autoref{eqn:skalarprodukt}).
+Anschließend wird das Skalarprodukt durch das Produkt der Längen beider Vektoren geteilt und in die $\arccos$ Funktion eingesetzt \cite[60]{kohn2012} (\autoref{eqn:zwischenwinkel}).
+
+\begin{equation}
+    \label{eqn:skalarprodukt}
+    \overrightarrow{v} \cdot \overrightarrow{w} =
+    \begin{pmatrix}v_1 \\ v_2 \\ v_3\end{pmatrix} \cdot \begin{pmatrix}w_1 \\ w_2 \\ w_3\end{pmatrix} =
+    v_1 \cdot w_1 + v_2 \cdot w_2 + v_3 \cdot w_3
+\end{equation}
+
+\begin{equation}
+    \label{eqn:zwischenwinkel}
+    \beta = \arccos(\frac{\overrightarrow{v} \cdot \overrightarrow{w}}{|\overrightarrow{v}| \cdot |\overrightarrow{w}|})
+\end{equation}
