@@ -1,13 +1,14 @@
 \chapter{Einleitung}
+\autoref{sec:einleitung}
 Die Robotik ist ein breites Forschungsfeld mit praktisch grenzenlosen Möglichkeiten.
 Die Fähigkeit, sich zu bewegen, ist dabei besonders spannend, da sie die Flexibilität der Einsatzmöglichkeiten für Roboter stark erhöht.
 Roboter mit Beinen stellen sich besonders heraus.
-Mit Inspirationen aus Mensch- und Tierreich bieten diese das Potenzial, sich in jedem denkbaren Terrain fortzubewegen, das auch für Menschen zugänglich ist.
+Mit Inspirationen aus Mensch- und Tierreich bieten diese das Potenzial, sich in jedem denkbaren Terrain fortzubewegen, das auch für Menschen zugänglich ist oder sogar in Gebiete vorzudringen, die uns verwehrt bleiben.
 Im Vergleich zu anderen Fortbewegungsarten stellt die stabile Koordination von mehreren Beinen, die jeweils aus mehreren Gelenken bestehen, allerdings eine große Herausforderung für die technische Umsetzung dar.
 In der Regel sind für die Programmierung solcher Roboter eine sehr genaue Kenntnis der Maschine und deren Dynamik vonnöten.
 
 In den vergangenen Jahren wird deshalb verstärkt erforscht, wie Roboter sich diese Fähigkeiten selbstständig mittels Reinforcement Learning beibringen können.
-In einer vorangegangenen Studienarbeit wurden am Beispiel eines eigens dafür gebauten, vierbeinigen Roboters Möglichkeiten erforscht, um diesen mittels selbst gelernter Bewegungsabläufe möglichst effizient und schnell geradlinig nach vorne zu bewegen.
+In einer vorangegangenen Studienarbeit wurden am Beispiel eines eigens dafür gebauten, spinnenartigen, vierbeinigen Roboters Möglichkeiten erforscht, um diesen mittels selbst gelernter Bewegungsabläufe möglichst effizient und schnell geradlinig nach vorne zu bewegen.
 Um den Trainingsprozess zu beschleunigen wurde dabei der Roboter in der Simulationsumgebung \enquote{Unity} nachgebaut und trainiert.
 
 Für das Erfüllen eines praktischen Nutzens ist es jedoch in der Regel nicht ausreichend, wenn sich ein Roboter nur in eine feste Richtung bewegen kann.
@@ -17,6 +18,7 @@ Dazu werden zunächst die Arbeitsumgebung und Ergebnisse der vorherigen Arbeit r
 Anschließend wird diskutiert, welche Änderungen am Roboter und dessen Simulationsumgebung vorgenommen werden müssen, um die erweiterten Anforderungen grundsätzlich erfüllen zu können.
 Außerdem wird erläutert, wie die Aufgabe in sinnvolle Teilaufgaben gegliedert werden kann.
 Zur Bearbeitung dieser Teilaufgaben wird dann ein Konzept erarbeitet, welches im Anschluss in der Simulationsumgebung, unter Zuhilfenahme des ML-Agents-Toolkits, mittels des \acl{ppo}-Algorithmus ein Proof-of-Concept trainiert.
+Anhand der Ergebnisse dieses Trainingsprozesses wird evaluiert, ob das entwickelte Konzept einen erfolgversprechenden Lösungsansatz darstellt und welche Verbesserungen vorgenommen werden sollten.
 
 % \begin{itemize}
 %     \item Roboter sind ein breites Forschungsfeld mit grenzenlosen Möglichkeiten

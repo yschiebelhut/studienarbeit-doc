@@ -1,4 +1,9 @@
 \chapter{Grundlagen}
+Wie in \autoref{sec:einleitung} bereits angedeutet, werden in dieser Arbeit Methoden aus dem Bereich der künstlichen Intelligenz verwendet, um das gestellte Problem zu lösen.
+Zum Verständnis der Ausarbeitung werden nachfolgend die wichtigsten Grundlagen erläutert.
+Weiterhin wird kurz auf die zur Simulation verwendete Software eingegangen.
+Im Rahmen der konzeptuellen Planung wird auch von mathematischen Grundlagen des dreidimensionalen Raums Gebrauch gemacht, welche deshalb ebenfalls kurz beleuchtet werden sollen.
+
 \section{Machine Learning}
 Machine Learning ist eine Unterkategorie der künstlichen Intelligenz und bezeichnet einen automatisierten Prozess, der es Computern ermöglicht, eigenständig aus Trainingsdaten zu lernen und sich mit der Zeit zu verbessern, ohne explizit zur Lösung einer Aufgabe programmiert zu werden.
 Machine Learning Algorithmen können Muster in Daten entdecken und aus ihnen Lernen, um eigene Prognosen und Entscheidungen zu treffen.
@@ -8,7 +13,7 @@ In der Regel wird Machine Learning in folgende Teilbereiche untergliedert \cite{
     \item \textbf{Supervised Learning:}
     Ein Modell wird anhand von gelabelten Trainingsdaten trainiert.
     Ein Datentupel besteht dabei aus einer Eingabe und der dazu gewollten Ausgabe.
-    Der Algorithmus sucht beim Training nach Zusammenhängen und Abhängigkeiten um anschließend Ausgaben für unbekannte Eingaben generieren zu können.
+    Der Algorithmus sucht beim Training nach Zusammenhängen und Abhängigkeiten um anschließend, die gelernten Daten generalisierend, Ausgaben für unbekannte Eingaben generieren zu können.
     Üblicherweise wird Supervised Learning für Regressions- und Klassifikations-Probleme eingesetzt.
 
     \item \textbf{Unsupervised Learning:}
@@ -26,7 +31,7 @@ In der Regel wird Machine Learning in folgende Teilbereiche untergliedert \cite{
     Es ist sein Ziel, selbstständig ein bestmögliches Verhalten zu lernen, um seine Belohnung zu maximieren.
     Dabei werden keine Trainingsdaten verwendet.
     Der Agent lernt ausschließlich aus seinen eigenen Erfahrungen und Fehlern.
-    Reinforcement Learning findet vor allem in den Bereichen Robotik und Videospiele Einsatz und wird auch in dieser Arbeit verwendet werden.
+    Reinforcement Learning findet vor allem in den Bereichen Robotik und Videospiele Einsatz und wird auch in dieser Arbeit verwendet.
 \end{itemize}
 
 % \begin{itemize}
@@ -64,7 +69,7 @@ In der Regel wird Machine Learning in folgende Teilbereiche untergliedert \cite{
 \subsection{Reinforcement Learning}
 Reinforcement Learning ist ein rechnerischer Ansatz, um zielorientierte Lern- und Entscheidungsprozesse zu verstehen und nachzubilden.
 Wie oben schon beschrieben, steht dabei ein \emph{Agent} im Zentrum, der aus der direkten Interaktion mit seiner \emph{Umgebung (engl. Environment)} lernt, ohne dabei eine beispielhafte Anleitung oder vollständige Modelle der Umgebung zu benötigen.
-Das formale Framework des \emph{\ac{mdp}} wird genutzt, um die Interaktion zwischen dem lernenden Agenten und seiner Umgebung zu definieren.
+Das formale Framework des \emph{\acf{mdp}} wird genutzt, um die Interaktion zwischen dem lernenden Agenten und seiner Umgebung zu definieren.
 \acp{mdp} sind eine mathematisch idealisierte Form eines Reinforcement Learning Problems, für die präzise, theoretische Aussagen getroffen werden können \cite[13]{sutton2018rlintro}.
 \autoref{fig:mdp} stellt die grundlegende Struktur eines Reinforcement Learning Problems dar.
 Die einzelnen Bestandteile der Abbildung werden nachfolgend erläutert.
@@ -168,7 +173,7 @@ Wie auch andere Algorithmen haben Reinforcement Learning Algorithmen Skalierungs
 So kommt es beispielsweise zu Schwierigkeiten, die Value- oder die Policy-Funktion abzubilden, wenn die Dimension des Reinforcement Learning Problems zu groß wird.
 Insbesondere bei hoch-dimensionalen, kontinuierlichen Zustands- und Aktionsräumen ist dies der Fall.
 
-Die wichtigste Eigenschaft von Deep Learning sind Deep Neural Networks.
+Der wichtigste Bestandteil von Deep Learning sind Deep Neural Networks.
 Diese Netzwerke können automatisch kompakte, niedrig-dimensionale Repräsentationen von hoch-dimensionalen Daten finden.
 Beim Deep Reinforcement Learning werden Algorithmen und Technologien des Deep Learning in Reinforcement Learning eingebracht.
 Dabei werden Deep Neural Networks als Funktionsapproximatoren für die Value-Funktion oder die Policy verwendet.
@@ -188,7 +193,7 @@ Diese neue Kombination macht eine Skalierung auf bislang unlösbare Entscheidung
 Unity3D ist eine plattformübergreifende Game Engine, die erstmal 2005 angekündigt wurde.
 Primärer Zweck der Unity Engine ist die Entwicklung von Videospielen für Computer, Konsolen und Mobilgeräte.
 Dabei ist Unterstützung für zwei- und dreidimensionale Grafik enthalten.
-VR Entwicklung ist ebenso möglich.\todo{Abkürzungen}
+VR Entwicklung ist ebenso möglich.
 Das Skripting innerhalb der Engine erfolgt primär in C\# \cite{freecodecamp.unityIntroduction}.
 Neben dem Einsatz in der Spieleentwicklung ist Unity jedoch auch für den Einsatz in anderen Branchen geeignet, so zum Beispiel in der Architektur oder der Forschung \cite[30]{waidner.2020}, wo mit Unity Simulationen der realen Welt erstellt werden können.
 Als Grafik-APIs werden unter anderem Direct3D (Windows), OpenGL (Linux, macOS, Windows) und WebGL unterstützt.
@@ -450,7 +455,7 @@ Die Stromversorgung erfolgt über eine Batterie, damit sich der Roboter autark v
 Die aufgelisteten Bauteile werden so mit Kabelbindern an der Zentralplatte befestigt, dass sie nicht mit der Bewegungsfreiheit der Beine interferieren.
 Am Roboter ist keinerlei Sensorik verbaut \cite[36]{waidner.2020}.
 
-Da das Training des Roboters in der Realität zu lange dauern würde und dabei außerdem die Gefahr drohen würde, den Roboter zu beschädigen, wurde eine Simulationsumgebung aufgebaut, in der das Training des Roboters erfolgt.
+Da das Training des Roboters in der Realität zu lange dauert und dabei außerdem die Gefahr droht, den Roboter zu beschädigen, wurde eine Simulationsumgebung aufgebaut, in der das Training des Roboters erfolgt.
 Diese ist in Unity realisiert.
 In Unity ist es möglich, dasselbe 3D-Modell zu importieren, das auch für den Druck der Teile des Roboters verwendet wird, was eine akkurate Umsetzung der Dimensionen sicherstellt.
 
