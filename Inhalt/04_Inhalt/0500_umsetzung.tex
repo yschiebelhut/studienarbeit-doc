@@ -1,0 +1,52 @@
+\chapter{Umsetzung}
+\section{Rekonstruktion und Migration der Simulationsumgebung}
+Der Quellcode der alten Arbeit liegt auf GitHub\footnote{\url{https://github.com/MobMonRob/HindernisumfahrungRLStudien/tree/1c0a884c2133107562e4928bfa8bef2ee6e2ade0}} vor.
+Im ersten Schritt wird angestrebt, diesen Arbeitsstand zu rekonstruieren, sodass ein Training in der Unity-Umgebung möglich ist.
+
+\subsection{Programmversionen}
+Zur Projektbasis liegt neben der Ausarbeitung in \cite{waidner.2020} nur Quellcode vor.
+Leider werden dabei die verwendeten Programmversionen nicht dokumentiert, welche jedoch notwendigerweise fein aufeinander abgestimmt sein müssen, um ein Training zu ermöglichen und dessen Erfolg zu gewährleisten.
+Sowohl Unity als auch ML-Agents und das zugehörige Python-Toolkit wurden seit der Durchführung von \cite{waidner.2020} in unterschiedlicher Geschwindigkeit weiterentwickelt.
+Aufgrund von auftretenden Inkompatibilitäten empfiehlt es sich daher, zunächst die Originalversionen aufzusetzen und dies als Ausgangspunkt für weitere Anpassungen zu nutzen.
+Die Unity-Projektdatei enthält Informationen über die exakte Unity-Version, die zur Erstellung des Projekts verwendet wurde.
+Leider fehlt jedoch Dokumentation zur verwendeten Version von ML-Agents und des Python-Toolkits.
+Recherche in der Veröffentlichungshistorie von ML-Agents ergeben, das höchstwahrscheinlich Version 0.14.1 des Unity-Plugins verwendet wurde.
+Daraus ergeben sich Python-Abhängigkeiten, die darauf hindeuten, dass eine Python Version \textgreater= 3.6 und \textless 3.7 verwendet wurde.
+Leider gestaltet sich der Versuch erfolglos, diese Versionen auf den verwendeten Entwicklungssystemen (OS X und Linux) zu installieren.
+Somit ist es auch nicht möglich, die exakte Entwicklungskonstellation von \cite{waidner.2020} zu rekonstruieren.
+
+Um die Ergebnisse dieser Arbeit möglichst nachhaltig zu machen, soll zur weiteren Entwicklung die aktuelle Version von ML-Agents verwendet werden (Unity-Paket in der Version 2.0.1, Stand: Mai 2023).
+Das korrespondierende Python-Plugin ist \code{mlagents} in der Version 0.30.0.
+(Zum Zeitpunkt des Schreibens ist es notwendig, das Paket \code{protobuf} in der Version 3.20.3 explizit zu installieren, da sonst die Installation von \code{mlagents} scheitert.)
+Die Dependencies dieses Pakets bedingen, dass als neuste Python-Version 3.10.8 verwendet werden kann, welche auch zur Entwicklung gewählt wird.
+
+(Installation und Management spezifischer Patch-Versionen von Python kann kompliziert sein, da in der Regel ein Versionsmanagement nur anhand der Minor-Versionen vorgesehen ist.
+Im Rahmen dieser Arbeit hat sich der Einsatz des Programms \code{pyenv}\footnote{\url{https://github.com/pyenv/pyenv}} empfohlen, da sich damit sehr einfach spezifische Versionen von Python individuell kompilieren und managen lassen.)
+
+Da es einerseits Problematiken bereiten kann, neue Plugins mit einer alten Version von Unity zu betreiben und zusätzlich die damals verwendete Version massive Fehler in Kombination mit OS X aufweist, wird auch Unity auf eine aktuelle Version angepasst.
+Dafür wird in diesem Fall die aktuellste LTS-Version zum Zeitpunkt der Entwicklung verwendet (2021.3.21.f1).
+
+\subsection{Änderungen der Codebasis}
+Da es sich bei ML-Agents um ein vergleichsweise neues Toolkit handelt, unterliegt es fortlaufend einer starken Entwicklung.
+Im Zeitraum seit der Vorgängerarbeit wurde das Plugin von einer Alphaversion zu einem offiziellen Release gebracht.
+In diesen Entwicklungsphasen kommt es bei Software häufig zu Breaking Changes.
+Auch bei ML-Agents ist dies der Fall und es kommt umgehend zum Kompilierungsfehlern, wenn das Unity-Projekt im Editor geöffnet wird.
+Der erste Schritt besteht deshalb darin, herauszufinden, welche Methoden davon betroffen sind.
+Dafür werden im Fehlerbericht die Methoden gesucht, die Fehler enthalten.
+Die Methodenköpfe können dann in die Versionshistorie von ML-Agents\footnote{\url{https://github.com/Unity-Technologies/ml-agents/releases}} gesucht werden.
+Im vorliegenden Fall sind somit alle an der Schnittstelle des Toolkit vorgenommenen Änderungen deutlich aufgeschlüsselt und geben Aufschluss darüber, wie die Kompatibilität des Quellcodes wiederhergestellt werden kann.
+
+Für das Training wird in \cite{waidner.2020} eine Trainer-Config-YAML-Datei verwendet, wie sie in \autoref{sec:training} beschrieben wird.
+Mit einer Aktualisierung des Python-Toolkits hat sich auch das Format dieser Datei verändert, weshalb die ursprüngliche Datei nicht mehr kompatibel zum nun verwendeten Tooling ist.
+Die Änderungen am Format sind vergleichsweise gering und die Datei von überschaubarer Größe, weshalb nach dem Vorbild der alten Datei und unter Anleitung von \cite{mlagentsHyperparameter} die Datei neu gebaut werden kann.
+Der Codestand ist nach diesen Veränderungen\footnote{\url{https://github.com/MobMonRob/HindernisumfahrungRLStudien/tree/ec8abbd161217c9a42adb42779e01c5b3dfeb209}} nun mit den aktualisierten Versionen des Toolings kompatibel und wird als Ausgangspunkt für die Experimente dieser Arbeit verwendet.
+
+\subsection{Durchführung des Trainings}
+Um ein Training in der Simulationsumgebung durchzuführen wird zuerst eine kompilierte Binary der Trainingsumgebung erstellt.
+Zwar ist es theoretisch möglich, direkt aus dem Unity-Editor das Training zu starten.
+Allerdings bringt dies einige Nachteile mit sich, wie etwa mangelnde Skalierbarkeit und Performanceverluste.
+Außerdem ist es so nicht möglich, das Training effizient auf einer unabhängigen Maschine durchzuführen, die eine weit höhere Trainingsrate ermöglicht.
+Um eine solche Binary zu erstellen, wird der Build Prozess in Unity unter File \textgreater Build Settings \textgreater Build gestartet.
+Dabei kann die gewünschte Zielplattform ausgewählt werden -- in Abhängigkeit, wo das Training durchgeführt werden soll.
+Zum Cross-Compiling ist es allerdings vorausgesetzt, dass die entsprechenden Erweiterungen und Bibliotheken bei der Installation von Unity ausgewählt und geladen wurden.
+Sonst ist standardmäßig nur das Kompilieren für die Architektur und Plattform möglich, unter der der Editor ausgeführt wird.
