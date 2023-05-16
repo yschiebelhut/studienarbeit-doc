@@ -63,7 +63,7 @@ Deshalb ist eine kleine Testreihe unerlässlich, bei der möglichst gute Werte f
 Der maßgebliche Performanceindikator ist hierbei die Anzahl der Trainingsschritte pro Sekunde.
 Zur Optimierung wird beispielsweise nach und nach die Anzahl der parallelen Trainingsumgebungen erhöht, bis die Anzahl der Schritte pro Sekunde nicht mehr weiter steigt.
 Die nachfolgende Befehlszeile scheint nach einigem Optimieren gute Ergebnisse für die Machienenkonfiguration zu liefern:
-\code{mlagents-learn --env binary-name/binary-name.x86\_64 --run-id identifier --no-graphics --torch-device cuda --num-envs 4 --time-scale 1 trainer.yaml}.
+\code{mlagents-learn --env binary-name/binary-name.x86\_64 --run-id run-name --no-graphics --torch-device cuda --num-envs 4 --time-scale 1 trainer.yaml}.
 Dabei werden 4 parallele Trainingsumgebungen (mit jeweils 30 Agenten) ohne Generierung von grafischen Artefakten betrieben.
 ML-Agents greift intern auf Tensorflow und PyTorch zurück.
 Grundsätzlich bieten beide Bibliotheken die Möglichkeit, eine CUDA-fähige GPU zur Grafikbeschleunigung der Trainingsalgorithmen zu verwenden.
@@ -89,3 +89,63 @@ Auch der gelernte Bewegungsablauf, der bei der Inferenz zu beobachten ist\todo{V
 
 
 \section{Stabilisierung des Laufverhaltens}
+Wie in \autoref{sec:probleme} ausgeführt und von den Ergebnissen der Rekonstruktion zusätzlich veranschaulicht wird, bewegt sich der Roboter aktuell mit einer sprungartigen Bewegung fort.
+Diese ist, wie beschrieben, Ursache für viele potenzielle Probleme.
+Deshalb soll nun das Laufverhalten stabilisiert werden.
+In diesem Zusammenhang wird darunter verstanden, die Schwankungen, die die Körpermitte bei der Bewegung vollführt, auf ein Minimum zu begrenzen.
+Wird das Vorbild der Spinnen betrachtet, so ist davon auszugehen, dass diese Einschränkung kein Hindernis für eine effiziente Fortbewegung darstellt.
+
+Es existieren innerhalb der Simulation zwei elementare C\#-Skripte, die für die in diesem Kapitel beschriebenen Änderungen von besonderer Relevanz sind: \code{SpiderAgent.cs} und \code{SpiderController.cs}.
+In \code{SpiderAgent.cs} befinden sich die für den Reinforcement Learning Prozess relevanten Konfigurationen des Agenten.
+Dort werden Beobachtungen gesammelt und dem Lernalgorithmus zur Verfügung gestellt, die Aktionen vom Lernalgorithmus entgegengenommen, die Lern-Episoden verwaltet und vor allem der Reward zugewiesen.
+Der \code{SpiderController} ist wiederum einem \code{SpiderAgent} zugeordnet und verwaltet dessen Skripte für die Servomotoren, koordiniert die allgemeine Durchführung der Bewegung und führt das Zurücksetzen der Komponenten durch.
+Da ein \code{SpiderController} somit auf die direkten Werte des Roboterzustands zugreifen kann, wird hier auch der Reward berechnet, der in \code{SpiderAgent.cs} zugewiesen wird.
+
+Für die Stabilisierung der Bewegung bestehen nun zwei verschiedene Ansätze, die ausprobiert und verglichen werden.
+Beide werden über Änderungen in \code{SpiderController.cs} realisiert.
+Die dort implementierte, allgemeine Bewegungskoordination des Roboters ist eine seiner physikalischen Grundeigenschaften und wird deshalb im Rahmen dieser Arbeit nicht manipuliert.
+Auch wird so eine kontinuierliche Basis für die einzelnen Versuche und deren Evaluation geboten.
+Jedoch stellt der in dieser Klasse berechnete Reward die zentralste Stellschraube des Reinforcement Learning Problems dar.
+
+\lstinputlisting[
+    % language = C,
+    firstline = 8,
+    % lastline = 41,
+    caption = Ürsprüngliche Berechnung des Reward-Signals,
+    label = code:reward-post-reconstruct
+]{Code/post-reconstruct/reward.cs}
+
+In \autoref{code:reward-post-reconstruct} ist die ursprüngliche Berechnung des Rewards zu sehen, wie sie in \code{SpiderController.cs}.
+Dabei wird zunächst der Reward mit 0 initialisiert.
+Anschließend wird abgeprüft, ob sich der Roboter um mehr als 90° zur horizontalen Achse gedreht hat und eine negative Belohnung vergeben, falls dies der Fall sein sollte.
+Mit dieser Prüfung soll verhindert werden, dass der Roboter sich überschlägt und dabei seine empfindliche Elektronik beschädigt.
+Anschließend wird geprüft, wie weit der Roboter auf der Karte in Vorwärtsrichtung von seinem Ausgangspunkt entfernt ist und die Differenz zum vorherigen Resultat dieser Berechnung gebildet.
+Diese Differenz -- sowohl wenn diese positiv ausfällt, als auch, wenn sie negativ ist -- wird dann mit der eventuellen Strafe für ein Überschlagen verrechnet und als Reward zurückgegeben.
+
+Der offensichtliche und einfache Weg ist es nun, in der Methode \code{isTurned()} den Schwellwert der Rückgabe von 90° auf einen kleineren Wert, zum Beispiel 5°, zu reduzieren.
+Mit dieser Modifikation wird automatisch ein negativer Summand in den Reward eingebracht.
+Das Problem hierbei besteht darin, dass die Methode \code{isTurned()} nicht nur zur Berechnung des Rewards verwendet wird, sondern auch in \code{SpiderAgent.cs} die aktuelle Episode terminiert wird, wenn sich der Roboter auf den Rücken dreht.
+Wird die Modifikation an dieser Methode vorgenommen, so wird auch eine kleine Schwankung der Körpermitte als Überschlag interpretiert und die laufende Trainings-Episode fälschlicherweise beendet.
+Wie sich bei einem Trainingsversuch zeigt, führt dies dazu, dass der Roboter kein Laufverhalten lernen kann, da ihm keine Gelegenheit geboten wird, seinen Fehler zu erkennen, zu erforschen und zu korrigieren.
+Für eine möglichst stabile Körpermitte sollte der Rotations-Schwellwert möglichst gering sein.
+Jedoch wird bei diesem Ansatz ein Training gegenläufig zum sinkenden Schwellwert praktisch unmöglich.
+
+
+
+
+\section{Pfadplanung}
+\subsection{Proof of Concept: Crawler}
+Zeigen, dass es grundsätzlich möglich ist
+
+\subsection{Übertragung auf den SpiderAgent}
+Versuche mit verschiedenen Rewards
+überhaupt, Neudesign der Rewards, welche Ansätze gibt es hier, wie werden sie implementiert, welche Ergebnisse gibt es dabei
+
+\section{Hindernisumfahrung}
+\subsection{Grundsätzliche Experimente}
+Training auf Basis von Laufstabilisiertem Stand, da Pfadplanung mit dem Roboter noch nicht funktioniert
+statisches Hindernis
+Roboter läuft Kurve und lernt Existenz und Position von Hindernis auswendig
+\subsection{Crawler-Versuche}
+mit vorhandenem Modell und Pfadplanung, allerdigns nicht extra dafür trainiert
+wäre komisch, wenn es funktioniert, aber zeigt auch, dass ein gesondertes Training notwendig ist
