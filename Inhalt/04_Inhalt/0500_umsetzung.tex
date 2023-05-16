@@ -50,3 +50,42 @@ Um eine solche Binary zu erstellen, wird der Build Prozess in Unity unter File \
 Dabei kann die gewünschte Zielplattform ausgewählt werden -- in Abhängigkeit, wo das Training durchgeführt werden soll.
 Zum Cross-Compiling ist es allerdings vorausgesetzt, dass die entsprechenden Erweiterungen und Bibliotheken bei der Installation von Unity ausgewählt und geladen wurden.
 Sonst ist standardmäßig nur das Kompilieren für die Architektur und Plattform möglich, unter der der Editor ausgeführt wird.
+
+Auf der Maschine, auf der das Training durchgeführt werden soll, muss dafür lediglich das Python-Toolkit installiert sein.
+Eine Installation von Unity ist dafür nicht erforderlich, was das Auslagern des Trainingsprozesses und somit ein effizientes Training deutlich vereinfacht.
+Für die Experimente im Rahmen dieser Arbeit wird ein virtuelles Rechencluster mit einer Intel Xeon (Gold 6240) CPU mit 8 Kernen, einer Nvidia vGPU V100D-8C und Ubuntu 20.04.1 LTS zum Einsatz.
+Deshalb wird das Environment für Linux x86\_64 gebaut und es ist kein Cross-Compiling von der Entwicklungsmaschine zur Trainingsmaschine nötig.
+Unity produziert bei Kompilierung für Linux einen Ordner mit den Ausgabedateien, welche sowohl die eigentliche Binary als auch Artefakte und Libraries enthalten.
+Dieser Ordner sollte deshalb vollständig auf die Trainingsmaschine übertragen werden.
+Für die Durchführung des Trainingsprozesses können verschiedene Parameter von \code{mlagents-learn} angepasst werden.
+Es ist keine pauschale Angabe möglich, welche Parameter verlässlich und auf allen möglichen Trainingsmaschinen zu einem guten Ergebnis führen.
+Deshalb ist eine kleine Testreihe unerlässlich, bei der möglichst gute Werte für die Parameter ermittelt werden, um das spätere Training effizient zu gestalten.
+Der maßgebliche Performanceindikator ist hierbei die Anzahl der Trainingsschritte pro Sekunde.
+Zur Optimierung wird beispielsweise nach und nach die Anzahl der parallelen Trainingsumgebungen erhöht, bis die Anzahl der Schritte pro Sekunde nicht mehr weiter steigt.
+Die nachfolgende Befehlszeile scheint nach einigem Optimieren gute Ergebnisse für die Machienenkonfiguration zu liefern:
+\code{mlagents-learn --env binary-name/binary-name.x86\_64 --run-id identifier --no-graphics --torch-device cuda --num-envs 4 --time-scale 1 trainer.yaml}.
+Dabei werden 4 parallele Trainingsumgebungen (mit jeweils 30 Agenten) ohne Generierung von grafischen Artefakten betrieben.
+ML-Agents greift intern auf Tensorflow und PyTorch zurück.
+Grundsätzlich bieten beide Bibliotheken die Möglichkeit, eine CUDA-fähige GPU zur Grafikbeschleunigung der Trainingsalgorithmen zu verwenden.
+Im Kontext des verwendeten Trainingsalgorithmus (\ac{ppo}) ist infrage zu stellen, ob ein ernstzunehmender Vorteil durch die Verwendung einer GPU erzielt werden kann.
+Ressourcen im Internet sind sich hierüber uneinig.
+Da es jedoch nicht zu einer Verschlechterung und bestenfalls zu einer Verbesserung kommen kann, und die GPU zur Verfügung stand, wird sie dem Trainingsprozess auch als Ressource zur Verfügung gestellt.
+Weiterhin wird die Wahl getroffen, die \code{time-scale} des Trainingsprozesses auf 1 zu setzen.
+Standardmäßig wird dieser Parameter von ML-Agents auf 20 gesetzt, was den Trainingsprozess beschleunigen soll.
+Vergleichende Tests ergeben jedoch, dass es im Kontext der verwendeten Trainingsumgebung und Trainingsmaschine keinen Unterschied für die Geschwindigkeit der Trainingsoperationen zu machen scheint, auf welchen Wert der Parameter gesetzt wird.
+Es gibt jedoch Hinweise, dass bestimmte Arten von physikalischen Berechnungen von der zeitlichen Skalierung beeinflusst werden \cite{zhang2021}.
+Da unklar ist, ob solche Berechnungen hier Verwendung finden und gegebenenfalls sogar eine Ursache für die eigenartige Fortbewegungsart des Roboters im bisherigen Training sein könnten, wird für das Training, wie bereits erwähnt, eine nicht-verzerrte Zeitskala verwendet.
+(Da jedoch der Parameter die Schritte pro Sekunde nicht zu beeinflussen scheint, ist zu hinterfragen, ob er in der verwendeten Version der Toolkits überhaupt korrekt interpretiert wird.)
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{Bilder/ml-agents/Environment_Cumulative Reward_time-scale-1.pdf}
+    \caption{Cumulative Reward der Rekonstruktion von \cite{waidner.2020}}
+    \label{fig:time-scale-1}
+\end{figure}
+
+Der Verlauf des Cumulative Rewards, der nun beim Training entsteht und in \autoref{fig:time-scale-1} dargestellt wird, gleicht im Wesentlichen den Resultaten von \cite[50]{waidner.2020}.
+Auch der gelernte Bewegungsablauf, der bei der Inferenz zu beobachten ist\todo{Video}, gleicht den Resultaten der vorangegangenen Arbeit, weshalb die Rekonstruktion als erfolgreich bewertet wird.
+
+
+\section{Stabilisierung des Laufverhaltens}
