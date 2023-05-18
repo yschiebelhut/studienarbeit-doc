@@ -128,6 +128,7 @@ Selbst falls ein messbarer Unterschied bestehen sollte, kann dieser nicht hinsic
 % \end{itemize}
 
 \section{Geplante Realisierung}
+\label{sec:realisierung}
 Die Umsetzung der Arbeit lässt sich in mehrere Aufgabenpakete gliedern.
 Diese sollen folgend beschrieben werden.
 
@@ -147,23 +148,24 @@ Wie in \autoref{sec:probleme} bereits ausgeführt, muss verhindert werden, dass 
 Als logische Folgerung muss bei jeder Trainingsepisode ein zufälliger Pfad vorgegeben werden.
 Beim Verflogen eines Pfades ist zu jeder Zeit nur der als nächstes anzusteuernde Punkt von Relevanz.
 Für das Training ergibt dies Parallelen zu einem Beispielszenario des ML-Agents-Toolkits.
-Beim Crawler-Example muss eine Kreatur lernen, ein zufällig spawnendes Ziel (sogenannte \emph{Dynamic Targets}) zu erreichen.
+Beim \emph{Crawler-Example} muss eine Kreatur lernen, ein zufällig spawnendes Ziel (sogenannte \emph{Dynamic Targets}) zu erreichen.
 Kommt der Crawler mit einem Dynamic Target in Berührung, teleportiert es sich an einen zufälligen Ort \cite{crawlerExample}.
 Dabei tauch die Dynamic Targets als kleine Würfel in der Umgebung des Crawlers auf.
 Die Dynamic Targets können auch für die Pfadplanung des Roboters verwendet werden.
 Die für das Training notwendigen, zufälligen Pfade bilden sie bereits automatisch ab.
-Um später einen festen Pfad vorgeben zu können, muss lediglich eine kleine Modifikation der Dynamic Targets vorgenommen werden, um diese in einer festgelegten Reihenfolge anstatt zufällig erscheinen zu lassen.
+Um dem trainierten Modell des Crawlers einen festen Pfad vorgeben zu können, muss lediglich eine kleine Modifikation der Dynamic Targets vorgenommen werden, um diese in einer festgelegten Reihenfolge anstatt zufällig erscheinen zu lassen.
+Dieses Prinzip soll auf diese Studienarbeit übertragen werden und es so dem Roboter ermöglichen, einem geplanten Pfad zu folgen.
 
 \subsection{Anpassung der Belohnungsfunktion}
 Bislang wird der Roboter nur für eine zurückgelegte Distanz entlang der x-Achse belohnt und erhält eine Bestrafung, wenn er sich auf den Rücken dreht.
 Im ersten Schritt soll das Laufverhalten des Roboters stabilisiert werden, damit sich dieser nicht mehr springend fortbewegt.
-Dazu kann etwa in der Belohnungsfunktion ein Faktor eingebracht werden, der den Roboter mit einem, an der Neigung der Zentralplatte skalierten, Wert bestraft.
+Dazu kann etwa in der Reward-Funktion ein Faktor eingebracht werden, der den Roboter mit einem, an der Neigung der Zentralplatte skalierten, Wert bestraft.
 
-Um den Roboter dazu zu bringen, zum nächsten Zielpunkt zu laufen, muss die bisherige Belohnung für die Distanz ersetzt werden.
+Um den Roboter im Zuge der Pfadplanung dazu zu bringen, zum nächsten Zielpunkt zu laufen, muss die bisherige Belohnung für die Distanz ersetzt werden.
 Denkbar sind hierfür mehrere Ansätze.
 Eine Möglichkeit besteht darin, die Distanz zwischen Roboter und Zielpunkt zu bestimmen und mit der Distanz vor der letzten Aktion zu vergleichen.
-Die andere Möglichkeit ist, die konkrete Bewegungsrichtung des Roboters zu bestimmen und ein Produkt mit der Geschwindigkeit zu bilden.
-Diese Möglichkeit ermöglicht eventuell eine feinere Gewichtung.
+Die andere Möglichkeit ist, die konkrete Bewegungsrichtung des Roboters zu bestimmen und ein Produkt mit der Geschwindigkeit des Roboters zu bilden.
+Diese Möglichkeit ermöglicht eine potenziell feinere Gewichtung der Faktoren.
 Der erste Berechnungsansatz stellt hingegen eine wesentlich kleinere Veränderung zur Ausgangssituation dar, weshalb hierbei die möglichen Fehlerquellen besser eingegrenzt werden können.
 Es sollen beide Ansätze ausprobiert und miteinander verglichen werden.
 
@@ -172,7 +174,7 @@ Als letzter Schritt sollen noch Hindernisse ergänzt werden.
 Hierfür können einfache Kisten in Unity verwendet werden.
 Auch die Position dieser Hindernisse darf natürlich nicht von Trainingsalgorithmus auswendig gelernt werden, weshalb die Kisten in jeder Trainingsepisode zufällig platziert werden müssen.
 Wenn diesen Kisten nun Kollisionsmodelle hinzugefügt werden, kann der Roboter automatisch nicht mehr durch diese Hindernisse hindurchgehen.
-Die größte Herausforderung wird voraussichtlich auch hier die Adaption der Belohnungsfunktion, damit diese den Roboter nicht daran hindert, den Pfad zu verlassen.
+Die größte Herausforderung wird voraussichtlich auch hier die Adaption der Reward-Funktion sein, damit diese den Roboter nicht daran hindert, den Pfad zu verlassen.
 Gleichzeitig soll der Roboter auch nicht dazu animiert werden, den vorgegebenen Pfad großräumig zu verlassen.
 Die Anpassungsmöglichkeiten sind hier jedoch relativ eingeschränkt.
 Möglich ist, bei jedem Simulationsschritt eine kleine Strafe zu vergeben, mit dem Ziel, den Roboter zu animieren, nicht vor einem Hindernis stehenzubleiben, weil dies auf lange Sicht eine sehr schlechte Belohnung für ihn bedeutet.

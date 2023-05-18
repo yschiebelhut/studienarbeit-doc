@@ -198,10 +198,122 @@ Das in Folge der vorgenommenen Maßnahmen trainierte Modell zeigt ein erstaunlic
 
 
 \section{Pfadplanung}
+Der nächste Implementierungsschritt ist die Ergänzung von Pfadplanung.
+Hierfür wird zunächst ein Proof of Concept erstellt und dieses im Anschluss auf den Roboter übertragen.
+
 \subsection{Proof of Concept: Crawler}
-Zeigen, dass es grundsätzlich möglich ist
+Wie in \autoref{sec:realisierung} erwähnt, bietet das \emph{Crawler-Example} des ML-Agents-Toolkits eine interessante Referenz für die Pfadplanung.
+Im Beispiel wurde ein Agent darauf trainiert, nacheinander zu zufällig erscheinenden Zielen zu laufen.
+Wenn der Agent ein Ziel (\emph{DynamicTarget}) erreicht, so verschwindet es und taucht an anderer Stelle wieder auf.
+Der Agent hat dabei keinen Einfluss auf das DynamicTarget und kennt nur dessen aktuelle Position.
+
+Wenn ein DynamicTarget initialisiert wird oder in Kontakt mit einem Unity-GameObject kommt, welches mit dem Tag \enquote{agent} versehen ist, wird die in \autoref{code:dynamic-target-old} dargestellte Methode ausgeführt, welche das DynamicTarget an einen zufälligen Ort teleportiert.
+
+\begin{figure}
+    \lstinputlisting[
+        % language = C,
+        % firstline = 8,
+        % lastline = 12,
+        caption = Respawnen des DynamicTargets,
+        label = code:dynamic-target-old
+    ]{Code/crawler/TargetController-extract.cs}
+\end{figure}
+
+Mittels der Modifikation aus \autoref{code:dynamic-target-new} ist es möglich, Einfluss auf die Reihenfolge zu nehmen, in der die DynamicTargets erscheinen.
+Die Kontrollstruktur basiert auf einem Zähler und einer Liste von Positionen (Zeile 1f).
+Solange der Zähler mit einem Listenindex korrespondiert (Zeile 5), wird als neue Position des Ziels die in der Liste hinterlegte Position verwendet.
+Wurde die Liste vollständig abgearbeitet, erscheinen die Ziele wieder zufällig.
+In der Element-Detailansicht von Unity können anschließend beliebig viele Zielpunkte frei eingegeben werden (\autoref{fig:eingabefeld-positionen}).
+
+\begin{figure}
+    \lstinputlisting[
+        % language = C,
+        % firstline = 8,
+        % lastline = 12,
+        caption = Modifiziertes Respawnen des DynamicTargets,
+        label = code:dynamic-target-new
+    ]{Code/crawler/PathTargetController-extract.cs}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width = 0.5\textwidth]{Bilder/crawler/position-list.png}
+    \caption{Eingabefeld der Positionen}
+    \label{fig:eingabefeld-positionen}
+\end{figure}
+
+Da der Agent im Crawler-Example die Ziele nicht selbst kontrolliert, ist kein erneutes Trainieren des Modells nötig, sondern die Modifikationen sind direkt wirksam und der Agent läuft entlang des vorgegebenen Pfades.\todo{Video crawler-poc}
 
 \subsection{Übertragung auf den SpiderAgent}
+Um dieses Prinzip für den Roboter in dieser Studienarbeit zu nutzen, werden der \code{TargetController} und das dazugehörige Prefab aus dem Beispielprojekt des ML-Agents-Toolkits in die Simulationsumgebung kopiert.
+\code{SpiderAgent.cs} wird im Anschluss um den in \autoref{code:dynamic-target-spawn} dargestellten Code ergänzt.
+Dieser stellt eine Verknüpfung zwischen dem Agent und dem Target her und ermöglicht das initiale Spawnen des Ziels.
+Weiterhin wird sämtlichen Körperteilen des Roboters der Tag \enquote{agent} zugewiesen.
+Für das Training wird die Positionsliste leer gelassen, um die Targets zufällig auf der Trainingsplattform erscheinen zu lassen, damit der Roboter nicht einen vorgegebenen Pfad auswendig lernt.
+
+
+\begin{figure}
+    \lstinputlisting[
+        % language = C,
+        % firstline = 8,
+        % lastline = 12,
+        caption = Ergänzung für Spawnen des Targets (SpiderAgent.cs),
+        label = code:dynamic-target-spawn
+    ]{Code/targetAddition.cs}
+\end{figure}
+
+Bislang verfügt der Roboter nur über die aktuellen Winkel der Servomotoren als Observations.
+Für das weitere Training sollen ihm nun zusätzlich seine eigene Position und die Position des Ziels zugänglich gemacht werden, da es für den Algorithmus andernfalls nicht möglich ist, seine Aktionen auf das Erreichen des Ziels auszurichten.
+Alternativ könnte dem Roboter ein Richtungsvektor übergeben werden, der vom Roboter auf das Ziel zeigt.
+Hinsichtlich ihres Informationsgehalts sind beide Angaben identisch, da sie rechnerisch ineinander überführt werden können.
+Da bei der manuellen Berechnung des Richtungsvektors jedoch leichter Fehler auftreten können, werden absolute Positionen übergeben.
+Außerdem wird dadurch zukünftig das Verbinden eines beliebigen Ortungssystems potenziell einfacher gehalten.
+
+Als Voraussetzung, um die zusätzlichen Informationen zur Verfügung zu stellen, muss in Unity die Größe des Observation Space um sechs Elemente erhöht werden, da beide zu übergebenden Positionen jeweils von einem dreidimensionalen Vektor repräsentiert werden.
+Anschließend wird die in \autoref{code:observations} dargestellte Methode zum Sammeln der Observations modifiziert.
+Vor der Modifikation bestand die Methode lediglich aus der Schleife, die die einzelnen Werte der Servomotoren ausliest und in den VectorSensor eingibt.
+Diese Informationen werden um die beiden zusätzlichen Positionen ergänzt.
+Die gesamte Anzahl aller Einträge, die in dieser Methode zugewiesen werden muss exakt der in Unity hinterlegten Größe des Observation Space entsprechen, ansonsten erzeugt die Methode Fehler.
+
+\begin{figure}
+    \lstinputlisting[
+        % language = C,
+        % firstline = 8,
+        % lastline = 12,
+        caption = Erweiterung des Observation Space (SpiderAgent.cs),
+        label = code:observations
+    ]{Code/extendedVectorSpace/observations.cs}
+\end{figure}
+
+Um den Roboter nun dazu zu animieren, nicht mehr geradeaus, sondern zu den Zielen zu laufen, wird die Reward-Funktion angepasst.
+Wie in \autoref{sec:realisierung} beschrieben, existieren dafür verschiedene Ansätze.
+Als der vielversprechendste erscheint dabei die Verwendung einer sogenannten geometrischen Funktion.
+Kennzeichnend für diese ist, dass die einzelnen Bestandteile des Rewards nicht wie bislang aufsummiert werden, sondern ein Produkt aller Faktoren gebildet wird.
+Damit soll vermieden werden, dass sich der Agent darauf konzentriert, den einfachsten Reward zu maximieren und damit etwa in einem lokalen Maximum stecken zu bleiben.
+Um das Produkt zu maximieren, müssen zwangsläufig alle einzelnen Faktoren maximiert werden.
+
+Es werden Trainings für drei solcher Funktionen durchgeführt.
+Die Funktionen haben verschiedene Komplexitäten und Ansätze, um eine allgemeine Eignung einer solchen Reward-Funktion abzuschätzen.
+\begin{itemize}
+    \item Für den ersten Ansatz wird die Distanz gemessen, die der Roboter seit dem letzten Schritt zurückgelegt hat.
+    Ausschlaggebend für die Messung ist dabei nur die Körpermitte.
+    Als zusätzlicher Faktor wird der Winkel zwischen der \enquote{Blickrichtung} der Körpermitte und der relativen Richtung, in der das Ziel liegt, gebildet und auf einen Bereich von 180° normalisiert.
+
+    \item Die zweite Variation verwendet die in Unity-GameObjects hinterlegte Geschwindigkeit der einzelnen Körperteile und bildet daraus den Durchschnitt.
+    Dieses Vorgehen soll plötzliche und ruckartige Bewegungen des Roboters, die beim Training auftreten, ausgleichen.
+    Der nächste Faktor ist, wie bei der ersten Variante, ein normalisierter Wert an dem abgelesen werden kann, ob die Bewegung in Richtung Ziel erfolgte.
+    Weiterhin wird hier wieder eine Belohnung eingeführt, die umso höher ausfällt, desto stabiler die Körpermitte in der Horizontalen gehalten wird.
+
+    \item Der letzte Ansatz ist sehr ähnlich zum zweiten.
+    Allerdings wird hier auf das berechnete Produkt noch eine konstante Strafe für jeden Schritt summiert, um eine schnelle Zielerreichung voranzutreiben.
+\end{itemize}
+
+
+5: reward = walkedDistanceReward * angleReward
+6: (avgSpeedReward * angledToTargetReward * calmCenterAngleReward) + stagnationPenalty
+7: (avgSpeedReward * movementInTargetDirectionReward * calmCenterAngleReward)
+
+
 Versuche mit verschiedenen Rewards
 überhaupt, Neudesign der Rewards, welche Ansätze gibt es hier, wie werden sie implementiert, welche Ergebnisse gibt es dabei
 
