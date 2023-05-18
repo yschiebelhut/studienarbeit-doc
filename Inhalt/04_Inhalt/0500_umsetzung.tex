@@ -366,10 +366,26 @@ Auffällig ist jedoch, dass die Cumulative Rewards der Trainingsdurchläufe mit 
 \end{figure}
 
 \section{Hindernisumfahrung}
-\subsection{Grundsätzliche Experimente}
-Training auf Basis von Laufstabilisiertem Stand, da Pfadplanung mit dem Roboter noch nicht funktioniert
-statisches Hindernis
-Roboter läuft Kurve und lernt Existenz und Position von Hindernis auswendig
-\subsection{Crawler-Versuche}
-mit vorhandenem Modell und Pfadplanung, allerdigns nicht extra dafür trainiert
-wäre komisch, wenn es funktioniert, aber zeigt auch, dass ein gesondertes Training notwendig ist
+Da Hindernisse nur im Kontext eines vorgesehenen Pfades sinnvoll umsteuert werden können, ist eine funktionierende Pfadplanung eine notwendige Voraussetzung für ein erfolgreiches Training eines Modells, dass den Roboter Hindernisse umsteuern lässt.
+Da die im vorherigen Kapitel trainierte Pfadverfolgung keine verwendbare Basis darstellt, werden im Folgenden ein paar grundlegende Aspekte thematisiert und demonstriert.
+
+Um zu sehen, wie der Roboter auf einem einfachen Pfad auf ein statisches Hindernis reagiert, werden ein paar Experimente auf Basis des laufstabilisierten Modells durchgeführt.
+Als Pfad ist hier das Laufen entlang der x-Achse zu betrachten, wobei anzumerken ist, dass es keinen Faktor gibt, der eine seitliche Abweichung entlang der z-Achse korrigieren würde.
+Stellt man dem normal trainierten Modell ein Hindernis orthogonal zu seiner Laufrichtung in den Weg, so kann man beobachten, dass der Roboter bis an das Hindernis läuft und auch nach der Kollision seine Gangbewegung noch unverändert ausführt, dabei seine Beine allerdings nur auf der Stelle über den Boden schiebt.
+Von solch einem Ergebnis ist ohne explizites Training auch auszugehen, da der Roboter nie lernt, zur Seite zu gehen.
+
+Wird nun allerdings mit unveränderter Reward-Funktion und zusätzlich mit dem eingefügten Hindernis trainiert, kann ein interessantes Ergebnis beobachtet werden.
+Wie in \autoref{sec:realisierung} schon ausgeführt, lernt der Roboter seine Umgebung auswendig, wenn sich diese nicht verändert.
+Dies ist auch hierbei zu beobachten.
+Was allerdings verwundert, ist, dass der Roboter schon zu Beginn anfängt, eine Kurve zu laufen, mit der er knapp am Hindernis vorbeikommt -- jedoch wird diese Kurve nicht abgebrochen, wenn der Roboter am Hindernis vorbeilaufen kann, obwohl er dadurch ausschließlich negative Rewards bekommen kann.
+Dies widerspricht eigentlich einer der grundlegendsten Maxime von Reinforcement Learning: den Reward immer und um jeden Preis zu maximieren.
+
+Im Falle des Crawler-Examples, anhand dessen ein Proof of Concept zur Pfadplanung implementiert wurde, kann ähnliches beobachtet werden wie bei dem Modell des SpiderAgents, welches nicht explizit für das Hindernis trainiert wurde.
+Aufgrund seiner physikalischen Simulationseigenschaften federt der Crawler etwas von der Wand zurück, gegen die er wiederholt läuft.
+Dabei wird er jedes Mal leicht zur Seite abgedrängt, wodurch er nach einiger Zeit das Hindernis überwindet.
+Dieser Vorgang ist jedoch weder eine gezielte Handlung noch ansatzweise effizient.\todo{Video crawler wand}
+
+Diese Experimente zeigen anschaulich, dass auch bei bereits funktionierender Pfadplanung in jedem Fall ein gesondertes Training mit einem zufällig generierten Hindernisparcour notwendig ist, um dem fertigen Modell ein Umsteuern von Hindernissen zu ermöglichen.
+Für den Fall, dass das Erlernen von Pfadplanung und das gleichzeitige Umsteuern von Hindernissen ein zu komplexes Lernproblem darstellt, könnte gegebenenfalls Curriculum Learning eingesetzt werden, um die Probleme aufeinander aufbauend zu lösen.
+Insgesamt dürfte eine Hindernisumsteuerung langfristig nur sinnvoll sein, wenn sie mit Sensorik unterstützt wird.
+Da dies das Problem und dessen Komplexität deutlich verändert, wird dann allerdings ohnehin ein gesondertes Training notwendig sein.
