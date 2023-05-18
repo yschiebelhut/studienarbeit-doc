@@ -285,6 +285,7 @@ Die gesamte Anzahl aller Einträge, die in dieser Methode zugewiesen werden muss
     ]{Code/extendedVectorSpace/observations.cs}
 \end{figure}
 
+\subsection{Geometrische Reward-Funktion}
 Um den Roboter nun dazu zu animieren, nicht mehr geradeaus, sondern zu den Zielen zu laufen, wird die Reward-Funktion angepasst.
 Wie in \autoref{sec:realisierung} beschrieben, existieren dafür verschiedene Ansätze.
 Als der vielversprechendste erscheint dabei die Verwendung einer sogenannten geometrischen Funktion.
@@ -308,14 +309,61 @@ Die Funktionen haben verschiedene Komplexitäten und Ansätze, um eine allgemein
     Allerdings wird hier auf das berechnete Produkt noch eine konstante Strafe für jeden Schritt summiert, um eine schnelle Zielerreichung voranzutreiben.
 \end{itemize}
 
+Trotz der Unterschiede der Ansätze zeigen alle ein ähnliches Ergebnis des Trainings: der Roboter fällt mit seiner Körpermitte auf den Boden und bewegt seine Beine in der Luft.
+Der Cumulative Reward ist dabei relativ konstant, das Modell lernt auch nach mehreren Millionen Simulationsschritten nicht.
 
-5: reward = walkedDistanceReward * angleReward
-6: (avgSpeedReward * angledToTargetReward * calmCenterAngleReward) + stagnationPenalty
-7: (avgSpeedReward * movementInTargetDirectionReward * calmCenterAngleReward)
+\subsection{Klassischer Reward}
+\label{sec:classic-reward}
+Aus diesen Gründen wird die Entscheidung getroffen, die Reward-Funktion neu zu entwerfen und dabei möglichst wenig konzeptionelle Änderungen ausgehend vom stabilisierten Laufverhalten vorzunehmen.
+Ziel dieser Vorgehensweise ist es, die Quellen potenzieller Fehler möglichst weit einzuschränken.
+Es wird grundlegend dieselbe optimierte Reward-Funktion wie in \autoref{code:reward-4-no-box} genutzt.
+Der Unterschied besteht hierbei jedoch darin, dass nicht mehr die zurückgelegte Distanz entlang der x-Achse gemessen wird, sondern die zurückgelegte Distanz in Richtung des Ziels.
+Dafür wird die jeweils letzte Position des Roboters zwischengespeichert.
+Es werden dann die Distanzen von der letzten Position zur Zielposition sowie von der aktuellen Position zur Zielposition gebildet.
+Anschließend wird die Differenz der beiden Distanzen so bestimmt, dass die Berechnung in einer positiven Belohnung resultiert, wenn der Roboter sich dem Ziel genähert hat.
 
+Dieser Ansatz zeigt bessere Ergebnisse als die mit geometrischer Reward-Funktion, jedoch wird im Training sehr früh ein lokales Maximum erreicht.
+Dabei lernt der Roboter, dass er eine Belohnung erzielt, wenn er sich in Richtung des Ziels rollen lässt, überschlägt sich dabei allerdings und startet somit die Trainingsepisode neu.
+Versuche, die Strafen für Überschlagen und Körperrotation anzuheben, schlagen ebenfalls fehl.
+Wird diese Maßnahme ergriffen, verschlechtern sich die Resultate sogar.
+Anstatt sich in Richtung des Ziels zu rollen, rollt sich der Roboter auf dem Boden ein und vollführt nur minimale Bewegungen.
 
-Versuche mit verschiedenen Rewards
-überhaupt, Neudesign der Rewards, welche Ansätze gibt es hier, wie werden sie implementiert, welche Ergebnisse gibt es dabei
+\subsection{Optimierung der Hyperparameter}
+Aufgrund der geringen Abweichung der aktuellen Reward-Funktion von \autoref{code:reward-4-no-box} und des simplen Aufbaus der Funktion wird ein Logikfehler in der Funktion als Ursache ausgeschlossen.
+Zur Fehlersuche werden erneut Testreihen ausgehend vom Stand des stabilisierten Laufverhaltens durchgeführt und dabei die Änderungsschritte zusätzlich verkleinert.
+Dieser letzte Stand enthält als Observationen nur die Winkel der zwölf Servomotoren.
+Im ersten Schritt wird nun die Größe des Observation Space erneut, wie oben beschrieben, erweitert.
+Dabei werden allerdings nicht die Position des Roboters und die des Ziels hinzugefügt, sondern zwei dreidimensionale Nullvektoren als Platzhalter.
+Wie erwartet ist der Cumulative Reward des Trainingsdurchlaufs praktisch deckungsgleich mit dem Stand vor der Veränderung.
+Der nächste Schritt fügt nun bei weiterhin gleichbleibender Reward-Funktion die beiden Positionen als Beobachtung anstelle der Nullvektoren hinzu.
+Auch wenn zusätzliche Informationen, die allerdings nicht in den Reward einfließen, den Trainingsprozess eigentlich nicht negativ beeinflussen dürften, erreicht der Trainingsprozess mit Zugriff auf die Positionen keinen positiven Cumulative Reward.
+
+Die wahrscheinlichste Ursache für ein solches Verhalten sind suboptimal eingestellte Hyperparameter.
+Zusätzlich scheint die Anzahl der Neuronen des verwendeten Neuralen Netzes für die gesteigerte Eingabekomplexität nicht mehr auszureichen.
+Aufgrund der Ähnlichkeit des Problems mit dem Crawler-Example, werden die Hyperparameter beider Probleme miteinander abgeglichen und optimiert zusammengeführt.
+\autoref{fig:optimierte-hyperparameter} zeigt eine Übersicht der Cumulative Rewards der drei Testläufe.
+Die optimierten Hyperparameter werden in \autoref{anhang:trainer-config} dargestellt.
+
+\begin{figure}
+    \centering
+    \includegraphics[width = \textwidth]{Bilder/ml-agents/Environment_Cumulative Reward-add-observations.pdf}
+    \caption[Schrittweise Erweiterung und Optimierung der Hyperparameter]{Schrittweise Erweiterung und Optimierung der Hyperparameter: (grau) hinzugefügte Nullvektoren; (orange) zusätzliche Beobachtungen bereitgestellt; (blau) optimierte Hyperparameter}
+    \label{fig:optimierte-hyperparameter}
+\end{figure}
+
+Auf Basis der neu eingestellten Hyperparameter werden erneut die Änderungen von \autoref{sec:classic-reward} angewandt.
+Als Resultat kann zwar eine stabil ansteigende Kennkurve des Cumulative Reward beobachtet werden, jedoch trifft dies nicht auf das gelernte Bewegungsverhalten zu.
+Der Roboter vollführt eine Mischung aus Sprüngen und Schritten, die ihn teilweise zielstrebig auf das Ziel zubewegen, in anderen Situationen jedoch vollkommen zufällig erscheinen.\todo{video 14a}
+In der Dokumentation von ML-Agents wird als Maßnahme für einen stabilen Trainingsprozess empfohlen, den Betrag des Rewards möglichst auf einen Betrag von 1 zu skalieren.
+Einige Versuche mit verschiedenen Skalierungen zeigen jedoch keine abweichenden Ergebnisse.
+Auffällig ist jedoch, dass die Cumulative Rewards der Trainingsdurchläufe mit skalierten Rewards deutlich stärker schwanken (\autoref{fig:scale-reward}).
+
+\begin{figure}
+    \centering
+    \includegraphics[width = \textwidth]{Bilder/ml-agents/Environment_Cumulative Reward-scale-reward.pdf}
+    \caption[Vergleich verschiedener Skalierungen des Rewards]{Vergleich verschiedener Skalierungen des Rewards: (blau) Vergleichskurve geradeaus laufen; (rot) Belohnung für Bewegung in Richtung des Ziels; (grün) skalierter Reward; (grau) skalierter Reward mit höheren Strafen für Schieflage der Körpermitte}
+    \label{fig:scale-reward}
+\end{figure}
 
 \section{Hindernisumfahrung}
 \subsection{Grundsätzliche Experimente}
