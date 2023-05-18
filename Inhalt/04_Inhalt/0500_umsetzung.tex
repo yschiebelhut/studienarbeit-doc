@@ -63,7 +63,7 @@ Deshalb ist eine kleine Testreihe unerlässlich, bei der möglichst gute Werte f
 Der maßgebliche Performanceindikator ist hierbei die Anzahl der Trainingsschritte pro Sekunde.
 Zur Optimierung wird beispielsweise nach und nach die Anzahl der parallelen Trainingsumgebungen erhöht, bis die Anzahl der Schritte pro Sekunde nicht mehr weiter steigt.
 Die nachfolgende Befehlszeile scheint nach einigem Optimieren gute Ergebnisse für die Machienenkonfiguration zu liefern:
-\code{mlagents-learn --env binary-name/binary-name.x86\_64 --run-id run-name --no-graphics --torch-device cuda --num-envs 4 --time-scale 1 trainer.yaml}.
+\code{mlagents-learn --env binary-name/binary-name.x86\_64 --run-id runName --no-graphics --torch-device cuda --num-envs 4 --time-scale 1 trainer.yaml}.
 Dabei werden 4 parallele Trainingsumgebungen (mit jeweils 30 Agenten) ohne Generierung von grafischen Artefakten betrieben.
 ML-Agents greift intern auf Tensorflow und PyTorch zurück.
 Grundsätzlich bieten beide Bibliotheken die Möglichkeit, eine CUDA-fähige GPU zur Grafikbeschleunigung der Trainingsalgorithmen zu verwenden.
@@ -85,7 +85,7 @@ Da unklar ist, ob solche Berechnungen hier Verwendung finden und gegebenenfalls 
 \end{figure}
 
 Der Verlauf des Cumulative Rewards, der nun beim Training entsteht und in \autoref{fig:time-scale-1} dargestellt wird, gleicht im Wesentlichen den Resultaten von \cite[50]{waidner.2020}.
-Auch der gelernte Bewegungsablauf, der bei der Inferenz zu beobachten ist\todo{Video}, gleicht den Resultaten der vorangegangenen Arbeit, weshalb die Rekonstruktion als erfolgreich bewertet wird.
+Auch der gelernte Bewegungsablauf, der bei der Inferenz zu beobachten ist\todo{Video timeScale1}, gleicht den Resultaten der vorangegangenen Arbeit, weshalb die Rekonstruktion als erfolgreich bewertet wird.
 
 
 \section{Stabilisierung des Laufverhaltens}
@@ -107,30 +107,94 @@ Die dort implementierte, allgemeine Bewegungskoordination des Roboters ist eine 
 Auch wird so eine kontinuierliche Basis für die einzelnen Versuche und deren Evaluation geboten.
 Jedoch stellt der in dieser Klasse berechnete Reward die zentralste Stellschraube des Reinforcement Learning Problems dar.
 
-\lstinputlisting[
-    % language = C,
-    firstline = 8,
-    % lastline = 41,
-    caption = Ürsprüngliche Berechnung des Reward-Signals,
-    label = code:reward-post-reconstruct
-]{Code/post-reconstruct/reward.cs}
+\begin{figure}
+    \lstinputlisting[
+        % language = C,
+        firstline = 8,
+        % lastline = 41,
+        caption = Ürsprüngliche Berechnung des Reward-Signals,
+        label = code:reward-post-reconstruct
+    ]{Code/post-reconstruct/reward.cs}
+\end{figure}
 
-In \autoref{code:reward-post-reconstruct} ist die ursprüngliche Berechnung des Rewards zu sehen, wie sie in \code{SpiderController.cs}.
+In \autoref{code:reward-post-reconstruct} ist die ursprüngliche Berechnung des Rewards zu sehen, wie sie in \code{SpiderController.cs} implementiert ist.
 Dabei wird zunächst der Reward mit 0 initialisiert.
-Anschließend wird abgeprüft, ob sich der Roboter um mehr als 90° zur horizontalen Achse gedreht hat und eine negative Belohnung vergeben, falls dies der Fall sein sollte.
-Mit dieser Prüfung soll verhindert werden, dass der Roboter sich überschlägt und dabei seine empfindliche Elektronik beschädigt.
+Anschließend wird abgeprüft, ob sich der Roboter um mehr als 90° zur horizontalen Achse gedreht hat und eine negative Belohnung vergeben, falls dies der Fall ist.
+Mit dieser Prüfung wird verhindert, dass der Roboter sich überschlägt und dabei seine empfindliche Elektronik beschädigt.
 Anschließend wird geprüft, wie weit der Roboter auf der Karte in Vorwärtsrichtung von seinem Ausgangspunkt entfernt ist und die Differenz zum vorherigen Resultat dieser Berechnung gebildet.
 Diese Differenz -- sowohl wenn diese positiv ausfällt, als auch, wenn sie negativ ist -- wird dann mit der eventuellen Strafe für ein Überschlagen verrechnet und als Reward zurückgegeben.
 
 Der offensichtliche und einfache Weg ist es nun, in der Methode \code{isTurned()} den Schwellwert der Rückgabe von 90° auf einen kleineren Wert, zum Beispiel 5°, zu reduzieren.
-Mit dieser Modifikation wird automatisch ein negativer Summand in den Reward eingebracht.
+Mit dieser Modifikation wird automatisch ein negativer Summand in den Reward eingebracht, wenn die Schwankung der Körpermitte den nun deutlich geringeren Schwellwert überschreitet.
 Das Problem hierbei besteht darin, dass die Methode \code{isTurned()} nicht nur zur Berechnung des Rewards verwendet wird, sondern auch in \code{SpiderAgent.cs} die aktuelle Episode terminiert wird, wenn sich der Roboter auf den Rücken dreht.
-Wird die Modifikation an dieser Methode vorgenommen, so wird auch eine kleine Schwankung der Körpermitte als Überschlag interpretiert und die laufende Trainings-Episode fälschlicherweise beendet.
+Wird die beschriebene Modifikation an dieser Methode vorgenommen, so wird auch eine kleine Schwankung der Körpermitte bereits als Überschlag interpretiert und die laufende Trainings-Episode fälschlicherweise beendet.
 Wie sich bei einem Trainingsversuch zeigt, führt dies dazu, dass der Roboter kein Laufverhalten lernen kann, da ihm keine Gelegenheit geboten wird, seinen Fehler zu erkennen, zu erforschen und zu korrigieren.
 Für eine möglichst stabile Körpermitte sollte der Rotations-Schwellwert möglichst gering sein.
 Jedoch wird bei diesem Ansatz ein Training gegenläufig zum sinkenden Schwellwert praktisch unmöglich.
 
+\begin{figure}
+    \lstinputlisting[
+        % language = C,
+        % firstline = 8,
+        lastline = 18,
+        caption = Reward-Funktion mit Stabilisierung,
+        label = code:reward-1-adjustAngle
+    ]{Code/1-adjustAngle/reward.cs}
+\end{figure}
 
+Eine alternative Lösung ist in \autoref{code:reward-1-adjustAngle} dargestellt.
+Zentrales Element dieser Lösung ist die neu eingeführte Methode \code{getAngle()}.
+Der Methodenrumpf ist fast identisch mit dem der Methode \code{isTurned()} aus \autoref{code:reward-post-reconstruct}.
+Der Unterschied besteht dabei darin, dass die neue Methode nicht prüft, ob der berechnete Winkel größer als 90° ist und den resultierenden Wahrheitswert zurückgibt, sondern stattdessen den Rest der Division des Winkels durch 90 bestimmt und als Fließkommazahl zurückliefert.
+Anschließend wird der mit der neuen Methode berechnete Winkel mit einem kleinen negativen Faktor multipliziert und dieser Summand in der Berechnung des Rewards ergänzt (Zeile 6).
+Somit wird eine Strafe vergeben, deren Betrag proportional mit der Rotation der Körpermitte zunimmt.
+Die anschließende Belohnung für die zurückgelegte Distanz und die Verrechnung mit der Bestrafung bleibt unverändert.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{Bilder/ml-agents/Environment_Cumulative Reward_adjustedAngles.pdf}
+    \caption{Cumulative Reward mit Stabilisierung}
+    \label{fig:adjustedAngles}
+\end{figure}
+
+Das mit dieser Reward-Funktion trainierte Modell legt die Wirksamkeit der Maßnahme dar: beim Laufverhalten des Roboters ist zu beobachten, dass die Körpermitte perfekt in einer horizontalen Lage gehalten wird.
+\autoref{fig:adjustedAngles} zeigt den Verlauf des Cumulative Rewards während des Trainings.
+Im Vergleich zu \autoref{fig:time-scale-1} fällt auf, dass der Trainingsprozess zwar zu einem stabilen Wert konvergiert, jedoch besonders am Anfang deutlich instabiler verläuft.
+Außerdem ist der Wert, zu dem das Training konvergiert, fast um zwei Drittel gemindert.
+Betrachtet man das Laufverhalten des Roboters\todo{Video adjustedAngles}, so fällt weiterhin auf, dass der Roboter weiterhin eine sprungartige Fortbewegung wählt.
+(Diese fällt allerdings weitaus stabiler aus, als der in \cite{waidner.2020} erlernte Bewegungsablauf.)
+Dabei werden allerdings nur die beiden vorderen und eins der hinteren Beine verwendet, das letzte Bein ist eingekringelt und berührt den Boden nicht.
+
+\subsection{Optimierung der Reward-Funktion}
+In einem Versuch, das Laufverhalten weiter zu optimieren und eine natürlichere Laufbewegung zu erhalten, wird die Berechnung des Rewards leicht umgestaltet.
+Die optimierte Version ist in \autoref{code:reward-4-no-box} abgebildet.
+Die Prüfung, ob der Roboter sich überschlagen hat, bleibt bestehen, wobei hier die Bestrafung erhöht wird, um den Überschlag als schlimmstmöglichen Fall vom instabilen Laufverhalten abzugrenzen.
+Tritt dieser Fall ein, so findet auch keine weitere Berechnung des Rewards statt, sondern der Wert der Strafe wird umgehend zurückgegeben.
+Danach wird eine kleine Strafe eingeführt, die mit jedem Schritt vergeben wird.
+Diese stellt eine generelle Optimierung der Reward-Funktion dar, da eine solche Strafe bewirkt, dass ein Agent danach strebt, sein Ziel möglichst schnell zu erreichen \cite{mlagentsReward}.
+
+Durch die starke Modifikation der Gewichte in der Reward-Funktion können die Beträge der Cumulative Reward Funktion während des Trainings nicht mehr als vergleichende Metrik eingesetzt werden.
+Der in \autoref{fig:4-debug} dargestellte Kurvenverlauf zeigt jedoch, dass der Trainingsprozess bedeutend stabiler verläuft verglichen mit \autoref{fig:adjustedAngles}.
+Das in Folge der vorgenommenen Maßnahmen trainierte Modell zeigt ein erstaunlich natürliches Bewegungsmuster, sehr ähnlich zur Fortbewegung eines Spinnentiers.
+\todo{Video 4-debug-extended-vector-size}
+
+\begin{figure}
+    \lstinputlisting[
+        % language = C,
+        % firstline = 8,
+        lastline = 12,
+        caption = Optimierte Reward-Funktion,
+        label = code:reward-4-no-box
+    ]{Code/4-no-box/reward.cs}
+\end{figure}
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{Bilder/ml-agents/Environment_Cumulative Reward-4-debug-extended-vector-space.pdf}
+    \caption{Cumulative Reward mit Optimierung der Reward-Funktion}
+    \label{fig:4-debug}
+\end{figure}
 
 
 \section{Pfadplanung}
