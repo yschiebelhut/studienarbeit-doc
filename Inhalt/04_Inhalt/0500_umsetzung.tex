@@ -85,7 +85,7 @@ Da unklar ist, ob solche Berechnungen hier Verwendung finden und gegebenenfalls 
 \end{figure}
 
 Der Verlauf des Cumulative Rewards, der nun beim Training entsteht und in \autoref{fig:time-scale-1} dargestellt wird, gleicht im Wesentlichen den Resultaten von \cite[50]{waidner.2020}.
-Auch der gelernte Bewegungsablauf, der bei der Inferenz zu beobachten ist\todo{Video timeScale1}, gleicht den Resultaten der vorangegangenen Arbeit, weshalb die Rekonstruktion als erfolgreich bewertet wird.
+Auch der gelernte Bewegungsablauf, der bei der Inferenz zu beobachten ist\footnote{\href{https://github.com/yschiebelhut/studienarbeit-doc/raw/master/Videos/SpiderBotDemos/timeScale1.webm}{Link zu Videomaterial}}, gleicht den Resultaten der vorangegangenen Arbeit, weshalb die Rekonstruktion als erfolgreich bewertet wird.
 
 
 \section{Stabilisierung des Laufverhaltens}
@@ -161,7 +161,7 @@ Das mit dieser Reward-Funktion trainierte Modell legt die Wirksamkeit der Maßna
 \autoref{fig:adjustedAngles} zeigt den Verlauf des Cumulative Rewards während des Trainings.
 Im Vergleich zu \autoref{fig:time-scale-1} fällt auf, dass der Trainingsprozess zwar zu einem stabilen Wert konvergiert, jedoch besonders am Anfang deutlich instabiler verläuft.
 Außerdem ist der Wert, zu dem das Training konvergiert, fast um zwei Drittel gemindert.
-Betrachtet man das Laufverhalten des Roboters\todo{Video adjustedAngles}, so fällt weiterhin auf, dass der Roboter weiterhin eine sprungartige Fortbewegung wählt.
+Betrachtet man das Laufverhalten des Roboters\footnote{\href{https://github.com/yschiebelhut/studienarbeit-doc/raw/master/Videos/SpiderBotDemos/adjustedAngles.webm}{Link zu Videomaterial}}, so fällt weiterhin auf, dass der Roboter weiterhin eine sprungartige Fortbewegung wählt.
 (Diese fällt allerdings weitaus stabiler aus, als der in \cite{waidner.2020} erlernte Bewegungsablauf.)
 Dabei werden allerdings nur die beiden vorderen und eins der hinteren Beine verwendet, das letzte Bein ist eingekringelt und berührt den Boden nicht.
 
@@ -175,8 +175,7 @@ Diese stellt eine generelle Optimierung der Reward-Funktion dar, da eine solche 
 
 Durch die starke Modifikation der Gewichte in der Reward-Funktion können die Beträge der Cumulative Reward Funktion während des Trainings nicht mehr als vergleichende Metrik eingesetzt werden.
 Der in \autoref{fig:4-debug} dargestellte Kurvenverlauf zeigt jedoch, dass der Trainingsprozess bedeutend stabiler verläuft verglichen mit \autoref{fig:adjustedAngles}.
-Das in Folge der vorgenommenen Maßnahmen trainierte Modell zeigt ein erstaunlich natürliches Bewegungsmuster, sehr ähnlich zur Fortbewegung eines Spinnentiers.
-\todo{Video 4-debug-extended-vector-size}
+Das in Folge der vorgenommenen Maßnahmen trainierte Modell\footnote{\href{https://github.com/yschiebelhut/studienarbeit-doc/raw/master/Videos/SpiderBotDemos/4-debug-extended-vector-size.webm}{Link zu Videomaterial}} zeigt ein erstaunlich natürliches Bewegungsmuster, sehr ähnlich zur Fortbewegung eines Spinnentiers.
 
 \begin{figure}
     \lstinputlisting[
@@ -242,7 +241,7 @@ In der Element-Detailansicht von Unity können anschließend beliebig viele Ziel
     \label{fig:eingabefeld-positionen}
 \end{figure}
 
-Da der Agent im Crawler-Example die Ziele nicht selbst kontrolliert, ist kein erneutes Trainieren des Modells nötig, sondern die Modifikationen sind direkt wirksam und der Agent läuft entlang des vorgegebenen Pfades.\todo{Video crawler-poc}
+Da der Agent im Crawler-Example die Ziele nicht selbst kontrolliert, ist kein erneutes Trainieren des Modells nötig, sondern die Modifikationen sind direkt wirksam und der Agent läuft entlang des vorgegebenen Pfades\footnote{\href{https://github.com/yschiebelhut/studienarbeit-doc/raw/master/Videos/crawler-poc.webm}{Link zu Videomaterial}}.
 
 \subsection{Übertragung auf den SpiderAgent}
 Um dieses Prinzip für den Roboter in dieser Studienarbeit zu nutzen, werden der \code{TargetController} und das dazugehörige Prefab aus dem Beispielprojekt des ML-Agents-Toolkits in die Simulationsumgebung kopiert.
@@ -353,7 +352,7 @@ Die optimierten Hyperparameter werden in \autoref{anhang:trainer-config} dargest
 
 Auf Basis der neu eingestellten Hyperparameter werden erneut die Änderungen von \autoref{sec:classic-reward} angewandt.
 Als Resultat kann zwar eine stabil ansteigende Kennkurve des Cumulative Reward beobachtet werden, jedoch trifft dies nicht auf das gelernte Bewegungsverhalten zu.
-Der Roboter vollführt eine Mischung aus Sprüngen und Schritten, die ihn teilweise zielstrebig auf das Ziel zubewegen, in anderen Situationen jedoch vollkommen zufällig erscheinen.\todo{video 14a}
+Der Roboter vollführt eine Mischung aus Sprüngen und Schritten, die ihn teilweise zielstrebig auf das Ziel zubewegen, in anderen Situationen jedoch vollkommen zufällig erscheinen\footnote{\href{https://github.com/yschiebelhut/studienarbeit-doc/raw/master/Videos/SpiderBotDemos/14a-calmed-reward-scaled.webm}{Link zu Videomaterial}}.
 In der Dokumentation von ML-Agents wird als Maßnahme für einen stabilen Trainingsprozess empfohlen, den Betrag des Rewards möglichst auf einen Betrag von 1 zu skalieren.
 Einige Versuche mit verschiedenen Skalierungen zeigen jedoch keine abweichenden Ergebnisse.
 Auffällig ist jedoch, dass die Cumulative Rewards der Trainingsdurchläufe mit skalierten Rewards deutlich stärker schwanken (\autoref{fig:scale-reward}).
@@ -383,7 +382,7 @@ Dies widerspricht eigentlich einer der grundlegendsten Maxime von Reinforcement 
 Im Falle des Crawler-Examples, anhand dessen ein Proof of Concept zur Pfadplanung implementiert wurde, kann ähnliches beobachtet werden wie bei dem Modell des SpiderAgents, welches nicht explizit für das Hindernis trainiert wurde.
 Aufgrund seiner physikalischen Simulationseigenschaften federt der Crawler etwas von der Wand zurück, gegen die er wiederholt läuft.
 Dabei wird er jedes Mal leicht zur Seite abgedrängt, wodurch er nach einiger Zeit das Hindernis überwindet.
-Dieser Vorgang ist jedoch weder eine gezielte Handlung noch ansatzweise effizient.\todo{Video crawler wand}
+Dieser Vorgang ist jedoch weder eine gezielte Handlung noch ansatzweise effizient\footnote{\href{https://github.com/yschiebelhut/studienarbeit-doc/raw/master/Videos/crawler-obstacle.webm}{Link zu Videomaterial}}.
 
 Diese Experimente zeigen anschaulich, dass auch bei bereits funktionierender Pfadplanung in jedem Fall ein gesondertes Training mit einem zufällig generierten Hindernisparcour notwendig ist, um dem fertigen Modell ein Umsteuern von Hindernissen zu ermöglichen.
 Für den Fall, dass das Erlernen von Pfadplanung und das gleichzeitige Umsteuern von Hindernissen ein zu komplexes Lernproblem darstellt, könnte gegebenenfalls Curriculum Learning eingesetzt werden, um die Probleme aufeinander aufbauend zu lösen.

@@ -1,1 +1,16 @@
 \chapter{Fazit}
+Ziel dieser Arbeit war es, ein vorliegendes Reinforcement Learning Problem, bei dem einem spinnenartiger Roboter das Laufen beigebracht wird, um Pfadplanung und das Umsteuern von Hindernissen zu erweitern.
+Dazu wurden zunächst wichtige Grundlagen erläutert und der State of the Art von Reinforcement Learning gesteuerter Lokomotion vorgestellt.
+Anschließend wurde ein Konzept zur Lösung der Aufgabe erarbeitet.
+Dabei wurden vor allem notwendige Modifikationen am Roboter und Möglichkeiten zur Pfadplanung diskutiert.
+Die gewählte Realisierung soll dem Roboter generische Positionierungsinformationen bereitstellen.
+Weiterhin wird ein Pfad nicht als ganzes betrachtet, sondern in einzelne Punkte zerlegt.
+Das Erreichen des jeweils nächsten Punktes kann auf das Ausgangsproblem reduziert werden.
+
+Gemäß dem entwickelten Konzept wurde die Trainingsumgebung an den aktuellen Stand der Technik angepasst und verschiedene Testreihen mit dem \acl{ppo}-Algorithmus durchgeführt.
+Dabei wurde erfolgreich das zuvor Sprung-basierte Laufverhalten des Roboters stabilisiert.
+Für die Pfadplanung wurde, anhand eines ähnlich aufgebauten Projekts, erfolgreich ein Proof of Concept implementiert.
+Das Training am eigenen Roboter war nur eingeschränkt erfolgreich, wobei als primäre Fehlerquellen die Hyperparameter des Trainings und ein Mangel an zur Verfügung gestellten Informationen vermutet werden.
+Die Trainingsdurchläufe wurden anhand geeigneter Metriken analysiert und Vorschläge für zukünftige Verbesserungen dargelegt.
+Ein sinnvolles Training der Hindernisumsteuerung konnte nicht durchgeführt werden, da dieses auf der Verfolgung eines vorgegebenen Pfads aufbaut.
+Trotz dieser Schwierigkeiten wurden mehrere Tests durchgeführt, um die Möglichkeiten der Hindernisumsteuerung zu evaluieren und die weitere Roadmap zu beschreiben, wenn eine funktionierende Pfadplanung als Basis erreicht wurde.

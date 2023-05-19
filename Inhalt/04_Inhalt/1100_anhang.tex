@@ -1,14 +1,13 @@
 \chapter{Hinweis}
-\todo{Links einfügen und Text fomulieren}
-\begin{itemize}
-    \item Quellcode Projekt
-    \item Ergebnisse Repo
-    \item Videos
-    \item Hinweis: zum Durchführung der Inferenz eines bestimmten Standes muss das Repository in diesem Commit ausgecheckt sein, die Observations müssen mit denselben Umgebungsdaten bestückt werden, wie während des Trainingsprozesses
-\end{itemize}
+Der vollständige Quellcode sämtlicher Trainingsschritte ist frei verfügbar unter \url{https://github.com/MobMonRob/HindernisumfahrungRLStudien} sowie unter \url{https://github.com/yschiebelhut/spider_bot_rl_training}.
+Weiterhin enthält \url{https://github.com/yschiebelhut/spiderbot-training-data} die für Linux kompilierten Trainingsumgebungen, die trainierten Modelle und alle notwendigen Daten, um die Trainingsprozesse mit Tensorboard nachvollziehen zu können.
+
+\paragraph{Wichtig:} Zur Durchführung der Inferenz eines bestimmten Modells sollte das Haupt-Repository möglichst auf dem entsprechenden Commit ausgecheckt sein, auf dem das Training stattgefunden hat.
+(Die Numerierungen in den Commits und den Run-IDs geben darüber Aufschluss.)
+Dies ist wichtig, da insbesondere die Größe des Observation Space als auch die Observations selbst mit den beim Training verwendeten Daten übereinstimmen müssen, weil es ansonsten zu Fehlern bei der Interpretation des neuronalen Netzes kommt.
 
 
-\chapter{Trainer Config YAML}\todo{titel}
+\chapter{ML-Agents Training Konfiguration}
 \label{anhang:trainer-config}
 \begin{figure}[H]
     \lstinputlisting[
