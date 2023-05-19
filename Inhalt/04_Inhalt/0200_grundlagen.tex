@@ -331,12 +331,13 @@ Die in der Regel verwendeten Befehle zur Initiierung des Trainings folgen grundl
 \code{mlagents-learn <yaml-config> --env=<env\_name>  --run-id=<run-id>}
 
 \subsection{Bewertungskriterien}
+\label{sec:bewertung}
 Der Verlauf des Trainings kann mittels des Tools \emph{Tensorboard} überwacht werden.
 Tensorboard startet dabei einen lokalen Webserver, der Auswertungen der Trainingsdaten im Browser darstellt.
 Um das Ergebnis eines Trainings objektiv zu bewerten, muss natürlich das eigentliche, resultierende Modell betrachtet werden, jedoch geben auch einige der in Tensorboard dargestellten Metriken frühzeitig Aufschluss über den potenziellen Erfolg des Trainings.
-Allen voran steht der \emph{Kumulierte Reward}.
+Allen voran steht der \emph{Cumulative Reward}.
 Dieser Wert gibt den mittleren kumulierten Reward innerhalb einer Episode von allen Agenten an.
-Natürlich hängt der Verlauf dieser Kurve stark davon ab, wie die individuelle Reward-Funktion gewählt wird, allerdings sollte sich dieser Wert bei einem erfolgreichen Training stetig erhöhen.
+Natürlich hängt der Verlauf dieser Kurve stark davon ab, wie die individuelle Reward-Funktion gewählt wird, allerdings sollte sich dieser Wert bei einem erfolgreichen Training stetig erhöhen und keine starken Schwankungen aufweisen.
 Die \emph{Episodenlänge} zeigt an, wie lange die Episoden im Mittel gedauert haben.
 Wird die Umgebung etwa beim unwiderruflichen Scheitern eines Agenten zurückgesetzt, so kann hier abgelesen werden, wie lange es im Mittel dauert, bis es zu einem fatalen Scheitern kommt.
 \emph{Policy Loss} hängt davon ab, wie stark die Policy sich verändert.
