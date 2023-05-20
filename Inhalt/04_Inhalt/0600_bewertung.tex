@@ -2,22 +2,22 @@
 Insgesamt wurden einige Testreihen zur Stabilisierung des Laufverhaltens, zur Pfadplanung sowie zur Umsteuerung von Hindernissen durchgeführt.
 Während die Stabilisierung erfolgreich durchgeführt wurde, zeigen insbesondere die Testreihen zur Pfadverfolgung, auf denen die Hindernisumfahrung basiert, nicht die erwünschten Ergebnisse.
 Zwar steuert der Roboter manchmal zielstrebig auf das DynamicTarget zu, allerdings ist sein Laufverhalten dabei stark instabil und die Aufgabe wird nicht verlässlich erfüllt.
-Da die dabei verwendete Reward-Funktion und somit das gestellte Reinforcement Learning Problem fundamental sehr ähnlich zur Projektbasis \cite{waidner.2020} aufgebaut sind, ist die Ursache nur schwer zu bestimmen.
+Da die dabei verwendete Reward-Funktion und somit das gestellte Reinforcement Learning Problem fundamental sehr ähnlich zur laufstabilisierten Version aufgebaut sind, welche problemlos trainiert, ist die Ursache nur schwer zu bestimmen.
 
 \autoref{fig:losses} stellt eine Übersicht der in \autoref{sec:bewertung} beschriebenen Bewertungskriterien für die einzelnen Trainingsdurchläufe dar.
 Hierbei existieren einige Auffälligkeiten.
 Die Kurve des Policy Loss sollte eigentlich im Laufe des Trainings abnehmen, wenn die Policy zu einer stabilen Funktion konvergiert.
 \autoref{fig:losses} zeigt ein breites Spektrum, über das die verschiedenen Policy Losses verteilt liegen.
-Auffällig ist dabei jedoch, dass die Losses zwar in der Regel einer starken Schwankung unterliegen, diese sich jedoch bis auf wenige Ausnahmen auf einen recht engen Wertebereich für jede Kurve beschränken.
+Auffällig ist dabei, dass die Losses zwar in der Regel einer starken Schwankung unterliegen, diese sich jedoch bis auf wenige Ausnahmen auf einen recht engen Wertebereich für jede Kurve beschränken.
 Im Falle des Value Losses sollte der Wert zu Beginn hoch liegen und dann im Laufe des Trainings zu einem niedrigen Wert konvergieren.
 Auch bei diesen Kurven können bei den meisten Trainingsdurchläufen hohe Schwankungen anstatt der gewünschten Konvergenz beobachtet werden.
 Zwar gibt es auch einige Kurven, die grob dem erwarteten Verlauf entsprechen, jedoch konvergieren diese im Verhältnis zur Länge des Trainingsdurchlaufs viel zu früh.
 
-Sowohl beim Policy als auch beim Value Loss kann beobachtet werden, dass einige Kurven sehr stabile und niedrige Werte aufweisen.
+Sowohl beim Policy als auch beim Value Loss kann beobachtet werden, dass einige Kurven sehr stabile, allerdings konstant niedrige Werte aufweisen.
 Diese Kurven entstanden nach der Korrektur der Hyperparameter, weshalb auf eine potenzielle Überkorrektur geschlossen werden kann.
 
 Zwar würden fehlerhaft optimierte Hyperparameter und die Verläufe der Losses theoretisch die schlechten Trainingsergebnisse erklären, jedoch muss in diesem Zusammenhang auch darauf hingewiesen werden, dass die Stabilisierung des Laufverhaltens äußerst erfolgreich trainiert wurde, allerdings ebenso Verläufe der Losses zeigt, die eigentlich nicht zu einem erfolgreichen Training passen.
-Dadurch wird die oben geübte Kritik infrage gestellt.
+Dadurch wird die oben geübte Kritik teilweise infrage gestellt.
 
 \begin{figure}
     \centering
@@ -40,11 +40,11 @@ Dafür können verschiedene Konfigurationen von Hyperparametern versucht werden,
 Weiterhin dürfte es lohnenswert sein, ein Augenmerk auf die Unterschiede und Parallelen der vorliegenden Problemstellung zum wiederholt erwähnten Crawler-Example zu legen.
 Allerdings dürfen auch fundamentale Unterschiede der beiden Szenarios nicht außer Acht gelassen werden, die eine direkte Übertragung unmöglich machen.
 Primär sind dies die unterschiedliche Anzahl und Art der Gelenke genauso wie die zur Verfügung gestellten Eingabedaten.
-Auch Fehler in der Simulation der Servomotoren können als Ursache nicht ausgeschlossen werden, da diese etwa das zielgenaue Koordinieren der Gelenke erschweren könnte und somit zwar zur Bewältigung einzelner Aufgaben genügt, jedoch der komplexer werdenden Problemstellung nicht mehr gewachsen ist.
+Auch Fehler in der Simulation der Servomotoren können als Ursache nicht ausgeschlossen werden, da die Simulation etwa das zielgenaue Koordinieren der Gelenke erschweren könnte und somit zwar zur Bewältigung einfacher Aufgaben genügt, jedoch komplexer werdenden Problemstellungen nicht mehr gewachsen ist.
 
 Sollten mit den aufgelisteten Maßnahmen kein Erfolg erreicht werden, so könnte es auch interessant sein, den dezentralen Ansatz von Schilling et al. \cite{schilling2020decentralized} dediziert im Kontext der vorliegenden Problemstellung zu erforschen.
 
 Ein elementarer Unterschied, der diese Arbeit von anderen abgrenzt, die dem State of the Art entsprechend, sind die stark beschränkten Eingabedaten.
 Den Trainingsalgorithmen in vergleichbaren Projekten stehen bedeutend mehr Daten zu sich selbst und ihrer Umgebung zur Verfügung.
 Deshalb wird der Schluss gezogen, dass wahrscheinlich sämtliche oben genannten Maßnahmen nur eine eingeschränkte Wirksamkeit entfalten können, solange die Sensorik des Roboters nicht erweitert wird.
-Deshalb sollte zukünftig weiterhin evaluiert werden, mit welchen Sensoren der Roboter in der Realität sinnvoll ergänzt werden könnte, um dem Roboter hilfreiche Informationen über seinen eigenen Zustand zur Verfügung zu stellen.
+Deshalb sollte weiterhin evaluiert werden, mit welchen Sensoren der Roboter in der Realität sinnvoll ergänzt werden könnte, um dem Roboter hilfreiche Informationen über seinen eigenen Zustand zur Verfügung zu stellen.
