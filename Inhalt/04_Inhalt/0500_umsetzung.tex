@@ -91,6 +91,7 @@ Auch der gelernte Bewegungsablauf, der bei der Inferenz zu beobachten ist\footno
 
 
 \section{Stabilisierung des Laufverhaltens}
+\label{sec:stabilisierung}
 Wie in \autoref{sec:probleme} ausgeführt und von den Ergebnissen der Rekonstruktion zusätzlich veranschaulicht wird, bewegt sich der Roboter aktuell mit einer sprungartigen Bewegung fort.
 Diese ist, wie beschrieben, Ursache für viele potenzielle Probleme.
 Deshalb soll das Laufverhalten stabilisiert werden.
@@ -159,24 +160,24 @@ Die anschließende Belohnung für die zurückgelegte Distanz und die Verrechnung
     \label{fig:adjustedAngles}
 \end{figure}
 
-Das mit dieser Reward-Funktion trainierte Modell legt die Wirksamkeit der Maßnahme dar: beim Laufverhalten des Roboters ist zu beobachten, dass die Körpermitte perfekt in einer horizontalen Lage gehalten wird.
+Das mit dieser Reward-Funktion trainierte Modell legt die Wirksamkeit der Maßnahme dar: beim Laufverhalten des Roboters ist zu beobachten\footnote{\href{https://github.com/yschiebelhut/studienarbeit-doc/raw/master/Videos/SpiderBotDemos/adjustedAngles.webm}{Link zu Videomaterial}}, dass die Körpermitte perfekt in einer horizontalen Lage gehalten wird.
 \autoref{fig:adjustedAngles} zeigt den Verlauf des Cumulative Rewards während des Trainings.
 Im Vergleich zu \autoref{fig:time-scale-1} fällt auf, dass der Trainingsprozess zwar zu einem stabilen Wert konvergiert, jedoch besonders am Anfang deutlich instabiler verläuft.
 Außerdem ist der Wert, zu dem das Training konvergiert, fast um zwei Drittel gemindert.
-Betrachtet man das Laufverhalten des Roboters\footnote{\href{https://github.com/yschiebelhut/studienarbeit-doc/raw/master/Videos/SpiderBotDemos/adjustedAngles.webm}{Link zu Videomaterial}}, so fällt weiterhin auf, dass der Roboter weiterhin eine sprungartige Fortbewegung wählt.
+Betrachtet man das Laufverhalten des Roboters, so fällt weiterhin auf, dass der Roboter weiterhin eine sprungartige Fortbewegung wählt.
 (Diese fällt allerdings weitaus stabiler aus, als der in \cite{waidner.2020} erlernte Bewegungsablauf.)
 Dabei werden allerdings nur die beiden vorderen und eins der hinteren Beine verwendet, das letzte Bein ist eingekringelt und berührt den Boden nicht.
 
 \subsection{Optimierung der Reward-Funktion}
 In einem Versuch, das Laufverhalten weiter zu optimieren und eine natürlichere Laufbewegung zu erhalten, wird die Berechnung des Rewards leicht umgestaltet.
 Die optimierte Version ist in \autoref{code:reward-4-no-box} abgebildet.
-Die Prüfung, ob der Roboter sich überschlagen hat, bleibt bestehen, wobei hier die Bestrafung erhöht wird, um den Überschlag als schlimmstmöglichen Fall vom instabilen Laufverhalten abzugrenzen.
+Die Prüfung, ob der Roboter sich überschlagen hat, bleibt bestehen, wobei allerdings die Bestrafung erhöht wird, um den Überschlag als schlimmstmöglichen Fall von einem lediglich instabilen Laufverhalten abzugrenzen.
 Tritt dieser Fall ein, so findet auch keine weitere Berechnung des Rewards statt, sondern der Wert der Strafe wird umgehend zurückgegeben.
 Danach wird eine kleine Strafe eingeführt, die mit jedem Schritt vergeben wird.
 Diese stellt eine generelle Optimierung der Reward-Funktion dar, da eine solche Strafe bewirkt, dass ein Agent danach strebt, sein Ziel möglichst schnell zu erreichen \cite{mlagentsReward}.
 
 Durch die starke Modifikation der Gewichte in der Reward-Funktion können die Beträge der Cumulative Reward Funktion während des Trainings nicht mehr als vergleichende Metrik eingesetzt werden.
-Der in \autoref{fig:4-debug} dargestellte Kurvenverlauf zeigt jedoch, dass der Trainingsprozess bedeutend stabiler verläuft verglichen mit \autoref{fig:adjustedAngles}.
+Der in \autoref{fig:4-debug} dargestellte Kurvenverlauf zeigt jedoch, dass der Trainingsprozess verglichen mit \autoref{fig:adjustedAngles} bedeutend stabiler verläuft.
 Das in Folge der vorgenommenen Maßnahmen trainierte Modell\footnote{\href{https://github.com/yschiebelhut/studienarbeit-doc/raw/master/Videos/SpiderBotDemos/4-debug-extended-vector-size.webm}{Link zu Videomaterial}} zeigt ein erstaunlich natürliches Bewegungsmuster, sehr ähnlich zur Fortbewegung eines Spinnentiers.
 
 \begin{figure}
@@ -264,17 +265,17 @@ Für das Training wird die Positionsliste leer gelassen, um die Targets zufälli
 \end{figure}
 
 Bislang verfügt der Roboter nur über die aktuellen Winkel der Servomotoren als Observations.
-Für das weitere Training sollen ihm nun zusätzlich seine eigene Position und die Position des Ziels zugänglich gemacht werden, da es für den Algorithmus andernfalls nicht möglich ist, seine Aktionen auf das Erreichen des Ziels auszurichten.
-Alternativ könnte dem Roboter ein Richtungsvektor übergeben werden, der vom Roboter auf das Ziel zeigt.
+Für das weitere Training sollen ihm zusätzlich seine eigene Position und die Position des Ziels zugänglich gemacht werden, da es für den Algorithmus andernfalls nicht möglich ist, seine Aktionen auf das Erreichen des DynamicTargets auszurichten.
+Alternativ könnte dem Roboter ein Richtungsvektor als Observation übergeben werden, der vom Roboter auf das Ziel zeigt.
 Hinsichtlich ihres Informationsgehalts sind beide Angaben identisch, da sie rechnerisch ineinander überführt werden können.
-Da bei der manuellen Berechnung des Richtungsvektors jedoch leichter Fehler auftreten können, werden absolute Positionen übergeben.
-Außerdem wird dadurch zukünftig das Verbinden eines beliebigen Ortungssystems potenziell einfacher gehalten.
+Weil bei der manuellen Berechnung des Richtungsvektors jedoch leichter Fehler auftreten können, werden absolute Positionen übergeben.
+Außerdem wird somit zukünftig das Verbinden eines beliebigen Ortungssystems potenziell einfacher gehalten.
 
 Als Voraussetzung, um die zusätzlichen Informationen zur Verfügung zu stellen, muss in Unity die Größe des Observation Space um sechs Elemente erhöht werden, da beide zu übergebenden Positionen jeweils von einem dreidimensionalen Vektor repräsentiert werden.
 Anschließend wird die in \autoref{code:observations} dargestellte Methode zum Sammeln der Observations modifiziert.
 Vor der Modifikation bestand die Methode lediglich aus der Schleife, die die einzelnen Werte der Servomotoren ausliest und in den VectorSensor eingibt.
 Diese Informationen werden um die beiden zusätzlichen Positionen ergänzt.
-Die gesamte Anzahl aller Einträge, die in dieser Methode zugewiesen werden muss exakt der in Unity hinterlegten Größe des Observation Space entsprechen, ansonsten erzeugt die Methode Fehler.
+Die gesamte Anzahl aller Einträge, die in dieser Methode zugewiesen werden muss exakt der in Unity hinterlegten Größe des Observation Space entsprechen, ansonsten kommt es bei der Ausführung der Methode zu Fehlern.
 
 \begin{figure}
     \lstinputlisting[
@@ -287,7 +288,7 @@ Die gesamte Anzahl aller Einträge, die in dieser Methode zugewiesen werden muss
 \end{figure}
 
 \subsection{Geometrische Reward-Funktion}
-Um den Roboter nun dazu zu animieren, nicht mehr geradeaus, sondern zu den Zielen zu laufen, wird die Reward-Funktion angepasst.
+Um den Roboter dazu zu animieren, nicht mehr geradeaus, sondern zu den Zielen zu laufen, wird die Reward-Funktion angepasst.
 Wie in \autoref{sec:realisierung} beschrieben, existieren dafür verschiedene Ansätze.
 Als der vielversprechendste erscheint dabei die Verwendung einer sogenannten geometrischen Funktion.
 Kennzeichnend für diese ist, dass die einzelnen Bestandteile des Rewards nicht wie bislang aufsummiert werden, sondern ein Produkt aller Faktoren gebildet wird.
@@ -303,11 +304,11 @@ Die Funktionen haben verschiedene Komplexitäten und Ansätze, um eine allgemein
 
     \item Die zweite Variation verwendet die in Unity GameObjects hinterlegte Geschwindigkeit der einzelnen Körperteile und bildet daraus den Durchschnitt.
     Dieses Vorgehen soll plötzliche und ruckartige Bewegungen des Roboters, die beim Training auftreten, ausgleichen.
-    Der nächste Faktor ist, wie bei der ersten Variante, ein normalisierter Wert an dem abgelesen werden kann, ob die Bewegung in Richtung Ziel erfolgte.
-    Weiterhin wird hier wieder eine Belohnung eingeführt, die umso höher ausfällt, desto stabiler die Körpermitte in der Horizontalen gehalten wird.
+    Der nächste Faktor ist, wie bei der ersten Variante, ein normalisierter Wert, an dem abgelesen werden kann, ob die Bewegung in Richtung Ziel erfolgte.
+    Weiterhin wird hier wieder ein Belohnungsfaktor eingeführt, welcher umso höher ausfällt, desto stabiler die Körpermitte in der Horizontalen gehalten wird.
 
-    \item Der letzte Ansatz ist sehr ähnlich zum zweiten.
-    Allerdings wird hier auf das berechnete Produkt noch eine konstante Strafe für jeden Schritt summiert, um eine schnelle Zielerreichung voranzutreiben.
+    \item Der letzte Ansatz ist dem zweiten sehr ähnlich.
+    Allerdings wird hier auf das berechnete Produkt noch eine konstante Strafe für jeden Schritt addiert, um eine schnelle Zielerreichung voranzutreiben.
 \end{itemize}
 
 Trotz der Unterschiede der Ansätze zeigen alle ein ähnliches Ergebnis des Trainings: der Roboter fällt mit seiner Körpermitte auf den Boden und bewegt seine Beine in der Luft.
@@ -318,25 +319,25 @@ Der Cumulative Reward ist dabei relativ konstant, das Modell lernt auch nach meh
 Aus diesen Gründen wird die Entscheidung getroffen, die Reward-Funktion neu zu entwerfen und dabei möglichst wenig konzeptionelle Änderungen ausgehend vom stabilisierten Laufverhalten vorzunehmen.
 Ziel dieser Vorgehensweise ist es, die Quellen potenzieller Fehler möglichst weit einzuschränken.
 Es wird grundlegend dieselbe optimierte Reward-Funktion wie in \autoref{code:reward-4-no-box} genutzt.
-Der Unterschied besteht hierbei jedoch darin, dass nicht mehr die zurückgelegte Distanz entlang der x-Achse gemessen wird, sondern die zurückgelegte Distanz in Richtung des Ziels.
+Der Unterschied besteht hierbei jedoch darin, dass nicht mehr die zurückgelegte Distanz entlang der x-Achse gemessen wird, sondern die zurückgelegte Distanz in Richtung des DynamicTargets.
 Dafür wird die jeweils letzte Position des Roboters zwischengespeichert.
-Es werden dann die Distanzen von der letzten Position zur Zielposition sowie von der aktuellen Position zur Zielposition gebildet.
-Anschließend wird die Differenz der beiden Distanzen so bestimmt, dass die Berechnung in einer positiven Belohnung resultiert, wenn der Roboter sich dem Ziel genähert hat.
+Es werden dann die Distanzen von der letzten Position zur Zielposition sowie von der aktuellen Position zur Zielposition bestimmt.
+Anschließend wird die Differenz der beiden Distanzen so bestimmt, dass die Berechnung in einer positiven Belohnung resultiert, wenn der Roboter sich mit dem letzten Schritt dem Ziel genähert hat.
 
 Dieser Ansatz zeigt bessere Ergebnisse als die mit geometrischer Reward-Funktion, jedoch wird im Training sehr früh ein lokales Maximum erreicht.
-Dabei lernt der Roboter, dass er eine Belohnung erzielt, wenn er sich in Richtung des Ziels rollen lässt, überschlägt sich dabei allerdings und startet somit die Trainingsepisode neu.
+Dabei lernt der Roboter, dass er eine Belohnung erzielt, wenn er sich in Richtung des DynamicTargets rollen lässt, überschlägt sich dabei allerdings und startet somit die Trainingsepisode neu.
 Versuche, die Strafen für Überschlagen und Körperrotation anzuheben, schlagen ebenfalls fehl.
-Wird diese Maßnahme ergriffen, verschlechtern sich die Resultate sogar.
-Anstatt sich in Richtung des Ziels zu rollen, rollt sich der Roboter auf dem Boden ein und vollführt nur minimale Bewegungen.
+Werden diese Maßnahmen ergriffen, verschlechtern sich die Resultate sogar.
+Anstatt sich in Richtung des DynamicTargets zu rollen, rollt sich der Roboter auf dem Boden ein und vollführt nur minimale Bewegungen.
 
 \subsection{Optimierung der Hyperparameter}
 Aufgrund der geringen Abweichung der aktuellen Reward-Funktion von \autoref{code:reward-4-no-box} und des simplen Aufbaus der Funktion wird ein Logikfehler in der Funktion als Ursache ausgeschlossen.
-Zur Fehlersuche werden erneut Testreihen ausgehend vom Stand des stabilisierten Laufverhaltens durchgeführt und dabei die Änderungsschritte zusätzlich verkleinert.
+Zur Fehlersuche werden erneut Testreihen ausgehend vom Stand des stabilisierten Laufverhaltens durchgeführt und dabei die vorzunehmenden Änderungen schrittweise angewandt.
 Dieser letzte Stand enthält als Observationen nur die Winkel der zwölf Servomotoren.
 Im ersten Schritt wird nun die Größe des Observation Space erneut, wie oben beschrieben, erweitert.
-Dabei werden allerdings nicht die Position des Roboters und die des Ziels hinzugefügt, sondern zwei dreidimensionale Nullvektoren als Platzhalter.
+Dabei werden allerdings nicht die Position des Roboters und die des DynamicTargets hinzugefügt, sondern zwei dreidimensionale Nullvektoren als Platzhalter.
 Wie erwartet ist der Cumulative Reward des Trainingsdurchlaufs praktisch deckungsgleich mit dem Stand vor der Veränderung.
-Der nächste Schritt fügt nun bei weiterhin gleichbleibender Reward-Funktion die beiden Positionen als Beobachtung anstelle der Nullvektoren hinzu.
+Der nächste Schritt fügt nun bei weiterhin unveränderter Reward-Funktion die beiden Positionen als Beobachtung anstelle der Nullvektoren hinzu.
 Auch wenn zusätzliche Informationen, die allerdings nicht in den Reward einfließen, den Trainingsprozess eigentlich nicht negativ beeinflussen dürften, erreicht der Trainingsprozess mit Zugriff auf die Positionen keinen positiven Cumulative Reward.
 
 Die wahrscheinlichste Ursache für ein solches Verhalten sind suboptimal eingestellte Hyperparameter.
@@ -352,12 +353,12 @@ Die optimierten Hyperparameter werden in \autoref{anhang:trainer-config} dargest
     \label{fig:optimierte-hyperparameter}
 \end{figure}
 
-Auf Basis der neu eingestellten Hyperparameter werden erneut die Änderungen von \autoref{sec:classic-reward} angewandt.
+Auf Basis der neu eingestellten Hyperparameter werden erneut die vollständigen Änderungen von \autoref{sec:classic-reward} angewandt.
 Als Resultat kann zwar eine stabil ansteigende Kennkurve des Cumulative Reward beobachtet werden, jedoch trifft dies nicht auf das gelernte Bewegungsverhalten zu.
 Der Roboter vollführt eine Mischung aus Sprüngen und Schritten, die ihn teilweise zielstrebig auf das Ziel zubewegen, in anderen Situationen jedoch vollkommen zufällig erscheinen\footnote{\href{https://github.com/yschiebelhut/studienarbeit-doc/raw/master/Videos/SpiderBotDemos/14a-calmed-reward-scaled.webm}{Link zu Videomaterial}}.
-In der Dokumentation von ML-Agents wird als Maßnahme für einen stabilen Trainingsprozess empfohlen, den Betrag des Rewards möglichst auf einen Betrag von 1 zu skalieren.
+In der Dokumentation von ML-Agents wird als Maßnahme für einen stabilen Trainingsprozess empfohlen, den Reward möglichst auf einen Betrag von 1 zu skalieren.
 Einige Versuche mit verschiedenen Skalierungen zeigen jedoch keine abweichenden Ergebnisse.
-Auffällig ist jedoch, dass die Cumulative Rewards der Trainingsdurchläufe mit skalierten Rewards deutlich stärker schwanken (\autoref{fig:scale-reward}).
+Auffällig ist allerdings, dass die Cumulative Rewards der Trainingsdurchläufe mit skalierten Rewards deutlich stärker schwanken (\autoref{fig:scale-reward}).
 
 \begin{figure}
     \centering
@@ -367,26 +368,27 @@ Auffällig ist jedoch, dass die Cumulative Rewards der Trainingsdurchläufe mit 
 \end{figure}
 
 \section{Hindernisumfahrung}
-Da Hindernisse nur im Kontext eines vorgesehenen Pfades sinnvoll umsteuert werden können, ist eine funktionierende Pfadplanung eine notwendige Voraussetzung für ein erfolgreiches Training eines Modells, dass den Roboter Hindernisse umsteuern lässt.
-Da die im vorherigen Kapitel trainierte Pfadverfolgung keine verwendbare Basis darstellt, werden im Folgenden ein paar grundlegende Aspekte thematisiert und demonstriert.
+Da Hindernisse nur im Kontext eines vorgegebenen Pfads sinnvoll umsteuert werden können, ist eine funktionierende Pfadplanung eine notwendige Voraussetzung für ein erfolgreiches Training eines Modells, welches den Roboter Hindernisse umsteuern lässt.
+Weil die im vorherigen Kapitel trainierte Pfadverfolgung keine verwendbare Basis darstellt, werden im Folgenden ein paar grundlegende Aspekte der Hindernisumfahrung thematisiert und demonstriert.
 
-Um zu sehen, wie der Roboter auf einem einfachen Pfad auf ein statisches Hindernis reagiert, werden ein paar Experimente auf Basis des laufstabilisierten Modells durchgeführt.
+Um zu sehen, wie der Roboter auf einem einfachen Pfad auf ein statisches Hindernis reagiert, werden ein paar Experimente auf Basis des laufstabilisierten Modells aus \autoref{sec:stabilisierung} durchgeführt.
 Als Pfad ist hier das Laufen entlang der x-Achse zu betrachten, wobei anzumerken ist, dass es keinen Faktor gibt, der eine seitliche Abweichung entlang der z-Achse korrigieren würde.
 Stellt man dem normal trainierten Modell ein Hindernis orthogonal zu seiner Laufrichtung in den Weg, so kann man beobachten, dass der Roboter bis an das Hindernis läuft und auch nach der Kollision seine Gangbewegung noch unverändert ausführt, dabei seine Beine allerdings nur auf der Stelle über den Boden schiebt.
-Von solch einem Ergebnis ist ohne explizites Training auch auszugehen, da der Roboter nie lernt, zur Seite zu gehen.
+Von solch einem Ergebnis ist ohne explizites Training auch auszugehen, da der Roboter nie lernt, zur Seite auszuweichen.
 
 Wird nun allerdings mit unveränderter Reward-Funktion und zusätzlich mit dem eingefügten Hindernis trainiert, kann ein interessantes Ergebnis beobachtet werden.
-Wie in \autoref{sec:realisierung} schon ausgeführt, lernt der Roboter seine Umgebung auswendig, wenn sich diese nicht verändert.
+Wie in \autoref{sec:realisierung} schon ausgeführt, lernt der Roboter seine Umgebung auswendig, wenn sich diese während des Trainings nicht verändert.
 Dies ist auch hierbei zu beobachten.
-Was allerdings verwundert, ist, dass der Roboter schon zu Beginn anfängt, eine Kurve zu laufen, mit der er knapp am Hindernis vorbeikommt -- jedoch wird diese Kurve nicht abgebrochen, wenn der Roboter am Hindernis vorbeilaufen kann, obwohl er dadurch ausschließlich negative Rewards bekommen kann.
-Dies widerspricht eigentlich einer der grundlegendsten Maxime von Reinforcement Learning: den Reward immer und um jeden Preis zu maximieren.
+Was allerdings verwundert, ist, dass der Roboter schon zu Beginn anfängt, eine Kurve zu laufen, mit der er knapp am Hindernis vorbeikommt -- jedoch wird diese Kurve nicht abgebrochen, wenn der Roboter am Hindernis vorbeilaufen könnte, obwohl er sich durch das Weiterlaufen der Kurve in die falsche Richtung bewegt und somit ausschließlich negative Rewards bekommen kann.
+Dies widerspricht einer der grundlegendsten Maximen von Reinforcement Learning: den Reward immer und um jeden Preis maximieren.
 
 Im Falle des Crawler-Examples, anhand dessen ein Proof of Concept zur Pfadplanung implementiert wurde, kann ähnliches beobachtet werden wie bei dem Modell des SpiderAgents, welches nicht explizit für das Hindernis trainiert wurde.
 Aufgrund seiner physikalischen Simulationseigenschaften federt der Crawler etwas von der Wand zurück, gegen die er wiederholt läuft.
 Dabei wird er jedes Mal leicht zur Seite abgedrängt, wodurch er nach einiger Zeit das Hindernis überwindet.
 Dieser Vorgang ist jedoch weder eine gezielte Handlung noch ansatzweise effizient\footnote{\href{https://github.com/yschiebelhut/studienarbeit-doc/raw/master/Videos/crawler-obstacle.webm}{Link zu Videomaterial}}.
 
-Diese Experimente zeigen anschaulich, dass auch bei bereits funktionierender Pfadplanung in jedem Fall ein gesondertes Training mit einem zufällig generierten Hindernisparcours notwendig ist, um dem fertigen Modell ein Umsteuern von Hindernissen zu ermöglichen.
+Diese Experimente zeigen anschaulich, dass auch bei bereits funktionierender Pfadplanung in jedem Fall ein gesondertes Training mit zufällig generierten Hindernisparcours notwendig ist, um dem fertigen Modell ein Umsteuern von Hindernissen zu ermöglichen.
 Für den Fall, dass das Erlernen von Pfadplanung und das gleichzeitige Umsteuern von Hindernissen ein zu komplexes Lernproblem darstellt, könnte gegebenenfalls Curriculum Learning eingesetzt werden, um die Probleme aufeinander aufbauend zu lösen.
-Insgesamt dürfte eine Hindernisumfahrung langfristig nur sinnvoll sein, wenn sie mit Sensorik unterstützt wird.
-Da dies das Problem und dessen Komplexität deutlich verändert, wird dann allerdings ohnehin ein gesondertes Training notwendig sein.
+
+Insgesamt dürfte eine Hindernisumfahrung langfristig nur sinnvoll zu realisieren sein, wenn sie mit Sensorik unterstützt wird.
+Da dies das Problem und dessen Komplexität deutlich verändert, wird dann allerdings alternativlos ein gesondertes Training notwendig sein.
