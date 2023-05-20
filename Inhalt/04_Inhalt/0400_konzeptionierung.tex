@@ -24,7 +24,7 @@ Außerdem kann der Roboter in der Realität auf dem Boden rutschen.
 Auch läuft das bisherige Modell nicht verlässlich geradeaus -- nicht einmal in der Simulation --, sondern hat dabei immer einen leichten Drall zur Seite.
 Aus diesen Gründen wird der Schluss gezogen, dass durch minimale, nicht vermeidbare Abweichungen die Ausführung der Aufgabe nur sehr ungenau möglich ist, wenn keine Positionierungsinformationen zur Verfügung gestellt werden.
 
-In der Simulation gestaltet sich eine mögliche Lösung des Problems sehr einfach: Der Roboter ist ein Game-Objekt innerhalb der Unity-Engine.
+In der Simulation gestaltet sich eine mögliche Lösung des Problems sehr einfach: Der Roboter ist ein GameObject innerhalb der Unity-Engine.
 Als solches besitzt er automatisch Koordinaten innerhalb der Simulation, welche einfach für den Roboter freigegeben werden können.
 Bei einer späteren Übertragung in die Realität können diese Informationen durch andere, konkrete Ortungssysteme geliefert werden.
 Es ist lediglich ein Mapping erforderlich, um das Informationsformat eines konkreten Sensors in das Koordinatenformat von Unity umzuwandeln.
@@ -36,13 +36,13 @@ Anschließend soll er auf den vorgegebenen Pfad zurückkehren, wobei die Abweich
 Hierfür wird eine Hindernis- beziehungsweise Kollisionserkennung benötigt.
 Mit der aktuellen technischen Ausstattung des Roboters ist auch diese Aufgabe nicht umsetzbar.
 In der Simulation soll vereinfacht für die Hinderniserkennung die Kollisionserkennung der Beine verwendet werden.
-(Diese Kollisionserkennung kann Unity für sämtliche Game-Objekte durchführen.)
+(Diese Kollisionserkennung kann Unity für sämtliche GameObjects durchführen.)
 Dadurch muss der Roboter mit seinem Hindernis zusammenstoßen, um es wahrzunehmen.
 In der Realität ist natürlich eine Hinderniserkennung sinnvoll, mit der Hindernisse bereits vor einer Kollision erkannt werden können (zum Beispiel LiDAR, Kameras oder ähnliche Systeme).
 
 Sowohl für die Ortung, als auch für die Hinderniserkennung ist in der Realität der Einsatz komplexer Systeme nötigt.
 Die Integration solcher übersteigt jedoch den Umfang dieser Arbeit erheblich.
-Hier soll eher ein Proof-of-Concept für die selbstständige Umsteuerung von Hindernissen erarbeitet werden.
+Hier soll eher ein Proof of Concept für die selbstständige Umsteuerung von Hindernissen erarbeitet werden.
 Es soll daher keine Übertragung der in der Simulation trainierten Modelle auf den realen Roboter stattfinden.
 
 Die Springbewegung, die der Roboter sich bislang antrainiert hat, führt zu weiteren potenziellen Problemen.
@@ -50,7 +50,7 @@ Zwar wurde, wie oben beschrieben, der Einsatz eines Ortungssystems festgelegt, j
 Sie ist sehr kraftaufwändig und instabil, der Roboter schwankt dabei stark um seine horizontale Achse und kann seine exakte Landeposition nur bedingt steuern.
 Da der Roboter Hindernisse über eine Kollision mit diesen erkennen soll, besteht außerdem das Problem, dass der Roboter im Sprung gegen diese knallen kann.
 Aus den genannten Gründen ist es sinnvoll, Maßnahmen zur Einschränkung der Bewegung des Roboters vorzunehmen.
-Möglich ist zum Beispiel eine Anpassung der Belohnungsfunktion, wonach starke Höhenänderungen oder Neigungen der Zentralplatte des Roboters bestraft werden.
+Möglich ist zum Beispiel eine Anpassung der Reward-Funktion, wonach starke Höhenänderungen oder Neigungen der Zentralplatte des Roboters bestraft werden.
 
 % \begin{itemize}
 %     \item bislang sollte der Roboter nur geradeaus laufen
@@ -156,7 +156,7 @@ Die für das Training notwendigen, zufälligen Pfade bilden sie bereits automati
 Um dem trainierten Modell des Crawlers einen festen Pfad vorgeben zu können, muss lediglich eine kleine Modifikation der Dynamic Targets vorgenommen werden, um diese in einer festgelegten Reihenfolge anstatt zufällig erscheinen zu lassen.
 Dieses Prinzip soll auf diese Studienarbeit übertragen werden und es so dem Roboter ermöglichen, einem geplanten Pfad zu folgen.
 
-\subsection{Anpassung der Belohnungsfunktion}
+\subsection{Anpassung der Reward-Funktion}
 Bislang wird der Roboter nur für eine zurückgelegte Distanz entlang der x-Achse belohnt und erhält eine Bestrafung, wenn er sich auf den Rücken dreht.
 Im ersten Schritt soll das Laufverhalten des Roboters stabilisiert werden, damit sich dieser nicht mehr springend fortbewegt.
 Dazu kann etwa in der Reward-Funktion ein Faktor eingebracht werden, der den Roboter mit einem, an der Neigung der Zentralplatte skalierten, Wert bestraft.

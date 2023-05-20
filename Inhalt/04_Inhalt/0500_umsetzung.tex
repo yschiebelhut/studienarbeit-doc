@@ -30,13 +30,13 @@ Dafür wird in diesem Fall die aktuellste LTS-Version zum Zeitpunkt der Entwickl
 Da es sich bei ML-Agents um ein vergleichsweise neues Toolkit handelt, unterliegt es fortlaufend einer starken Entwicklung.
 Im Zeitraum seit der Vorgängerarbeit wurde das Plugin von einer Alphaversion zu einem offiziellen Release gebracht.
 In diesen Entwicklungsphasen kommt es bei Software häufig zu Breaking Changes.
-Auch bei ML-Agents ist dies der Fall und es kommt umgehend zum Kompilierungsfehlern, wenn das Unity-Projekt im Editor geöffnet wird.
+Auch bei ML-Agents ist dies der Fall und es kommt umgehend zu Kompilierungsfehlern, wenn das Unity-Projekt im Editor geöffnet wird.
 Der erste Schritt besteht deshalb darin, herauszufinden, welche Methoden davon betroffen sind.
 Dafür werden im Fehlerbericht die Methoden gesucht, die Fehler enthalten.
 Die Methodenköpfe können dann in die Versionshistorie von ML-Agents\footnote{\url{https://github.com/Unity-Technologies/ml-agents/releases}} gesucht werden.
 Im vorliegenden Fall sind somit alle an der Schnittstelle des Toolkit vorgenommenen Änderungen deutlich aufgeschlüsselt und geben Aufschluss darüber, wie die Kompatibilität des Quellcodes wiederhergestellt werden kann.
 
-Für das Training wird in \cite{waidner.2020} eine Trainer-Config-YAML-Datei verwendet, wie sie in \autoref{sec:training} beschrieben wird.
+Für das Training wird in \cite{waidner.2020} eine Konfiguration in Form einer YAML-Datei verwendet, wie sie in \autoref{sec:training} beschrieben wird.
 Mit einer Aktualisierung des Python-Toolkits hat sich auch das Format dieser Datei verändert, weshalb die ursprüngliche Datei nicht mehr kompatibel zum nun verwendeten Tooling ist.
 Die Änderungen am Format sind vergleichsweise gering und die Datei von überschaubarer Größe, weshalb nach dem Vorbild der alten Datei und unter Anleitung von \cite{mlagentsHyperparameter} die Datei neu gebaut werden kann.
 Der Codestand ist nach diesen Veränderungen\footnote{\url{https://github.com/MobMonRob/HindernisumfahrungRLStudien/tree/ec8abbd161217c9a42adb42779e01c5b3dfeb209}} nun mit den aktualisierten Versionen des Toolings kompatibel und wird als Ausgangspunkt für die Experimente dieser Arbeit verwendet.
@@ -62,10 +62,10 @@ Es ist keine pauschale Angabe möglich, welche Parameter verlässlich und auf al
 Deshalb ist eine kleine Testreihe unerlässlich, bei der möglichst gute Werte für die Parameter ermittelt werden, um das spätere Training effizient zu gestalten.
 Der maßgebliche Performanceindikator ist hierbei die Anzahl der Trainingsschritte pro Sekunde.
 Zur Optimierung wird beispielsweise nach und nach die Anzahl der parallelen Trainingsumgebungen erhöht, bis die Anzahl der Schritte pro Sekunde nicht mehr weiter steigt.
-Die nachfolgende Befehlszeile scheint nach einigem Optimieren gute Ergebnisse für die Machienenkonfiguration zu liefern:
+Die nachfolgende Befehlszeile scheint nach einigem Optimieren gute Ergebnisse für die Maschinenkonfiguration zu liefern:
 \code{mlagents-learn --env binary-name/binary-name.x86\_64 --run-id runName --no-graphics --torch-device cuda --num-envs 4 --time-scale 1 trainer.yaml}.
 Dabei werden 4 parallele Trainingsumgebungen (mit jeweils 30 Agenten) ohne Generierung von grafischen Artefakten betrieben.
-ML-Agents greift intern auf Tensorflow und PyTorch zurück.
+ML-Agents greift intern auf TensorFlow und PyTorch zurück.
 Grundsätzlich bieten beide Bibliotheken die Möglichkeit, eine CUDA-fähige GPU zur Grafikbeschleunigung der Trainingsalgorithmen zu verwenden.
 Im Kontext des verwendeten Trainingsalgorithmus (\ac{ppo}) ist infrage zu stellen, ob ein ernstzunehmender Vorteil durch die Verwendung einer GPU erzielt werden kann.
 Ressourcen im Internet sind sich hierüber uneinig.
@@ -127,7 +127,7 @@ Diese Differenz -- sowohl wenn diese positiv ausfällt, als auch, wenn sie negat
 Der offensichtliche und einfache Weg ist es nun, in der Methode \code{isTurned()} den Schwellwert der Rückgabe von 90° auf einen kleineren Wert, zum Beispiel 5°, zu reduzieren.
 Mit dieser Modifikation wird automatisch ein negativer Summand in den Reward eingebracht, wenn die Schwankung der Körpermitte den nun deutlich geringeren Schwellwert überschreitet.
 Das Problem hierbei besteht darin, dass die Methode \code{isTurned()} nicht nur zur Berechnung des Rewards verwendet wird, sondern auch in \code{SpiderAgent.cs} die aktuelle Episode terminiert wird, wenn sich der Roboter auf den Rücken dreht.
-Wird die beschriebene Modifikation an dieser Methode vorgenommen, so wird auch eine kleine Schwankung der Körpermitte bereits als Überschlag interpretiert und die laufende Trainings-Episode fälschlicherweise beendet.
+Wird die beschriebene Modifikation an dieser Methode vorgenommen, so wird auch eine kleine Schwankung der Körpermitte bereits als Überschlag interpretiert und die laufende Trainingsepisode fälschlicherweise beendet.
 Wie sich bei einem Trainingsversuch zeigt, führt dies dazu, dass der Roboter kein Laufverhalten lernen kann, da ihm keine Gelegenheit geboten wird, seinen Fehler zu erkennen, zu erforschen und zu korrigieren.
 Für eine möglichst stabile Körpermitte sollte der Rotations-Schwellwert möglichst gering sein.
 Jedoch wird bei diesem Ansatz ein Training gegenläufig zum sinkenden Schwellwert praktisch unmöglich.
@@ -206,7 +206,7 @@ Im Beispiel wurde ein Agent darauf trainiert, nacheinander zu zufällig erschein
 Wenn der Agent ein Ziel (\emph{DynamicTarget}) erreicht, so verschwindet es und taucht an anderer Stelle wieder auf.
 Der Agent hat dabei keinen Einfluss auf das DynamicTarget und kennt nur dessen aktuelle Position.
 
-Wenn ein DynamicTarget initialisiert wird oder in Kontakt mit einem Unity-GameObject kommt, welches mit dem Tag \enquote{agent} versehen ist, wird die in \autoref{code:dynamic-target-old} dargestellte Methode ausgeführt, welche das DynamicTarget an einen zufälligen Ort teleportiert.
+Wenn ein DynamicTarget initialisiert wird oder in Kontakt mit einem Unity GameObject kommt, welches mit dem Tag \enquote{agent} versehen ist, wird die in \autoref{code:dynamic-target-old} dargestellte Methode ausgeführt, welche das DynamicTarget an einen zufälligen Ort teleportiert.
 
 \begin{figure}
     \lstinputlisting[
@@ -299,7 +299,7 @@ Die Funktionen haben verschiedene Komplexitäten und Ansätze, um eine allgemein
     Ausschlaggebend für die Messung ist dabei nur die Körpermitte.
     Als zusätzlicher Faktor wird der Winkel zwischen der \enquote{Blickrichtung} der Körpermitte und der relativen Richtung, in der das Ziel liegt, gebildet und auf einen Bereich von 180° normalisiert.
 
-    \item Die zweite Variation verwendet die in Unity-GameObjects hinterlegte Geschwindigkeit der einzelnen Körperteile und bildet daraus den Durchschnitt.
+    \item Die zweite Variation verwendet die in Unity GameObjects hinterlegte Geschwindigkeit der einzelnen Körperteile und bildet daraus den Durchschnitt.
     Dieses Vorgehen soll plötzliche und ruckartige Bewegungen des Roboters, die beim Training auftreten, ausgleichen.
     Der nächste Faktor ist, wie bei der ersten Variante, ein normalisierter Wert an dem abgelesen werden kann, ob die Bewegung in Richtung Ziel erfolgte.
     Weiterhin wird hier wieder eine Belohnung eingeführt, die umso höher ausfällt, desto stabiler die Körpermitte in der Horizontalen gehalten wird.
@@ -384,7 +384,7 @@ Aufgrund seiner physikalischen Simulationseigenschaften federt der Crawler etwas
 Dabei wird er jedes Mal leicht zur Seite abgedrängt, wodurch er nach einiger Zeit das Hindernis überwindet.
 Dieser Vorgang ist jedoch weder eine gezielte Handlung noch ansatzweise effizient\footnote{\href{https://github.com/yschiebelhut/studienarbeit-doc/raw/master/Videos/crawler-obstacle.webm}{Link zu Videomaterial}}.
 
-Diese Experimente zeigen anschaulich, dass auch bei bereits funktionierender Pfadplanung in jedem Fall ein gesondertes Training mit einem zufällig generierten Hindernisparcour notwendig ist, um dem fertigen Modell ein Umsteuern von Hindernissen zu ermöglichen.
+Diese Experimente zeigen anschaulich, dass auch bei bereits funktionierender Pfadplanung in jedem Fall ein gesondertes Training mit einem zufällig generierten Hindernisparcours notwendig ist, um dem fertigen Modell ein Umsteuern von Hindernissen zu ermöglichen.
 Für den Fall, dass das Erlernen von Pfadplanung und das gleichzeitige Umsteuern von Hindernissen ein zu komplexes Lernproblem darstellt, könnte gegebenenfalls Curriculum Learning eingesetzt werden, um die Probleme aufeinander aufbauend zu lösen.
-Insgesamt dürfte eine Hindernisumsteuerung langfristig nur sinnvoll sein, wenn sie mit Sensorik unterstützt wird.
+Insgesamt dürfte eine Hindernisumfahrung langfristig nur sinnvoll sein, wenn sie mit Sensorik unterstützt wird.
 Da dies das Problem und dessen Komplexität deutlich verändert, wird dann allerdings ohnehin ein gesondertes Training notwendig sein.

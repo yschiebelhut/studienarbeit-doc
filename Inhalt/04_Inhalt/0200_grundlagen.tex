@@ -1,6 +1,6 @@
 \chapter{Grundlagen}
 Wie in \autoref{sec:einleitung} bereits angedeutet, werden in dieser Arbeit Methoden aus dem Bereich der künstlichen Intelligenz verwendet, um das gestellte Problem zu lösen.
-Zum Verständnis der Ausarbeitung werden nachfolgend die wichtigsten Grundlagen erläutert.
+Nachfolgend werden die wichtigsten Grundlagen zum Verständnis dieser Ausarbeitung erläutert.
 Weiterhin wird kurz auf die zur Simulation verwendete Software eingegangen.
 Im Rahmen der konzeptuellen Planung wird auch von mathematischen Grundlagen des dreidimensionalen Raums Gebrauch gemacht, welche deshalb ebenfalls kurz beleuchtet werden sollen.
 
@@ -14,7 +14,7 @@ In der Regel wird Machine Learning in folgende Teilbereiche untergliedert \cite{
     Ein Modell wird anhand von gelabelten Trainingsdaten trainiert.
     Ein Datentupel besteht dabei aus einer Eingabe und der dazu gewollten Ausgabe.
     Der Algorithmus sucht beim Training nach Zusammenhängen und Abhängigkeiten um anschließend, die gelernten Daten generalisierend, Ausgaben für unbekannte Eingaben generieren zu können.
-    Üblicherweise wird Supervised Learning für Regressions- und Klassifikations-Probleme eingesetzt.
+    Üblicherweise wird Supervised Learning für Regressions- und Klassifikationsprobleme eingesetzt.
 
     \item \textbf{Unsupervised Learning:}
     Wird in der Regel für Clusterbildung von unbeschrifteten Trainingsdaten verwendet.
@@ -92,12 +92,12 @@ Weiterhin definieren folgende Elemente ein Reinforcement Learning Problem:
     \item \textbf{Policy} $\mathbf{\pi}$\textbf{:}
     Die Policy definiert, wie sich der Agent zu einer gegebenen Zeit verhält.
     Sie stellt ein Mapping zwischen den wahrgenommenen Zuständen der Umgebung und den durchzuführenden Aktionen dar.
-    Die Policy ist hinreichend, um das Verhalten des Agent zu bestimmen \cite[6]{sutton2018rlintro}.
+    Die Policy ist hinreichend, um das Verhalten des Agents zu bestimmen \cite[6]{sutton2018rlintro}.
 
     \item \textbf{Reward-Signal} $\mathbf{R}$\textbf{:}
     Das Reward-Signal definiert das Ziel eines Reinforcement Learning Problems.
     Bei jedem \emph{Zeitschritt} $t$ sendet die Umgebung ein Skalar an den Agent.
-    Das einzige Ziel des Agent ist die Maximierung des kumulativen Rewards.
+    Das einzige Ziel des Agents ist die Maximierung des kumulativen Rewards.
     Der Reward ist die primäre Basis für Änderungen an der Policy \cite[6]{sutton2018rlintro}.
 
     \item \textbf{Value-Funktion} $\mathbf{V}$\textbf{:}
@@ -113,8 +113,8 @@ Weiterhin definieren folgende Elemente ein Reinforcement Learning Problem:
     So kann etwa eine Voraussage des nächsten Resultierenden Zustands und Rewards, ausgehend von einem gegebenen Zustand und einer Aktion getroffen werden.
     Genutzt werden diese Modelle zur Planung.
     Es werden also Entscheidungen für eine Folge von Aktionen auf Basis möglicher zukünftiger Situationen getroffen, bevor diese tatsächlich erlebt werden.
-    Reinforcement Learning Methoden, die Modelle und Planung verwenden, werden als \emph{modell-basiert} bezeichnet.
-Im Gegensatz dazu stehen \emph{modell-freie} Methoden, welche explizit auf Basis von Trial-And-Error lernen \cite[7]{sutton2018rlintro}.
+    Reinforcement Learning Methoden, die Modelle und Planung verwenden, werden als \emph{Modell-basiert} bezeichnet.
+    Im Gegensatz dazu stehen \emph{Modell-freie} Methoden, welche explizit auf Basis von Trial-and-Error lernen \cite[7]{sutton2018rlintro}.
 \end{itemize}
 
 Beim Reinforcement Learning versucht der Agent, mit seinen ausgeführten Aktionen ein Reward-Signal zu maximieren.
@@ -194,7 +194,7 @@ Unity3D ist eine plattformübergreifende Game Engine, die erstmal 2005 angekünd
 Primärer Zweck der Unity Engine ist die Entwicklung von Videospielen für Computer, Konsolen und Mobilgeräte.
 Dabei ist Unterstützung für zwei- und dreidimensionale Grafik enthalten.
 VR Entwicklung ist ebenso möglich.
-Das Skripting innerhalb der Engine erfolgt primär in C\# \cite{freecodecamp.unityIntroduction}.
+Das Scripting innerhalb der Engine erfolgt primär in C\# \cite{freecodecamp.unityIntroduction}.
 Neben dem Einsatz in der Spieleentwicklung ist Unity jedoch auch für den Einsatz in anderen Branchen geeignet, so zum Beispiel in der Architektur oder der Forschung \cite[30]{waidner.2020}, wo mit Unity Simulationen der realen Welt erstellt werden können.
 Als Grafik-APIs werden unter anderem Direct3D (Windows), OpenGL (Linux, macOS, Windows) und WebGL unterstützt.
 Unity enthält einen Asset Store für die Entwickler-Community, über den Dritten das Hoch- und Herunterladen kommerzieller und freier Ressourcen (zum Beispiel Texturen, Modelle und Plugins) ermöglicht wird \cite{freecodecamp.unityIntroduction}.
@@ -232,7 +232,7 @@ ML-Agents besteht aus folgenden high-level Komponenten \cite{mlagentsOverview} (
     \item \textbf{Trainingsumgebung (Learning Environment):}
     Die Trainingsumgebung enthält eine Unity Szene und sämtliche Game Charaktere.
     Die Unity Szene stellt dabei die Umgebung bereit, in der Agenten ihre Beobachtungen machen, handeln und lernen.
-    Mithilfe des ML-Agents Unity SDK kann jede Unity Szene in eine Trainingsumgebung transformiert werden, indem Game Objects als Agenten definiert werden.
+    Mithilfe des ML-Agents Unity SDK kann jede Unity Szene in eine Trainingsumgebung transformiert werden, indem GameObjects als Agenten definiert werden.
 
     \item \textbf{Python Low-Level API:}
     Die Python API enthält ein low-level Python Interface, welches die Aufgabe besitzt, mit der Trainingsumgebung zu interagieren und diese zu manipulieren.
@@ -264,7 +264,7 @@ Die Trainingsumgebung wird durch zwei enthaltene Unity-Komponenten organisiert \
     Ein Behavior kann als Funktion verstanden werden, welche Observations und Reward des Agents als Eingabeparameter enthält und auszuführende Aktionen zurückliefert.
     Behaviors werden in drei Typen unterschieden: \emph{Learning}, \emph{Heuristic} und \emph{Inference}.
     Learning Behaviors sind noch nicht definiert, können aber trainiert werden.
-    Heurisitc Behaviors werden mittels manuell implementierter Regeln im Quellcode definiert.
+    Heuristic Behaviors werden mittels manuell implementierter Regeln im Quellcode definiert.
     Inference Behavior werden von trainierten Neural-Network-Dateien (entsprechen der finalen, trainierten Policy) repräsentiert.
     Nachdem ein Learning Behavior trainiert wurde, wird es zum Inference Behavior.
 \end{itemize}
@@ -354,7 +354,7 @@ Da Vektoren im dreidimensionalen Raum ein essenzieller Bestandteil der Arbeit mi
 Grundsätzlich gesehen ist ein Vektor ein mathematisches Konstrukt und hat eine Länge und eine Richtung.
 Im Gegensatz zu Punkten geben Vektoren keinen festen Ort an, sondern beschreiben den Weg von einem Punkt zu einem anderen \cite[6]{kohn2012}.
 Dabei besitzt ein Vektor für jede Dimension eine Komponente.
-Trotzdem ist eine Ortsangabe mit einem Vektor möglich (und wird in Unity für die Game Objekte verwendet).
+Trotzdem ist eine Ortsangabe mit einem Vektor möglich (und wird in Unity für die GameObjects verwendet).
 Dieses Konstrukt besteht aus einem Vektor, der an einem bestimmten Punkt beginnt und nennt sich Ortsvektor \cite[21]{kohn2012}.
 Im Weiteren Verlauf wird davon ausgegangen, dass Ortsvektoren dem Koordinatenursprung entstammen.
 

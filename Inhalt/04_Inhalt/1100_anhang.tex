@@ -3,7 +3,7 @@ Der vollständige Quellcode sämtlicher Trainingsschritte ist frei verfügbar un
 Weiterhin enthält \url{https://github.com/yschiebelhut/spiderbot-training-data} die für Linux kompilierten Trainingsumgebungen, die trainierten Modelle und alle notwendigen Daten, um die Trainingsprozesse mit Tensorboard nachvollziehen zu können.
 
 \paragraph{Wichtig:} Zur Durchführung der Inferenz eines bestimmten Modells sollte das Haupt-Repository möglichst auf dem entsprechenden Commit ausgecheckt sein, auf dem das Training stattgefunden hat.
-(Die Numerierungen in den Commits und den Run-IDs geben darüber Aufschluss.)
+(Die Nummerierungen in den Commits und den Run-IDs geben darüber Aufschluss.)
 Dies ist wichtig, da insbesondere die Größe des Observation Space als auch die Observations selbst mit den beim Training verwendeten Daten übereinstimmen müssen, weil es ansonsten zu Fehlern bei der Interpretation des neuronalen Netzes kommt.
 
 
@@ -11,6 +11,7 @@ Dies ist wichtig, da insbesondere die Größe des Observation Space als auch die
 \label{anhang:trainer-config}
 \begin{figure}[H]
     \lstinputlisting[
-        label = code:trainer-config-yaml
+        label = code:trainer-config-yaml,
+        caption = Konfiguration des Trainings mit optimierten Hyperparametern
     ]{Code/new-trainer-config.yaml}
 \end{figure}
