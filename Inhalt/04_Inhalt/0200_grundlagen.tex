@@ -1,12 +1,12 @@
 \chapter{Grundlagen}
 Wie in \autoref{sec:einleitung} bereits angedeutet, werden in dieser Arbeit Methoden aus dem Bereich der künstlichen Intelligenz verwendet, um das gestellte Problem zu lösen.
-Nachfolgend werden die wichtigsten Grundlagen zum Verständnis dieser Ausarbeitung erläutert.
+Nachfolgend werden die wichtigsten Grundlagen zum Verständnis der Ausarbeitungen erläutert.
 Weiterhin wird kurz auf die zur Simulation verwendete Software eingegangen.
-Im Rahmen der konzeptuellen Planung wird auch von mathematischen Grundlagen des dreidimensionalen Raums Gebrauch gemacht, welche deshalb ebenfalls kurz beleuchtet werden sollen.
+Im Rahmen der konzeptuellen Planung wird auch von mathematischen Grundlagen des dreidimensionalen Raums Gebrauch gemacht, welche deshalb ebenfalls kurz beleuchtet werden.
 
 \section{Machine Learning}
 Machine Learning ist eine Unterkategorie der künstlichen Intelligenz und bezeichnet einen automatisierten Prozess, der es Computern ermöglicht, eigenständig aus Trainingsdaten zu lernen und sich mit der Zeit zu verbessern, ohne explizit zur Lösung einer Aufgabe programmiert zu werden.
-Machine Learning Algorithmen können Muster in Daten entdecken und aus ihnen Lernen, um eigene Prognosen und Entscheidungen zu treffen.
+Machine Learning Algorithmen können Muster in Daten entdecken und aus ihnen lernen, um eigene Prognosen und Entscheidungen zu treffen.
 
 In der Regel wird Machine Learning in folgende Teilbereiche untergliedert \cite{monkeylearnIntroductionMachine}:
 \begin{itemize}
@@ -31,7 +31,7 @@ In der Regel wird Machine Learning in folgende Teilbereiche untergliedert \cite{
     Es ist sein Ziel, selbstständig ein bestmögliches Verhalten zu lernen, um seine Belohnung zu maximieren.
     Dabei werden keine Trainingsdaten verwendet.
     Der Agent lernt ausschließlich aus seinen eigenen Erfahrungen und Fehlern.
-    Reinforcement Learning findet vor allem in den Bereichen Robotik und Videospiele Einsatz und wird auch in dieser Arbeit verwendet.
+    Reinforcement Learning findet vor allem in den Bereichen Robotik und Videospiele Einsatz und wird in dieser Arbeit verwendet.
 \end{itemize}
 
 % \begin{itemize}
@@ -68,8 +68,8 @@ In der Regel wird Machine Learning in folgende Teilbereiche untergliedert \cite{
 
 \subsection{Reinforcement Learning}
 Reinforcement Learning ist ein rechnerischer Ansatz, um zielorientierte Lern- und Entscheidungsprozesse zu verstehen und nachzubilden.
-Wie oben schon beschrieben, steht dabei ein \emph{Agent} im Zentrum, der aus der direkten Interaktion mit seiner \emph{Umgebung (engl. Environment)} lernt, ohne dabei eine beispielhafte Anleitung oder vollständige Modelle der Umgebung zu benötigen.
-Das formale Framework des \emph{\acf{mdp}} wird genutzt, um die Interaktion zwischen dem lernenden Agenten und seiner Umgebung zu definieren.
+Wie oben beschrieben, steht dabei ein \emph{Agent} im Zentrum, der aus der direkten Interaktion mit seiner \emph{Umgebung (engl. Environment)} lernt, ohne dabei eine beispielhafte Anleitung oder vollständige Modelle der Umgebung zu benötigen.
+Das formale Framework des \emph{\acf{mdp}} wird genutzt, um die Interaktion zwischen dem lernenden Agent und seiner Umgebung zu definieren.
 \acp{mdp} sind eine mathematisch idealisierte Form eines Reinforcement Learning Problems, für die präzise, theoretische Aussagen getroffen werden können \cite[13]{sutton2018rlintro}.
 \autoref{fig:mdp} stellt die grundlegende Struktur eines Reinforcement Learning Problems dar.
 Die einzelnen Bestandteile der Abbildung werden nachfolgend erläutert.
@@ -81,7 +81,7 @@ Die einzelnen Bestandteile der Abbildung werden nachfolgend erläutert.
     \label{fig:mdp}
 \end{figure}
 
-Agenten haben explizite Ziele, können Aspekte ihrer Umgebung wahrnehmen und \emph{Aktionen} $A$ auswählen, um mit ihrer Umgebung zu interagieren und diese zu beeinflussen.
+Agents haben explizite Ziele, können Aspekte ihrer Umgebung wahrnehmen und \emph{Aktionen} $A$ auswählen, um mit ihrer Umgebung zu interagieren und diese zu beeinflussen.
 Es wird davon ausgegangen, dass Reinforcement Learning diejenige Strategie des Machine Learning ist, die dem natürlichen Lernen von Menschen und Tieren am nächsten kommt.
 Viele zentrale Algorithmen des Reinforcement Learnings sind ursprünglich durch biologische Systeme inspiriert \cite[4]{sutton2018rlintro}.
 
@@ -101,11 +101,11 @@ Weiterhin definieren folgende Elemente ein Reinforcement Learning Problem:
     Der Reward ist die primäre Basis für Änderungen an der Policy \cite[6]{sutton2018rlintro}.
 
     \item \textbf{Value-Funktion} $\mathbf{V}$\textbf{:}
-    Die Value-Funktion legt fest, was auf lange Sicht gut ist.
+    Die Value-Funktion legt fest, welches Verhalten auf lange Sicht gut ist.
     Der Value eines Zustands ist der kumulierte Reward, den ein Agent, ausgehend von diesem Zustand, in der Zukunft erwarten kann.
     Values geben die langfristige Attraktivität von Zuständen an.
     Die Wahl einer Aktion wird auf Basis der Value-Einschätzung des aktuellen Zustands getroffen.
-    Im Vergleich zum Reward-Signal sind Values allerdings deutlich schwerer zu bestimmen, da diese anhand einer Sequenz von Observationen des Agenten geschätzt werden müssen \cite[6]{sutton2018rlintro}.
+    Im Vergleich zum Reward-Signal sind Values allerdings deutlich schwerer zu bestimmen, da diese anhand einer Sequenz von Observations des Agents geschätzt werden müssen \cite[6]{sutton2018rlintro}.
 
     \item \textbf{Modell der Umgebung (optional):}
     Manche Reinforcement Learning Systeme nutzen ein Modell der Umgebung.
@@ -175,7 +175,7 @@ Insbesondere bei hoch-dimensionalen, kontinuierlichen Zustands- und Aktionsräum
 
 Der wichtigste Bestandteil von Deep Learning sind Deep Neural Networks.
 Diese Netzwerke können automatisch kompakte, niedrig-dimensionale Repräsentationen von hoch-dimensionalen Daten finden.
-Beim Deep Reinforcement Learning werden Algorithmen und Technologien des Deep Learning in Reinforcement Learning eingebracht.
+Beim Deep Reinforcement Learning werden Algorithmen und Technologien des Deep Learnings in Reinforcement Learning eingebracht.
 Dabei werden Deep Neural Networks als Funktionsapproximatoren für die Value-Funktion oder die Policy verwendet.
 Diese neue Kombination macht eine Skalierung auf bislang unlösbare Entscheidungsprobleme möglich \cite{Arulkumaran2017}.
 
@@ -213,10 +213,10 @@ Der Einsatz von Unity für Projekte mit weniger als 100.000 \$ jährlichem Gewin
 
 \subsection{Unity Machine Learning Agents Toolkit}
 Das Unity Machine Learning Agents Toolkit (kurz \emph{ML-Agents}) ist ein von Unity Technologies entwickeltes, quelloffenes Projekt, welches 2017 erstmals als Testversion veröffentlicht wurde, seitdem sehr aktiv weiterentwickelt wird und inzwischen die Produktreife erreicht hat.
-ML-Agents ermöglicht es Spiele und Simulationen, als Trainingsumgebung für intelligente Agenten zu dienen.
+ML-Agents ermöglicht es Spielen und Simulationen, als Trainingsumgebung für intelligente Agenten zu dienen.
 Dabei werden State-of-the-Art, PyTorch-basierte Implementierungen gängiger Machine Learning Algorithmen angeboten, um ein einfaches Training mit möglichst geringer Einstiegshürde zu ermöglichen.
 Alternativ können auch eigene Algorithmen zum Training verwendet werden.
-Wie Unity selbst auch ist ML-Agents für den Einsatz in 2D-, 3D- und VR/AR-Umgebungen geeignet.
+Wie Unity selbst ist auch ML-Agents für den Einsatz in 2D-, 3D- und VR/AR-Umgebungen geeignet.
 Als Trainingsmethoden werden unter anderem Reinforcement Learning, Imitation Learning und Neuroevolution unterstützt \cite{mlagentsDocHome}.
 
 % - quelloffenes Projekt, 2017 veröffentlicht
@@ -230,9 +230,9 @@ Als Trainingsmethoden werden unter anderem Reinforcement Learning, Imitation Lea
 ML-Agents besteht aus folgenden high-level Komponenten \cite{mlagentsOverview} (siehe \autoref{fig:learning-environment-basic}):
 \begin{itemize}
     \item \textbf{Trainingsumgebung (Learning Environment):}
-    Die Trainingsumgebung enthält eine Unity Szene und sämtliche Game Charaktere.
-    Die Unity Szene stellt dabei die Umgebung bereit, in der Agenten ihre Beobachtungen machen, handeln und lernen.
-    Mithilfe des ML-Agents Unity SDK kann jede Unity Szene in eine Trainingsumgebung transformiert werden, indem GameObjects als Agenten definiert werden.
+    Die Trainingsumgebung enthält eine Unity Szene und sämtliche GameObjects.
+    Die Unity Szene stellt dabei die Umgebung bereit, in der Agents ihre Beobachtungen machen, handeln und lernen.
+    Mithilfe des ML-Agents Unity SDK kann jede Unity Szene in eine Trainingsumgebung transformiert werden, indem GameObjects als Agents definiert werden.
 
     \item \textbf{Python Low-Level API:}
     Die Python API enthält ein low-level Python Interface, welches die Aufgabe besitzt, mit der Trainingsumgebung zu interagieren und diese zu manipulieren.
@@ -242,7 +242,7 @@ ML-Agents besteht aus folgenden high-level Komponenten \cite{mlagentsOverview} (
     Der Communicator erfüllt die Aufgabe, die Python API mit der Trainingsumgebung zu verbinden.
 
     \item \textbf{Python Trainer:}
-    In den Python Trainern sind alle Machine Learning Algorithmen enthalten, die ein Training der Agenten ermöglicht.
+    Im Python Trainer sind alle Machine Learning Algorithmen enthalten, die ein Training der Agenten ermöglicht.
     Dieses Paket stellt die zum Training genutzte \ac{cli} (\code{mlagents-learn}) bereit.
 \end{itemize}
 
@@ -290,7 +290,7 @@ Wenn die Trainingsumgebung erstellt ist, kann mit dem Training der Agenten begon
 Der Einstiegspunkt hierzu ist immer die \ac{cli} \code{mlagents-learn}, welche Teil der Python-Umgebung von ML-Agents ist.
 Das Training kann dann entweder direkt im Unity-Editor oder mittels einer kompilierten Umgebung erfolgen.
 Falls letztere verwendet werden soll, kann sie mittels des Parameters \code{--env=<env\_name>} spezifiziert werden.
-Einem Training sollte in der Regel auch ein Run-Identifier gegeben werden (\code{--run-id=<run-identifier>}).
+Einem Trainingsdurchlauf sollte in der Regel auch ein Run-Identifier zugewiesen werden (\code{--run-id=<run-identifier>}).
 Über diesen können die Ergebnisse besser zugeordnet werden und es ist beispielsweise auch möglich, ein unterbrochenes Training wiederaufzunehmen \cite{mlagentsTraining}.
 
 Optional kann das Training mithilfe einer YAML-Datei konfiguriert werden.
@@ -298,7 +298,7 @@ In dieser können sowohl allgemeine Aspekte des Trainingsvorgangs festgelegt wer
 Für ein Training mit dem \ac{ppo}-Algorithmus sind vor allem die folgenden Hyperparameter von Bedeutung \cite{mlagentsHyperparameter}:
 \begin{itemize}
     \item \textbf{batch\_size:} Anzahl der Erfahrungen in jeder Iteration des Gradientenabstiegs.
-    \item \textbf{buffer\_size:} Anzahl der Erfahrungen, die gesammelt werden, bevor das Policy Modell aktualisiert wird, also wie viele Erfahrungen gesammelt werden, bevor gelernt wird.
+    \item \textbf{buffer\_size:} Anzahl der Erfahrungen, die gesammelt werden, bevor das Policy-Modell aktualisiert wird, also wie viele Erfahrungen gesammelt werden, bevor gelernt wird.
     \item \textbf{learning\_rate:} Initiale Lernrate für den Gradientenabstieg.
     Damit kann gesteuert werden, wie schnell das Modell am Anfang lernt.
     Sollte so groß wie möglich gewählt werden, um ein schnelles Training durchzuführen.
@@ -333,12 +333,12 @@ Die in der Regel verwendeten Befehle zur Initiierung des Trainings folgen grundl
 \label{sec:bewertung}
 Der Verlauf des Trainings kann mittels des Tools \emph{Tensorboard} überwacht werden.
 Tensorboard startet dabei einen lokalen Webserver, der Auswertungen der Trainingsdaten im Browser darstellt.
-Um das Ergebnis eines Trainings objektiv zu bewerten, muss natürlich das eigentliche, resultierende Modell betrachtet werden, jedoch geben auch einige der in Tensorboard dargestellten Metriken frühzeitig Aufschluss über den potenziellen Erfolg des Trainings.
+Um das Ergebnis eines Trainings objektiv zu bewerten, muss natürlich das eigentliche, resultierende Modell betrachtet werden, jedoch geben auch einige der in Tensorboard dargestellten Metriken frühzeitig Aufschluss über einen potenziellen Erfolg des Trainings.
 Allen voran steht der \emph{Cumulative Reward}.
 Dieser Wert gibt den mittleren kumulierten Reward innerhalb einer Episode von allen Agenten an.
 Natürlich hängt der Verlauf dieser Kurve stark davon ab, wie die individuelle Reward-Funktion gewählt wird, allerdings sollte sich dieser Wert bei einem erfolgreichen Training stetig erhöhen und keine starken Schwankungen aufweisen.
 Die \emph{Episodenlänge} zeigt an, wie lange die Episoden im Mittel gedauert haben.
-Wird die Umgebung etwa beim unwiderruflichen Scheitern eines Agenten zurückgesetzt, so kann hier abgelesen werden, wie lange es im Mittel dauert, bis es zu einem fatalen Scheitern kommt.
+Wird die Umgebung etwa beim unwiderruflichen Scheitern eines Agents zurückgesetzt, so kann hier abgelesen werden, wie lange es im Mittel dauert, bis es zu einem fatalen Scheitern kommt.
 \emph{Policy Loss} hängt davon ab, wie stark die Policy sich verändert.
 Der Betrag dieser Funktion sollte im Laufe des Trainings abnehmen, wenn die Policy zu einer stabilen Funktion konvergiert.
 Schließlich gibt \emph{Value Loss} an, wie stark die vorhergesagten Values von den tatsächlich erhaltenen Rewards abweichen.
@@ -349,14 +349,14 @@ Entsprechend den Beschreibungen in \autoref{sec:training} können auch diese Wer
 
 
 \section{Vektorgeometrie}
-Da Vektoren im dreidimensionalen Raum ein essenzieller Bestandteil der Arbeit mit Unity sind, sollen die dafür wichtigen Konzepte hier kurz vorgestellt werden.
+Da Vektoren im dreidimensionalen Raum ein essenzieller Bestandteil der Arbeit mit Unity sind, werden die dafür wichtigen Konzepte hier kurz vorgestellt.
 
 Grundsätzlich gesehen ist ein Vektor ein mathematisches Konstrukt und hat eine Länge und eine Richtung.
 Im Gegensatz zu Punkten geben Vektoren keinen festen Ort an, sondern beschreiben den Weg von einem Punkt zu einem anderen \cite[6]{kohn2012}.
 Dabei besitzt ein Vektor für jede Dimension eine Komponente.
 Trotzdem ist eine Ortsangabe mit einem Vektor möglich (und wird in Unity für die GameObjects verwendet).
 Dieses Konstrukt besteht aus einem Vektor, der an einem bestimmten Punkt beginnt und nennt sich Ortsvektor \cite[21]{kohn2012}.
-Im Weiteren Verlauf wird davon ausgegangen, dass Ortsvektoren dem Koordinatenursprung entstammen.
+Im weiteren Verlauf wird davon ausgegangen, dass Ortsvektoren dem Koordinatenursprung entstammen.
 
 \autoref{fig:weg} stellt die Ortsvektoren $\overrightarrow{a}$ und $\overrightarrow{b}$ dar, welche vom Koordinatenursprung auf die Punkte $A$ und $B$ zeigen.
 Der Vektor $\overrightarrow{AB}$ stellt den Vektor dar, der von $A$ zu $B$ führt.
@@ -418,7 +418,7 @@ Der Hintergrund liegt hierbei im Satz des Pythagoras, was ersichtlich wird, wenn
 
 Dadurch, dass Vektoren eine Richtung darstellen, ist es ebenfalls möglich, den Winkel $\beta$ zu bestimmen, der zwischen diesen Vektoren liegt, wenn man sie aufeinander stellt.
 Dafür wird zunächst das sogenannte Skalarprodukt der beiden Vektoren gebildet \cite[45]{kohn2012} (\autoref{eqn:skalarprodukt}).
-Anschließend wird das Skalarprodukt durch das Produkt der Längen beider Vektoren geteilt und in die $\arccos$ Funktion eingesetzt \cite[60]{kohn2012} (\autoref{eqn:zwischenwinkel}).
+Anschließend wird das Skalarprodukt durch das Produkt der Längen beider Vektoren geteilt und in die $\arccos$-Funktion eingesetzt \cite[60]{kohn2012} (\autoref{eqn:zwischenwinkel}).
 
 \begin{equation}
     \label{eqn:skalarprodukt}
@@ -435,7 +435,7 @@ Anschließend wird das Skalarprodukt durch das Produkt der Längen beider Vektor
 
 \section{Beschreibung der Projektbasis}
 Die Zielsetzung dieser Arbeit soll aufbauend auf einer Vorgängerarbeit \cite{waidner.2020} realisiert werden, welche vor einigen Jahren ebenfalls im Rahmen einer Studienarbeit durchgeführt wurde.
-Hier soll nun zunächst die Vorgehensweise der Vorgängerarbeit in ihren Grundzügen erläutert werden.
+Hier soll zunächst die Vorgehensweise der Vorgängerarbeit in ihren Grundzügen erläutert werden.
 
 \subsection{Aufbau und Simulation des Roboters}
 Kernelement der Arbeit ist ein vierbeiniger, 3D-gedruckter Roboter, der in seiner Anatomie einer Spinne gleicht.
@@ -483,15 +483,15 @@ Die Simulation dieser allgemeinen Physik wird bereits als Grundfunktion der Unit
 % \end{itemize}
 
 \subsection{Training des Roboters}
-Mit der fertig aufgebauten Simulation kann nun der Roboter für alle erdenklichen Szenarien trainiert werden.
+Mit der fertig aufgebauten Simulation kann der Roboter für alle erdenklichen Szenarien trainiert werden.
 Dazu müssen Rahmenbedingungen des Trainings definiert werden.
-Primär sind dies die Beobachtungen, die der Trainingsalgorithmus macht, die Aktionen, die er ausführen kann und die Belohnung, die er als Feedback für seine Handlungen erhält.
+Primär sind dies die Observations, die der Trainingsalgorithmus macht, die Aktionen, die er ausführen kann und der Reward, den er als Feedback für seine Handlungen erhält.
 Die Zielsetzung der Vorgängerarbeit besteht aus einer reinen Vorwärtsbewegung.
-Da der reale Roboter über keine Sensorik verfügt und lediglich die Ansteuerwinkel seiner Servomotoren kennt, sind dies auch die einzigen Beobachtungen, die dem Algorithmus zugänglich gemacht werden (kontinuierlicher Beobachtungsraum).
+Da der reale Roboter über keine Sensorik verfügt und lediglich die Ansteuerwinkel seiner Servomotoren kennt, sind dies auch die einzigen Observations, die dem Algorithmus zugänglich gemacht werden (kontinuierlicher Beobachtungsraum).
 Als Aktionen kann der Algorithmus beliebige Zielwinkel für die Servomotoren setzen (kontinuierlicher Aktionsraum).
-Die Belohnung für den Roboter besteht in der Vorgängerarbeit aus der Streckendifferenz, die er nach vorne zurückgelegt hat.
+Der Reward für den Roboter besteht in der Vorgängerarbeit aus der Streckendifferenz, die er nach vorne zurückgelegt hat.
 Bestraft wird der Roboter für ein Umkippen, um zu verhindern, dass bei der späteren Übertragung auf den realen Roboter die Steuerelektronik beschädigt wird.
-Um das Training zu beschleunigen, sind in der Vorgängerarbeit mehrere Agenten nebeneinander in derselben Umgebung instanziiert.
+Um das Training zu beschleunigen, sind in der Vorgängerarbeit mehrere Agents nebeneinander in derselben Umgebung instanziiert.
 Nach einer Einstellung der Hyperparameter wurden Modelle mit den Reinforcement-Learning-Algorithmen \ac{sac} und \ac{ppo} trainiert.
 Dabei wurde festgestellt, dass in diesem Anwendungsfall die Ergebnisse des \ac{ppo}-Algorithmus denen des \ac{sac}-Algorithmus deutlich überlegen sind \cite[48]{waidner.2020}.
 
@@ -500,7 +500,7 @@ Stattdessen führen die Ergebnisse des Trainings dazu, dass der Algorithmus den 
 
 \subsection{Übertragung in die Realität}
 Die Implementierung der Vorgängerarbeit sieht auch eine Übertragung der Ergebnisse auf den realen Roboter vor.
-Zu diesem Zwecke können die Steuersignale, die der Roboter in der Simulation erhält, über eine serielle Verbindung übertragen werden und direkt auf dem realen Roboter angewandt werden.
+Zu diesem Zwecke können die Steuersignale, die der Roboter in der Simulation erhält, über eine serielle Verbindung übertragen und direkt auf dem realen Roboter angewandt werden.
 
 Die unternommenen Versuche waren jedoch leider nicht erfolgreich.
 Als Ursache fällt die Vermutung auf Hardwarefehler, da der Roboter -- in der Luft gehalten -- die Bewegungen korrekt nachahmt.

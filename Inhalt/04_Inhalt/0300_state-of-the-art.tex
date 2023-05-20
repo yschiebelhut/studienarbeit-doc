@@ -7,7 +7,7 @@ Aktuell gibt es in der Bewegungsforschung von Robotern mit mehreren Beinen drei 
 \end{itemize}
 Simmering et al. \cite{simmering2023walknet} erforschen fortgeschrittene Laufmethoden der sensorbasierten Walknet-Architektur und sehen vor allem ein Potenzial in der Verbindung mehrerer dieser Ansätze.
 
-Während Machine Learning in den letzten Jahren erfolgreich auf viele Aufgaben angewandt wurde, treffen lernende Ansätze in der Anwendung bei realen, mehrbeinigen Robotern -- welche kontinuierlichen Kontroll-Aufgaben darstellen -- noch auf einige Probleme \cite{schilling2020decentralized}.
+Während Machine Learning in den letzten Jahren erfolgreich auf viele Aufgaben angewandt wurde, treffen lernende Ansätze in der Anwendung bei realen, mehrbeinigen Robotern -- welche kontinuierlichen Kontrollaufgaben darstellen -- noch auf einige Probleme \cite{schilling2020decentralized}.
 Einerseits werden Roboter aus Praktikabilitäts- und Sicherheitsgründen meist in Simulationen trainiert.
 (Häufig werden auch zunächst in der Simulation Grundsteine gelegt und dann die daraus gewonnenen Modelle manuell für eine bestimmte Aufgabe feingeschliffen \cite{schilling2020decentralized}.)
 In der Folge kann allerdings der Transfer auf reale Probleme erschwert werden, da etwa in der realen Anwendung deutlich mehr (Signal-)Rauschen von Eingabesensoren auftritt, was zur Hinterfragung führt, ob tatsächlich ein fester \ac{mdp} vorliegt \cite{schilling2020decentralized}.
@@ -100,7 +100,7 @@ Abschließend soll hier noch der Ansatz von Smith et al. \cite{smith2023learning
 Die Idee hier ist, agile und komplexe Bewegungsfähigkeiten durch Übertragung von Lernerfahrungen zu erlernen und anzupassen.
 Der Hintergrundgedanke beruht darauf, dass selbst einfache Aufgaben schon sehr komplex modulierte Reward-Funktionen benötigen können, um eine gezielte Bewegung zu erhalten.
 Wenn nun eine noch deutlich komplexere Bewegungsform von Null trainiert wird, kann dies teilweise fast unmöglich zu bewältigen sein, da nur ein sehr bestimmtes Verhalten Reward nach sich ziehen kann.
-Für ein spezifisches Zielproblem zu trainieren mag zwar scher sein, doch häufig ist es zumindest möglich, mit einfacheren Trainingsumgebungen und Problemen zumindest relevante Daten zu erhalten, welche für einen Lernprozess von Interesse sind.
+Für ein spezifisches Zielproblem zu trainieren mag zwar schwer sein, doch häufig ist es zumindest möglich, mit einfacheren Trainingsumgebungen und Problemen relevante Daten zu erhalten, welche für einen Lernprozess von Interesse sind.
 So sollen Daten von beliebigen Trainingsprozessen transformiert und transferiert werden können, um neue Fähigkeiten einfacher und in einem Bruchteil der Zeit erlernen zu können (\autoref{fig:transfer}).
 Zum Beispiel können Daten von einem Roboter, der gelernt hat, auf zwei Beinen zu stehen, dabei helfen, ihm das Laufen auf diesen zwei Beinen beizubringen.
 Auch mit diesem Ansatz wurden bereits vielversprechende Ergebnisse erzielt.
