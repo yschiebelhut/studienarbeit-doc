@@ -148,12 +148,12 @@ Wie in \autoref{sec:probleme} bereits ausgeführt, muss verhindert werden, dass 
 Als logische Folgerung muss bei jeder Trainingsepisode ein zufälliger Pfad vorgegeben werden.
 Beim Verflogen eines Pfades ist zu jeder Zeit nur der als nächstes anzusteuernde Punkt von Relevanz.
 Für das Training ergibt dies Parallelen zu einem Beispielszenario des ML-Agents-Toolkits.
-Beim \emph{Crawler-Example} muss eine Kreatur lernen, ein zufällig spawnendes Ziel (sogenannte \emph{Dynamic Targets}) zu erreichen.
-Kommt der Crawler mit einem Dynamic Target in Berührung, teleportiert es sich an einen zufälligen Ort \cite{crawlerExample}.
-Dabei tauch die Dynamic Targets als kleine Würfel in der Umgebung des Crawlers auf.
-Die Dynamic Targets können auch für die Pfadplanung des Roboters verwendet werden.
+Beim \emph{Crawler-Example} muss eine Kreatur lernen, ein zufällig spawnendes Ziel (sogenannte \emph{DynamicTargets}) zu erreichen.
+Kommt der Crawler mit einem DynamicTarget in Berührung, teleportiert es sich an einen zufälligen Ort \cite{crawlerExample}.
+Dabei tauch die DynamicTargets als kleine Würfel in der Umgebung des Crawlers auf.
+Die DynamicTargets können auch für die Pfadplanung des Roboters verwendet werden.
 Die für das Training notwendigen, zufälligen Pfade bilden sie bereits automatisch ab.
-Um dem trainierten Modell des Crawlers einen festen Pfad vorgeben zu können, muss lediglich eine kleine Modifikation der Dynamic Targets vorgenommen werden, um diese in einer festgelegten Reihenfolge anstatt zufällig erscheinen zu lassen.
+Um dem trainierten Modell des Crawlers einen festen Pfad vorgeben zu können, muss lediglich eine kleine Modifikation der DynamicTargets vorgenommen werden, um diese in einer festgelegten Reihenfolge anstatt zufällig erscheinen zu lassen.
 Dieses Prinzip soll auf diese Studienarbeit übertragen werden und es so dem Roboter ermöglichen, einem geplanten Pfad zu folgen.
 
 \subsection{Anpassung der Reward-Funktion}
@@ -165,7 +165,7 @@ Um den Roboter im Zuge der Pfadplanung dazu zu bringen, zum nächsten Zielpunkt 
 Denkbar sind hierfür mehrere Ansätze.
 Eine Möglichkeit besteht darin, die Distanz zwischen Roboter und Zielpunkt zu bestimmen und mit der Distanz vor der letzten Aktion zu vergleichen.
 Die andere Möglichkeit ist, die konkrete Bewegungsrichtung des Roboters zu bestimmen und ein Produkt mit der Geschwindigkeit des Roboters zu bilden.
-Diese Möglichkeit ermöglicht eine potenziell feinere Gewichtung der Faktoren.
+Dies ermöglicht eine potenziell feinere Gewichtung der Faktoren.
 Der erste Berechnungsansatz stellt hingegen eine wesentlich kleinere Veränderung zur Ausgangssituation dar, weshalb hierbei die möglichen Fehlerquellen besser eingegrenzt werden können.
 Es sollen beide Ansätze ausprobiert und miteinander verglichen werden.
 

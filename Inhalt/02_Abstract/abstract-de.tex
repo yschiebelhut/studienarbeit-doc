@@ -11,11 +11,12 @@
 
 Die manuelle Implementierung einer Steuerung für mehrbeinige Roboter ist äußerst komplex.
 Aus diesem Grund wurde in einer früheren Studienarbeit untersucht, wie ein spinnenartiger Roboter mittels Reinforcement Learning das Laufen lernen kann, ohne dass fortgeschrittene anatomische Kenntnisse oder ein großer Aufwand erforderlich sind.
-Das dabei trainierte Modell ermöglicht nur die Bewegung in eine Richtung.
+Das dabei trainierte Modell ermöglicht nur die Bewegung des Roboters in eine Richtung.
 
 \vspace{0.25cm}
 
-Im Rahmen dieser Arbeit wird die Erweiterung dieses Modells erforscht, um die Fähigkeit des Ausweichens vor Hindernissen entlang eines vorgegebenen Pfades zu ermöglichen.
+Im Rahmen dieser Arbeit wird die Erweiterung dieses Modells erforscht, um die Fähigkeit zu ermöglichen, einem vorgegebenen Pfad zu folgen und dabei Hindernissen entlang dieses Pfades auszuweichen.
+% Im Rahmen dieser Arbeit wird die Erweiterung dieses Modells erforscht, um die Fähigkeit des Ausweichens vor Hindernissen entlang eines vorgegebenen Pfades zu ermöglichen.
 Das Training wird in einer mit Unity simulierten Umgebung durchgeführt, um es einerseits zu beschleunigen und andererseits, da eine Übertragung in die Realität Modifikationen am Roboter erfordern würde.
 Für das Training wird der \acl{ppo}-Algorithmus verwendet, der in der vorangegangenen Arbeit die besten Ergebnisse aller verglichenen Algorithmen gezeigt hat.
 

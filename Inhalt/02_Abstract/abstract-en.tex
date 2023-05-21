@@ -13,11 +13,12 @@
 
 The manual implementation of a control system for multi-legged robots is highly complex.
 For this reason, a previous thesis investigated how a spider-like robot can learn to walk using reinforcement learning without requiring advanced anatomical knowledge or a great deal of effort.
-The trained model only allows movement in one direction.
+The trained model only allows the robot to move in one direction.
 
 \vspace{0.25cm}
 
-This thesis explores the extension of this model to allow the ability to avoid obstacles along a given path.
+This thesis explores the extension of this model to allow the ability to follow a given path while avoiding obstacles along the way.
+% This thesis explores the extension of this model to allow the ability to avoid obstacles along a given path.
 The training is carried out in an environment simulated with Unity, both to speed it up and because transferring it to reality would require modifications to the robot.
 For the training, the \acl{ppo} algorithm is used, which has shown the best results of all compared algorithms in the previous thesis.
 

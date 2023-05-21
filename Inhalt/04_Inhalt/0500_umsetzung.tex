@@ -34,7 +34,7 @@ Auch bei ML-Agents ist dies der Fall und es kommt umgehend zu Kompilierungsfehle
 Der erste Schritt besteht deshalb darin, herauszufinden, welche Methoden davon betroffen sind.
 Dafür werden im Fehlerbericht die Methoden gesucht, die Fehler enthalten.
 Die Methodenköpfe können dann in der Versionshistorie von ML-Agents\footnote{\url{https://github.com/Unity-Technologies/ml-agents/releases}} gesucht werden.
-Im vorliegenden Fall sind somit alle an der Schnittstelle des Toolkit vorgenommenen Änderungen deutlich aufgeschlüsselt und geben Aufschluss darüber, wie die Kompatibilität des Quellcodes wiederhergestellt werden kann.
+Im Fall von ML-Agents lassen sich so alle an der Schnittstelle des Toolkit vorgenommenen Änderungen deutlich aufschlüsseln und geben Aufschluss darüber, wie die Kompatibilität des Quellcodes wiederhergestellt werden kann.
 
 Für das Training wird in \cite{waidner.2020} eine Konfiguration in Form einer YAML-Datei verwendet, wie sie in \autoref{sec:training} beschrieben wird.
 Mit einer Aktualisierung des Python-Toolkits hat sich auch das Format dieser Datei verändert, weshalb die ursprüngliche Datei nicht mehr kompatibel zum nun verwendeten Tooling ist.
@@ -45,15 +45,15 @@ Der Codestand ist nach diesen Veränderungen\footnote{\url{https://github.com/Mo
 Um ein Training in der Simulationsumgebung durchzuführen wird zuerst eine kompilierte Binary der Trainingsumgebung erstellt.
 Zwar ist es theoretisch möglich, direkt aus dem Unity-Editor das Training zu starten, allerdings bringt dies einige Nachteile mit sich, wie etwa mangelnde Skalierbarkeit und Performanceverluste.
 Außerdem ist es so nicht möglich, das Training effizient auf einer unabhängigen Maschine durchzuführen, die eine weit höhere Trainingsrate ermöglicht.
-Um eine solche Binary zu erstellen, wird der Build Prozess in Unity unter File \textgreater Build Settings \textgreater Build gestartet.
-Dabei wird die gewünschte Zielplattform ausgewählt -- in Abhängigkeit, wo das Training durchgeführt werden soll.
+% Um eine solche Binary zu erstellen, wird der Build Prozess in Unity unter File \textgreater Build Settings \textgreater Build gestartet.
+In Abhängigkeit, wo das Training durchgeführt werden soll, kann die Binary für die gewünschte Zielplattform kompiliert werden.
 Voraussetzung des Cross-Compiling ist es allerdings, dass die entsprechenden Erweiterungen und Bibliotheken bei der Installation von Unity ausgewählt und geladen wurden.
 Andernfalls ist standardmäßig nur das Kompilieren für die Architektur und Plattform möglich, unter der der Editor ausgeführt wird.
 
-Auf der Maschine, auf der das Training durchgeführt wird, muss für die Durchführung des Trainings lediglich das Python-Toolkit installiert sein.
-Eine Installation von Unity ist nicht erforderlich, was das Auslagern des Trainingsprozesses und somit ein effizientes Training deutlich vereinfacht.
 Für die Experimente im Rahmen dieser Arbeit wird ein virtuelles Rechencluster mit einer Intel Xeon (Gold 6240) CPU mit 8 Kernen, einer Nvidia vGPU V100D-8C und Ubuntu 20.04.1 LTS verwendet.
 Deshalb wird das Environment für Linux x86\_64 gebaut und es ist kein Cross-Compiling von der Entwicklungsmaschine zur Trainingsmaschine nötig.
+Auf der Maschine, auf der das Training durchgeführt wird, muss für die Durchführung des Trainings lediglich das Python-Toolkit installiert sein.
+Eine Installation von Unity ist nicht erforderlich, was das Auslagern des Trainingsprozesses und somit ein effizientes Training deutlich vereinfacht.
 
 Unity produziert bei Kompilierung für Linux einen Ordner mit den Ausgabedateien, welche sowohl die eigentliche Binary als auch Artefakte und Libraries enthalten.
 Dieser Ordner sollte deshalb vollständig auf die Trainingsmaschine übertragen werden.
@@ -92,7 +92,7 @@ Auch der gelernte Bewegungsablauf, der bei der Inferenz zu beobachten ist\footno
 
 \section{Stabilisierung des Laufverhaltens}
 \label{sec:stabilisierung}
-Wie in \autoref{sec:probleme} ausgeführt und von den Ergebnissen der Rekonstruktion zusätzlich veranschaulicht wird, bewegt sich der Roboter aktuell mit einer sprungartigen Bewegung fort.
+Wie von den Ergebnissen der Rekonstruktion veranschaulicht und auch in \autoref{sec:probleme} ausgeführt wird, bewegt sich der Roboter aktuell mit einer sprungartigen Bewegung fort.
 Diese ist, wie beschrieben, Ursache für viele potenzielle Probleme.
 Deshalb soll das Laufverhalten stabilisiert werden.
 In diesem Zusammenhang wird darunter verstanden, die Schwankungen, die die Körpermitte bei der Bewegung vollführt, auf ein Minimum zu begrenzen.
@@ -122,7 +122,7 @@ Jedoch stellt der in dieser Klasse berechnete Reward die zentralste Stellschraub
 
 In \autoref{code:reward-post-reconstruct} ist die ursprüngliche Berechnung des Rewards zu sehen, wie sie in \code{SpiderController.cs} implementiert ist.
 Dabei wird zunächst der Reward mit 0 initialisiert.
-Anschließend wird abgeprüft, ob sich der Roboter um mehr als 90° zur horizontalen Achse gedreht hat und eine negative Belohnung vergeben, falls dies der Fall ist.
+Anschließend wird abgeprüft, ob sich der Roboter um mehr als 90° zur horizontalen Achse gedreht hat (Abfrage von \code{isTurned()}) und eine negative Belohnung vergeben, falls dies der Fall ist.
 Mit dieser Prüfung wird verhindert, dass der Roboter sich überschlägt und dabei seine empfindliche Elektronik beschädigt.
 Anschließend wird geprüft, wie weit der Roboter auf der Karte in Vorwärtsrichtung von seinem Ausgangspunkt entfernt ist und die Differenz zum vorherigen Resultat dieser Berechnung gebildet.
 Diese Differenz -- sowohl wenn diese positiv ausfällt, als auch, wenn sie negativ ist -- wird dann mit der eventuellen Strafe für ein Überschlagen verrechnet und als Reward zurückgegeben.
@@ -148,7 +148,7 @@ Jedoch wird bei diesem Ansatz ein Training gegenläufig zum sinkenden Schwellwer
 Eine alternative Lösung ist in \autoref{code:reward-1-adjustAngle} dargestellt.
 Zentrales Element dieser Lösung ist die neu eingeführte Methode \code{getAngle()}.
 Der Methodenrumpf ist fast identisch mit dem der Methode \code{isTurned()} aus \autoref{code:reward-post-reconstruct}.
-Der Unterschied besteht dabei darin, dass die neue Methode nicht prüft, ob der berechnete Winkel größer als 90° ist und den resultierenden Wahrheitswert zurückgibt, sondern stattdessen den Rest der Division des Winkels durch 90 bestimmt und als Fließkommazahl zurückliefert.
+Der Unterschied besteht dabei darin, dass die neue Methode nicht prüft, ob der berechnete Winkel zwischen Körpermitte und horizontaler Achse größer als 90° ist und den resultierenden Wahrheitswert zurückgibt, sondern stattdessen den Rest der Division des Winkels durch 90 bestimmt und als Fließkommazahl zurückliefert.
 Anschließend wird der mit der neuen Methode berechnete Winkel mit einem kleinen negativen Faktor multipliziert und dieser Summand in der Berechnung des Rewards ergänzt (Zeile 6).
 Somit wird eine Strafe vergeben, deren Betrag proportional mit der Rotation der Körpermitte zunimmt.
 Die anschließende Belohnung für die zurückgelegte Distanz und die Verrechnung mit der Bestrafung bleibt unverändert.
@@ -164,9 +164,9 @@ Das mit dieser Reward-Funktion trainierte Modell legt die Wirksamkeit der Maßna
 \autoref{fig:adjustedAngles} zeigt den Verlauf des Cumulative Rewards während des Trainings.
 Im Vergleich zu \autoref{fig:time-scale-1} fällt auf, dass der Trainingsprozess zwar zu einem stabilen Wert konvergiert, jedoch besonders am Anfang deutlich instabiler verläuft.
 Außerdem ist der Wert, zu dem das Training konvergiert, fast um zwei Drittel gemindert.
-Betrachtet man das Laufverhalten des Roboters, so fällt weiterhin auf, dass der Roboter weiterhin eine sprungartige Fortbewegung wählt.
+Betrachtet man das Laufverhalten des Roboters, so fällt weiterhin auf, dass der Roboter nach wie vor eine sprungartige Fortbewegung wählt.
 (Diese fällt allerdings weitaus stabiler aus, als der in \cite{waidner.2020} erlernte Bewegungsablauf.)
-Dabei werden allerdings nur die beiden vorderen und eins der hinteren Beine verwendet, das letzte Bein ist eingekringelt und berührt den Boden nicht.
+Dabei werden allerdings nur die beiden vorderen und eins der hinteren Beine verwendet, das letzte Bein ist eingezogen und berührt den Boden nicht.
 
 \subsection{Optimierung der Reward-Funktion}
 In einem Versuch, das Laufverhalten weiter zu optimieren und eine natürlichere Laufbewegung zu erhalten, wird die Berechnung des Rewards leicht umgestaltet.
@@ -209,7 +209,7 @@ Im Beispiel wurde ein Agent darauf trainiert, nacheinander zu zufällig erschein
 Wenn der Agent ein Ziel (\emph{DynamicTarget}) erreicht, so verschwindet es und taucht an anderer Stelle wieder auf.
 Der Agent hat dabei keinen Einfluss auf das DynamicTarget und kennt nur dessen aktuelle Position.
 
-Wenn ein DynamicTarget initialisiert wird oder in Kontakt mit einem Unity GameObject kommt, welches mit dem Tag \enquote{agent} versehen ist, wird die in \autoref{code:dynamic-target-old} dargestellte Methode ausgeführt, welche das DynamicTarget an einen zufälligen Ort teleportiert.
+Wenn ein DynamicTarget initialisiert wird oder ein Unity GameObject berührt, welches mit dem Tag \enquote{agent} versehen ist, wird die in \autoref{code:dynamic-target-old} dargestellte Methode ausgeführt, welche das DynamicTarget an einen zufälligen Ort teleportiert.
 
 \begin{figure}
     \lstinputlisting[
@@ -247,10 +247,10 @@ In der Element-Detailansicht von Unity können anschließend beliebig viele Ziel
 Da der Agent im Crawler-Example die Ziele nicht selbst kontrolliert, ist kein erneutes Trainieren des Modells nötig, sondern die Modifikationen sind direkt wirksam und der Agent läuft entlang des vorgegebenen Pfades\footnote{\href{https://github.com/yschiebelhut/studienarbeit-doc/raw/master/Videos/crawler-poc.webm}{Link zu Videomaterial}}.
 
 \subsection{Übertragung auf den SpiderAgent}
-Um dieses Prinzip für den Roboter in dieser Studienarbeit zu nutzen, werden der \code{TargetController} und das dazugehörige Prefab aus dem Beispielprojekt des ML-Agents-Toolkits in die Simulationsumgebung kopiert.
+Um dieses Prinzip für den Roboter in dieser Studienarbeit zu nutzen, werden der \code{TargetController} und das dazugehörige Prefab (Konfiguration eines GameObjects als wiederverwendbares Asset) aus dem Beispielprojekt des ML-Agents-Toolkits in die Simulationsumgebung kopiert.
 \code{SpiderAgent.cs} wird im Anschluss um den in \autoref{code:dynamic-target-spawn} dargestellten Code ergänzt.
 Dieser stellt eine Verknüpfung zwischen dem Agent und dem Target her und ermöglicht das initiale Spawnen des Ziels.
-Weiterhin wird sämtlichen Körperteilen des Roboters der Tag \enquote{agent} zugewiesen.
+Weiterhin wird sämtlichen Körperteilen des Roboters der Tag \enquote{agent} für die Kollisionserkennung des DynamicTargets zugewiesen.
 Für das Training wird die Positionsliste leer gelassen, um die Targets zufällig auf der Trainingsplattform erscheinen zu lassen, damit der Roboter nicht einen vorgegebenen Pfad auswendig lernt.
 
 
@@ -308,7 +308,7 @@ Die Funktionen haben verschiedene Komplexitäten und Ansätze, um eine allgemein
     Weiterhin wird hier wieder ein Belohnungsfaktor eingeführt, welcher umso höher ausfällt, desto stabiler die Körpermitte in der Horizontalen gehalten wird.
 
     \item Der letzte Ansatz ist dem zweiten sehr ähnlich.
-    Allerdings wird hier auf das berechnete Produkt noch eine konstante Strafe für jeden Schritt addiert, um eine schnelle Zielerreichung voranzutreiben.
+    Allerdings wird hier auf das berechnete Produkt noch eine kleine, konstante Strafe für jeden Schritt addiert, um eine schnelle Zielerreichung voranzutreiben, indem der Roboter für Untätigkeit bestraft wird.
 \end{itemize}
 
 Trotz der Unterschiede der Ansätze zeigen alle ein ähnliches Ergebnis des Trainings: der Roboter fällt mit seiner Körpermitte auf den Boden und bewegt seine Beine in der Luft.
@@ -324,7 +324,7 @@ Dafür wird die jeweils letzte Position des Roboters zwischengespeichert.
 Es werden dann die Distanzen von der letzten Position zur Zielposition sowie von der aktuellen Position zur Zielposition bestimmt.
 Anschließend wird die Differenz der beiden Distanzen so bestimmt, dass die Berechnung in einer positiven Belohnung resultiert, wenn der Roboter sich mit dem letzten Schritt dem Ziel genähert hat.
 
-Dieser Ansatz zeigt bessere Ergebnisse als die mit geometrischer Reward-Funktion, jedoch wird im Training sehr früh ein lokales Maximum erreicht.
+Dieser Ansatz zeigt bessere Ergebnisse als die Versuche mit geometrischer Reward-Funktion, jedoch wird im Training sehr früh ein lokales Maximum erreicht.
 Dabei lernt der Roboter, dass er eine Belohnung erzielt, wenn er sich in Richtung des DynamicTargets rollen lässt, überschlägt sich dabei allerdings und startet somit die Trainingsepisode neu.
 Versuche, die Strafen für Überschlagen und Körperrotation anzuheben, schlagen ebenfalls fehl.
 Werden diese Maßnahmen ergriffen, verschlechtern sich die Resultate sogar.
@@ -337,7 +337,7 @@ Dieser letzte Stand enthält als Observationen nur die Winkel der zwölf Servomo
 Im ersten Schritt wird nun die Größe des Observation Space erneut, wie oben beschrieben, erweitert.
 Dabei werden allerdings nicht die Position des Roboters und die des DynamicTargets hinzugefügt, sondern zwei dreidimensionale Nullvektoren als Platzhalter.
 Wie erwartet ist der Cumulative Reward des Trainingsdurchlaufs praktisch deckungsgleich mit dem Stand vor der Veränderung.
-Der nächste Schritt fügt nun bei weiterhin unveränderter Reward-Funktion die beiden Positionen als Beobachtung anstelle der Nullvektoren hinzu.
+Der nächste Schritt fügt nun, bei weiterhin unveränderter Reward-Funktion, die beiden Positionen als Beobachtung anstelle der Nullvektoren hinzu.
 Auch wenn zusätzliche Informationen, die allerdings nicht in den Reward einfließen, den Trainingsprozess eigentlich nicht negativ beeinflussen dürften, erreicht der Trainingsprozess mit Zugriff auf die Positionen keinen positiven Cumulative Reward.
 
 Die wahrscheinlichste Ursache für ein solches Verhalten sind suboptimal eingestellte Hyperparameter.
@@ -353,8 +353,8 @@ Die optimierten Hyperparameter werden in \autoref{anhang:trainer-config} dargest
     \label{fig:optimierte-hyperparameter}
 \end{figure}
 
-Auf Basis der neu eingestellten Hyperparameter werden erneut die vollständigen Änderungen von \autoref{sec:classic-reward} angewandt.
-Als Resultat kann zwar eine stabil ansteigende Kennkurve des Cumulative Reward beobachtet werden, jedoch trifft dies nicht auf das gelernte Bewegungsverhalten zu.
+Auf Basis der verbesserten Hyperparameter werden erneut die vollständigen Änderungen von \autoref{sec:classic-reward} angewandt.
+Als Resultat kann zwar eine stabil ansteigende Kennlinie des Cumulative Reward beobachtet werden, jedoch trifft dies nicht auf das gelernte Bewegungsverhalten zu.
 Der Roboter vollführt eine Mischung aus Sprüngen und Schritten, die ihn teilweise zielstrebig auf das Ziel zubewegen, in anderen Situationen jedoch vollkommen zufällig erscheinen\footnote{\href{https://github.com/yschiebelhut/studienarbeit-doc/raw/master/Videos/SpiderBotDemos/14a-calmed-reward-scaled.webm}{Link zu Videomaterial}}.
 In der Dokumentation von ML-Agents wird als Maßnahme für einen stabilen Trainingsprozess empfohlen, den Reward möglichst auf einen Betrag von 1 zu skalieren.
 Einige Versuche mit verschiedenen Skalierungen zeigen jedoch keine abweichenden Ergebnisse.
@@ -379,16 +379,16 @@ Von solch einem Ergebnis ist ohne explizites Training auch auszugehen, da der Ro
 Wird nun allerdings mit unveränderter Reward-Funktion und zusätzlich mit dem eingefügten Hindernis trainiert, kann ein interessantes Ergebnis beobachtet werden.
 Wie in \autoref{sec:realisierung} schon ausgeführt, lernt der Roboter seine Umgebung auswendig, wenn sich diese während des Trainings nicht verändert.
 Dies ist auch hierbei zu beobachten.
-Was allerdings verwundert, ist, dass der Roboter schon zu Beginn anfängt, eine Kurve zu laufen, mit der er knapp am Hindernis vorbeikommt -- jedoch wird diese Kurve nicht abgebrochen, wenn der Roboter am Hindernis vorbeilaufen könnte, obwohl er sich durch das Weiterlaufen der Kurve in die falsche Richtung bewegt und somit ausschließlich negative Rewards bekommen kann.
+Verwunderlich ist allerdings, dass der Roboter schon zu Beginn anfängt, eine Kurve um das Hindernis zu laufen -- jedoch wird diese Kurve nicht abgebrochen, wenn der Roboter das seitliche Ende des Hindernisses erreicht hat und weiter geradeaus laufen könnte, obwohl er sich durch das Weiterlaufen der Kurve in die falsche Richtung bewegt und somit ausschließlich negative Rewards bekommen kann.
 Dies widerspricht einer der grundlegendsten Maximen von Reinforcement Learning: den Reward immer und um jeden Preis maximieren.
 
 Im Falle des Crawler-Examples, anhand dessen ein Proof of Concept zur Pfadplanung implementiert wurde, kann ähnliches beobachtet werden wie bei dem Modell des SpiderAgents, welches nicht explizit für das Hindernis trainiert wurde.
-Aufgrund seiner physikalischen Simulationseigenschaften federt der Crawler etwas von der Wand zurück, gegen die er wiederholt läuft.
+Aufgrund seiner physikalischen Simulationseigenschaften federt der Crawler etwas vom Hindernis zurück, gegen das er wiederholt läuft.
 Dabei wird er jedes Mal leicht zur Seite abgedrängt, wodurch er nach einiger Zeit das Hindernis überwindet.
 Dieser Vorgang ist jedoch weder eine gezielte Handlung noch ansatzweise effizient\footnote{\href{https://github.com/yschiebelhut/studienarbeit-doc/raw/master/Videos/crawler-obstacle.webm}{Link zu Videomaterial}}.
 
 Diese Experimente zeigen anschaulich, dass auch bei bereits funktionierender Pfadplanung in jedem Fall ein gesondertes Training mit zufällig generierten Hindernisparcours notwendig ist, um dem fertigen Modell ein Umsteuern von Hindernissen zu ermöglichen.
-Für den Fall, dass das Erlernen von Pfadplanung und das gleichzeitige Umsteuern von Hindernissen ein zu komplexes Lernproblem darstellt, könnte gegebenenfalls Curriculum Learning eingesetzt werden, um die Probleme aufeinander aufbauend zu lösen.
+Für den Fall, dass das Erlernen von Pfadplanung und das gleichzeitige Umsteuern von Hindernissen ein zu komplexes Lernproblem darstellt, könnte gegebenenfalls Curriculum Learning (also ein mehrschrittiger Trainingsprozess, bei dem die Aufgabe mit der Zeit komplexer wird) eingesetzt werden, um die Probleme aufeinander aufbauend zu lösen.
 
 Insgesamt dürfte eine Hindernisumfahrung langfristig nur sinnvoll zu realisieren sein, wenn sie mit Sensorik unterstützt wird.
 Da dies das Problem und dessen Komplexität deutlich verändert, wird dann allerdings alternativlos ein gesondertes Training notwendig sein.
