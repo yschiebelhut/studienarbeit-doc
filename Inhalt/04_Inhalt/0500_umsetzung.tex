@@ -7,9 +7,9 @@ Im ersten Schritt wird angestrebt, diesen Arbeitsstand zu rekonstruieren, sodass
 Zur Projektbasis liegt neben der Ausarbeitung in \cite{waidner.2020} nur Quellcode vor.
 Leider werden dabei die verwendeten Programmversionen nicht dokumentiert, welche jedoch notwendigerweise fein aufeinander abgestimmt sein müssen, um ein Training zu ermöglichen und dessen Erfolg zu gewährleisten.
 Sowohl Unity als auch ML-Agents und das zugehörige Python-Toolkit wurden seit der Durchführung von \cite{waidner.2020} in unterschiedlicher Geschwindigkeit weiterentwickelt.
-Aufgrund von auftretenden Inkompatibilitäten empfiehlt es sich daher, zunächst die ursprünglich verwendeten Versionen aufzusetzen und diese Konstellation als Ausgangspunkt für weitere Anpassungen zu nutzen.
+Aufgrund von auftretenden Inkompatibilitäten sollten daher zunächst die ursprünglich verwendeten Versionen aufgesetzt und diese Konstellation als Ausgangspunkt für weitere Anpassungen genutzt werden.
 Die Unity-Projektdatei enthält Informationen über die exakte Unity-Version, die zur Erstellung des Projekts verwendet wurde.
-Leider fehlt jedoch Dokumentation zur verwendeten Version von ML-Agents und des Python-Toolkits.
+Leider fehlt jedoch Dokumentation zu den verwendeten Versionen von ML-Agents und dem Python-Toolkit.
 Recherche in der Veröffentlichungshistorie von ML-Agents ergibt, dass höchstwahrscheinlich Version 0.14.1 des Unity-Plugins verwendet wurde.
 Daraus ergeben sich Python-Abhängigkeiten, die darauf hindeuten, dass eine Python Version \textgreater= 3.6 und \textless 3.7 verwendet wurde.
 Leider gestaltet sich der Versuch erfolglos, diese Versionen auf den verwendeten Entwicklungssystemen (OS X und Linux) zu installieren.
@@ -38,7 +38,7 @@ Im Fall von ML-Agents lassen sich so alle an der Schnittstelle des Toolkit vorge
 
 Für das Training wird in \cite{waidner.2020} eine Konfiguration in Form einer YAML-Datei verwendet, wie sie in \autoref{sec:training} beschrieben wird.
 Mit einer Aktualisierung des Python-Toolkits hat sich auch das Format dieser Datei verändert, weshalb die ursprüngliche Datei nicht mehr kompatibel zum nun verwendeten Tooling ist.
-Die Änderungen am Format sind vergleichsweise gering und die Datei von überschaubarer Größe, weshalb nach dem Vorbild der alten Datei und unter Anleitung von \cite{mlagentsHyperparameter} die Datei neu gebaut werden kann.
+Die Änderungen am Format sind vergleichsweise gering und die Datei von überschaubarer Größe, weshalb nach dem Vorbild der alten Datei und unter Anleitung von \cite{mlagentsHyperparameter} die Datei neu aufgebaut werden kann.
 Der Codestand ist nach diesen Veränderungen\footnote{\url{https://github.com/MobMonRob/HindernisumfahrungRLStudien/tree/ec8abbd161217c9a42adb42779e01c5b3dfeb209}} nun mit den aktualisierten Versionen des Toolings kompatibel und wird als Ausgangspunkt für die Experimente dieser Arbeit verwendet.
 
 \subsection{Durchführung des Trainings}
@@ -100,7 +100,7 @@ Wird das Vorbild der Spinnen betrachtet, so ist davon auszugehen, dass diese Ein
 
 Innerhalb der Simulation existieren zwei elementare C\#-Skripte, die für die in diesem Kapitel beschriebenen Änderungen von besonderer Relevanz sind: \code{SpiderAgent.cs} und \code{SpiderController.cs}.
 In \code{SpiderAgent.cs} befinden sich die für den Reinforcement Learning Prozess relevanten Konfigurationen des Agents.
-Dort werden Obsrevations gesammelt und dem Lernalgorithmus zur Verfügung gestellt, die Aktionen vom Lernalgorithmus entgegengenommen, die Lernepisoden verwaltet und vor allem der Reward zugewiesen.
+Dort werden Observations gesammelt und dem Lernalgorithmus zur Verfügung gestellt, die Aktionen vom Lernalgorithmus entgegengenommen, die Lernepisoden verwaltet und vor allem der Reward zugewiesen.
 Ein \code{SpiderController} ist wiederum einem \code{SpiderAgent} als Attribut zugeordnet und verwaltet dessen Skripte für die Servomotoren, koordiniert die allgemeine Durchführung der Bewegung und führt das Zurücksetzen der Komponenten durch.
 Da ein \code{SpiderController} somit auf die direkten Werte des Roboterzustands zugreifen kann, wird hier auch der Reward berechnet, der in \code{SpiderAgent.cs} zugewiesen wird.
 
@@ -265,7 +265,7 @@ Für das Training wird die Positionsliste leer gelassen, um die Targets zufälli
 \end{figure}
 
 Bislang verfügt der Roboter nur über die aktuellen Winkel der Servomotoren als Observations.
-Für das weitere Training sollen ihm zusätzlich seine eigene Position und die Position des Ziels zugänglich gemacht werden, da es für den Algorithmus andernfalls nicht möglich ist, seine Aktionen auf das Erreichen des DynamicTargets auszurichten.
+Für das weitere Training sollen ihm zusätzlich seine eigene Position und die Position des DynamicTargets zugänglich gemacht werden, da es für den Algorithmus andernfalls nicht möglich ist, seine Aktionen auf das Erreichen des DynamicTargets auszurichten.
 Alternativ könnte dem Roboter ein Richtungsvektor als Observation übergeben werden, der vom Roboter auf das Ziel zeigt.
 Hinsichtlich ihres Informationsgehalts sind beide Angaben identisch, da sie rechnerisch ineinander überführt werden können.
 Weil bei der manuellen Berechnung des Richtungsvektors jedoch leichter Fehler auftreten können, werden absolute Positionen übergeben.
@@ -322,7 +322,7 @@ Es wird grundlegend dieselbe optimierte Reward-Funktion wie in \autoref{code:rew
 Der Unterschied besteht hierbei jedoch darin, dass nicht mehr die zurückgelegte Distanz entlang der x-Achse gemessen wird, sondern die zurückgelegte Distanz in Richtung des DynamicTargets.
 Dafür wird die jeweils letzte Position des Roboters zwischengespeichert.
 Es werden dann die Distanzen von der letzten Position zur Zielposition sowie von der aktuellen Position zur Zielposition bestimmt.
-Anschließend wird die Differenz der beiden Distanzen so bestimmt, dass die Berechnung in einer positiven Belohnung resultiert, wenn der Roboter sich mit dem letzten Schritt dem Ziel genähert hat.
+Anschließend wird die Differenz der beiden Distanzen so bestimmt, dass die Berechnung in einer positiven Belohnung resultiert, wenn der Roboter sich mit dem letzten Schritt dem DynamicTarget genähert hat.
 
 Dieser Ansatz zeigt bessere Ergebnisse als die Versuche mit geometrischer Reward-Funktion, jedoch wird im Training sehr früh ein lokales Maximum erreicht.
 Dabei lernt der Roboter, dass er eine Belohnung erzielt, wenn er sich in Richtung des DynamicTargets rollen lässt, überschlägt sich dabei allerdings und startet somit die Trainingsepisode neu.

@@ -4,7 +4,7 @@
 In der Vorgängerarbeit sollte der Roboter bislang nur geradeaus laufen.
 Dabei verfügt der verwendete Roboter über keinerlei Sensorik.
 Einzig die aktuellen Zielwinkel der Servomotoren, welche die Bewegung der Beine ermöglichen, sind dem Lernalgorithmus zugänglich.
-Das Training des Roboters erfolgte jedoch rein in der Simulation.
+Das Training des Roboters erfolgte allerdings rein in der Simulation.
 Da die Simulationsumgebung nicht nur den Roboter, sondern dessen komplettes Umfeld abbilden muss, sind alle Informationen, die ein beliebiger Sensor liefern kann, theoretisch in der Simulation vorhanden, wurden dem Algorithmus jedoch nicht zugänglich gemacht.
 Der Roboter kennt seinen eigenen Zustand nicht, beziehungsweise nur bedingt.
 Das trainierte Modell wird lediglich in der Praxis angewandt, unter der Annahme, dass bei einem korrekt gelernten Modell keinerlei Zusatzinformationen notwendig sind, um den Roboter seine Aufgabe erfüllen zu lassen: geradeaus zu laufen.
@@ -12,7 +12,7 @@ Das trainierte Modell wird lediglich in der Praxis angewandt, unter der Annahme,
 Die Zielsetzung dieser Studienarbeit erweitert nun jedoch diese Aufgabe des Roboters, was Probleme aufwirft.
 Der Roboter soll lernen, einem vorgegebenen Pfad zu folgen.
 Dabei soll der Pfad für jeden Durchlauf dem Roboter individuell vorgegeben werden können.
-Besonders wichtig ist hierbei zu beachten, dass der Roboter unter keinen Umständen einen bestimmten Pfad auswendig lernen soll, denn dann muss für jeden Pfad, den der Roboter laufen soll, ein eigenständiges Modell trainiert werden, was einen praktischen Nutzen unmöglich macht -- schließlich kann nicht für eine Bewegungsanweisung an einen Roboter jedes Mal mehrere Stunden Rechenzeit aufgebracht werden.
+Besonders wichtig ist hierbei zu beachten, dass der Roboter unter keinen Umständen einen bestimmten Pfad auswendig lernen soll, denn dann muss für jeden Pfad, den der Roboter laufen soll, ein eigenständiges Modell trainiert werden, was einen praktischen Nutzen unmöglich macht -- schließlich können nicht für eine Bewegungsanweisung an einen Roboter jedes Mal mehrere Stunden Rechenzeit aufgebracht werden.
 Dem Roboter muss also ein Pfad mitgegeben werden.
 Außerdem muss für das Training des Roboters mehrfach dieser übergebene Pfad neu generiert werden, um ein Auswendiglernen zu verhindern.
 
@@ -130,7 +130,7 @@ Selbst falls ein messbarer Unterschied bestehen sollte, kann dieser nicht hinsic
 \section{Geplante Realisierung}
 \label{sec:realisierung}
 Die Umsetzung der Arbeit lässt sich in mehrere Aufgabenpakete gliedern.
-Diese sollen folgend beschrieben werden.
+Diese sollen nachfolgend beschrieben werden.
 
 \subsection{Rekonstruktion}
 Der erste Schritt besteht darin, die Simulationsumgebung und Lernergebnisse der vorherigen Arbeit zu rekonstruieren.
@@ -151,6 +151,7 @@ Für das Training ergibt dies Parallelen zu einem Beispielszenario des ML-Agents
 Beim \emph{Crawler-Example} muss eine Kreatur lernen, ein zufällig spawnendes Ziel (sogenannte \emph{DynamicTargets}) zu erreichen.
 Kommt der Crawler mit einem DynamicTarget in Berührung, teleportiert es sich an einen zufälligen Ort \cite{crawlerExample}.
 Dabei tauch die DynamicTargets als kleine Würfel in der Umgebung des Crawlers auf.
+
 Die DynamicTargets können auch für die Pfadplanung des Roboters verwendet werden.
 Die für das Training notwendigen, zufälligen Pfade bilden sie bereits automatisch ab.
 Um dem trainierten Modell des Crawlers einen festen Pfad vorgeben zu können, muss lediglich eine kleine Modifikation der DynamicTargets vorgenommen werden, um diese in einer festgelegten Reihenfolge anstatt zufällig erscheinen zu lassen.
